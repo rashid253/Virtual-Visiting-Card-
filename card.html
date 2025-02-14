@@ -117,17 +117,18 @@
     }
 
     .business-info-content {
-      position: absolute; /* Change to absolute */
+      position: absolute; /* Keep it absolute */
       width: 100%; /* Ensure it takes full width */
       animation: scrollContent 10s linear infinite; /* Smooth scrolling animation */
+      transform: translateY(100%); /* Start off-screen */
     }
 
     @keyframes scrollContent {
       0% {
-        transform: translateY(100%);
+        transform: translateY(100%); /* Start from below the visible area */
       }
       100% {
-        transform: translateY(-100%);
+        transform: translateY(-100%); /* Move to above the visible area */
       }
     }
 
