@@ -75,6 +75,7 @@
       border-radius: 50%;
       border: 2px solid var(--neutral-light);
       object-fit: cover;
+      cursor: pointer;
     }
 
     .profile-name {
@@ -116,17 +117,22 @@
     }
 
     .business-info-content {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      display: block; /* Make content visible */
+      position: relative;
+      display: block;
       text-align: center;
       font-weight: bold;
       color: var(--neutral-dark);
       padding: 0.5rem;
-      overflow-y: auto; /* Allow vertical scrolling if needed */
+      animation: scrollContent 10s linear infinite; /* Smooth scrolling animation */
+    }
+
+    @keyframes scrollContent {
+      0% {
+        transform: translateY(100%);
+      }
+      100% {
+        transform: translateY(-100%);
+      }
     }
 
     .action-buttons {
@@ -198,7 +204,8 @@
     <!-- Profile Section -->
     <div class="profile-section">
       <div class="profile-image-container">
-        <img id="cardProfileImage" class="profile-image" alt="Profile" />
+        <input type="file" id="profileImageInput" accept="image/*" style="display: none;" />
+        <img id="cardProfileImage" class="profile-image" alt="Profile" onclick="document.getElementById('profileImageInput').click();" />
         <h3 class="profile-name" id="cardName"></h3>
       </div>
       <div class="profile-info">
@@ -268,7 +275,7 @@
       if (formData.businessInfo) {
         const businessInfoParagraphs = formData.businessInfo.split('\n').filter(p => p.trim() !== '');
         businessInfoContainer.innerHTML = businessInfoParagraphs
-          .map((p) => `<div class="business-info-content"><p>${p}</p></div>`)
+          .map((p) => `<p>${p}</p>`)
           .join('');
       } else {
         console.error("No business info data found in formData.");
@@ -290,6 +297,35 @@
         }
       });
     }
+
+    // Profile Image Upload Functionality
+    document.getElementById('profileImageInput').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Validate file type and size (similar to WhatsApp)
+        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+
+        if (!validImageTypes.includes(file.type)) {
+          alert("Please upload a valid image file (JPEG, PNG, GIF).");
+          return;
+        }
+
+        if (file.size > maxSize) {
+          alert("Image size should not exceed 5MB.");
+          return;
+        }
+
+        // Read the file and set it as the profile image
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const imageUrl = e.target.result;
+          document.getElementById('cardProfileImage').src = imageUrl;
+          localStorage.setItem('profileImage', imageUrl); // Save to local storage
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 
     // Mini Icons Functionality
     document.getElementById('miniCallButton').onclick = () => {
