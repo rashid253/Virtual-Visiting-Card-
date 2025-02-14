@@ -117,12 +117,8 @@
     }
 
     .business-info-content {
-      position: relative;
-      display: block;
-      text-align: center;
-      font-weight: bold;
-      color: var(--neutral-dark);
-      padding: 0.5rem;
+      position: absolute; /* Change to absolute */
+      width: 100%; /* Ensure it takes full width */
       animation: scrollContent 10s linear infinite; /* Smooth scrolling animation */
     }
 
@@ -218,7 +214,7 @@
 
     <!-- Business Info Section -->
     <div class="business-info-section">
-      <div id="businessInfoContent"></div>
+      <div class="business-info-content" id="businessInfoContent"></div>
     </div>
 
     <!-- Action Buttons in Section 3 -->
