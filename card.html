@@ -75,7 +75,6 @@
       border-radius: 50%;
       border: 2px solid var(--neutral-light);
       object-fit: cover;
-      cursor: pointer;
     }
 
     .profile-name {
@@ -202,7 +201,7 @@
     <div class="profile-section">
       <div class="profile-image-container">
         <input type="file" id="profileImageInput" accept="image/*" style="display: none;" />
-        <img id="cardProfileImage" class="profile-image" alt="Profile" onclick="document.getElementById('profileImageInput').click();" />
+        <img id="cardProfileImage" class="profile-image" alt="Profile" />
         <h3 class="profile-name" id="cardName"></h3>
       </div>
       <div class="profile-info">
