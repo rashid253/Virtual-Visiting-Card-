@@ -121,7 +121,7 @@
       right: 0;
       top: 0;
       bottom: 0;
-      display: none;
+      display: block; /* Make content visible */
       text-align: center;
       font-weight: bold;
       color: var(--neutral-dark);
@@ -232,7 +232,25 @@
   <script>
     // Load data from local storage
     const formData = JSON.parse(localStorage.getItem('formData'));
+
+    // If no data is found, use sample data for testing
+    if (!formData) {
+      localStorage.setItem('formData', JSON.stringify({
+        name: "John Doe",
+        businessName: "Doe Enterprises",
+        address: "123 Main St, City, Country",
+        phone: "+1234567890",
+        email: "john.doe@example.com",
+        businessInfo: "This is a sample business info.\nIt can have multiple lines.\nEach line will be displayed as a paragraph.",
+        facebook: "https://facebook.com",
+        instagram: "https://instagram.com",
+        youtube: "https://youtube.com"
+      }));
+      window.location.reload(); // Reload the page to load the new data
+    }
+
     if (formData) {
+      // Populate profile information
       document.getElementById('cardName').textContent = formData.name;
       document.getElementById('cardBusinessName').textContent = formData.businessName;
       document.getElementById('cardAddress').textContent = formData.address;
@@ -247,10 +265,14 @@
 
       // Populate business info paragraphs
       const businessInfoContainer = document.getElementById('businessInfoContent');
-      const businessInfoParagraphs = formData.businessInfo.split('\n').filter(p => p.trim() !== '');
-      businessInfoContainer.innerHTML = businessInfoParagraphs
-        .map((p) => `<div class="business-info-content"><p>${p}</p></div>`)
-        .join('');
+      if (formData.businessInfo) {
+        const businessInfoParagraphs = formData.businessInfo.split('\n').filter(p => p.trim() !== '');
+        businessInfoContainer.innerHTML = businessInfoParagraphs
+          .map((p) => `<div class="business-info-content"><p>${p}</p></div>`)
+          .join('');
+      } else {
+        console.error("No business info data found in formData.");
+      }
 
       // Handle social media links
       const socialLinks = {
