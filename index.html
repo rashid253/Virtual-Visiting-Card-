@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Business Card Generator</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet" />
   <style>
     :root {
       --primary-color: #2C3E50;    /* Professional Navy */
@@ -55,15 +54,6 @@
       gap: 0.5rem;
     }
 
-    .input-group label {
-      font-weight: bold;
-    }
-
-    .input-group label.mandatory::after {
-      content: " *";
-      color: var(--accent-color);
-    }
-
     input, textarea {
       width: 100%;
       padding: 0.7rem;
@@ -72,14 +62,8 @@
       font-size: 0.9rem;
     }
 
-    input:invalid, textarea:invalid {
-      border-color: var(--accent-color);
-    }
-
     textarea {
       resize: vertical;
-      max-height: 200px;
-      overflow-y: auto;
     }
 
     .image-upload-group {
@@ -110,39 +94,6 @@
       cursor: pointer;
     }
 
-    /* Cropper Modal */
-    .cropper-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .cropper-container {
-      max-width: 90%;
-      max-height: 90%;
-    }
-
-    .cropper-actions {
-      margin-top: 1rem;
-      text-align: center;
-    }
-
-    .cropper-actions button {
-      padding: 0.5rem 1rem;
-      margin: 0 0.5rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    /* Mobile Responsiveness */
     @media (max-width: 480px) {
       .form-container {
         max-width: 90%;
@@ -165,131 +116,68 @@
           <i class="fas fa-camera fa-2x"></i>
           <p>Upload Profile Photo</p>
         </label>
-        <input type="file" id="profileImage" accept="image/*" hidden onchange="openCropper(event)" />
+        <input type="file" id="profileImage" accept="image/*" hidden onchange="previewImage(event)" />
         <img id="imagePreview" alt="Profile Preview" />
       </div>
 
       <div class="input-group">
-        <label for="name" class="mandatory">Full Name</label>
-        <input type="text" id="name" placeholder="Enter your full name" required maxlength="50" />
+        <input type="text" id="name" placeholder="Full Name" required />
       </div>
 
       <div class="input-group">
-        <label for="businessName" class="mandatory">Business Name</label>
-        <input type="text" id="businessName" placeholder="Enter your business name" required maxlength="50" />
+        <input type="text" id="businessName" placeholder="Business Name" required />
       </div>
 
       <div class="input-group">
-        <label for="businessInfo" class="mandatory">Business Info</label>
-        <textarea
-          id="businessInfo"
-          placeholder="Enter 3 to 5 paragraphs (Max 150 words each) separated by a new line"
-          rows="6"
-          required
-        ></textarea>
+        <textarea id="businessInfo" placeholder="Enter 3 to 5 paragraphs (Max 150 words each) separated by a new line" rows="6" required></textarea>
         <small style="color: var(--neutral-dark); font-size: 0.8rem;">
           <strong>Instructions:</strong> Write 3 to 5 paragraphs. Each paragraph must not exceed 150 words. Separate paragraphs with a new line.
-        </small>
+                </small>
       </div>
 
       <div class="input-group">
-        <label for="address" class="mandatory">Business Address</label>
-        <input type="text" id="address" placeholder="Enter your business address" required maxlength="100" />
+        <input type="text" id="address" placeholder="Business Address" required />
       </div>
 
       <div class="input-group">
-        <label for="phone" class="mandatory">Phone Number</label>
-        <input type="tel" id="phone" placeholder="Enter your phone number" required pattern="[0-9]{10}" />
+        <input type="tel" id="phone" placeholder="Phone Number" required />
       </div>
 
       <div class="input-group">
-        <label for="email" class="mandatory">Email Address</label>
-        <input type="email" id="email" placeholder="Enter your email address" required />
+        <input type="email" id="email" placeholder="Email Address" required />
       </div>
 
       <div class="input-group">
-        <label for="website">Website URL</label>
-        <input type="url" id="website" placeholder="Enter your website URL" />
+        <input type="url" id="facebook" placeholder="Facebook URL" />
       </div>
 
       <div class="input-group">
-        <label for="facebook">Facebook URL</label>
-        <input type="url" id="facebook" placeholder="Enter your Facebook URL" />
+        <input type="url" id="instagram" placeholder="Instagram URL" />
       </div>
 
       <div class="input-group">
-        <label for="instagram">Instagram URL</label>
-        <input type="url" id="instagram" placeholder="Enter your Instagram URL" />
-      </div>
-
-      <div class="input-group">
-        <label for="youtube">YouTube URL</label>
-        <input type="url" id="youtube" placeholder="Enter your YouTube URL" />
+        <input type="url" id="youtube" placeholder="YouTube URL" />
       </div>
     </div>
 
     <button id="generateCard">Generate Card</button>
   </div>
 
-  <!-- Cropper Modal -->
-  <div class="cropper-modal" style="display: none;">
-    <div class="cropper-container">
-      <img id="cropperImage" src="" alt="Cropper Image" style="max-width: 100%; max-height: 80vh;" />
-    </div>
-    <div class="cropper-actions">
-      <button onclick="cropImage()">Crop</button>
-      <button onclick="closeCropper()">Cancel</button>
-    </div>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
   <script>
-    let cropper;
-
-    // Open Cropper
-    function openCropper(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          document.getElementById('cropperImage').src = e.target.result;
-          document.querySelector('.cropper-modal').style.display = 'flex';
-          initializeCropper();
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    // Initialize Cropper
-    function initializeCropper() {
-      const image = document.getElementById('cropperImage');
-      cropper = new Cropper(image, {
-        aspectRatio: 1,
-        viewMode: 1,
-        autoCropArea: 1,
-      });
-    }
-
-    // Crop Image
-    function cropImage() {
-      const croppedCanvas = cropper.getCroppedCanvas({
-        width: 200,
-        height: 200,
-      });
+    // Image Preview Function
+    function previewImage(event) {
+      const reader = new FileReader();
       const preview = document.getElementById('imagePreview');
-      preview.src = croppedCanvas.toDataURL();
-      preview.style.display = 'block';
-      closeCropper();
-    }
-
-    // Close Cropper
-    function closeCropper() {
-      document.querySelector('.cropper-modal').style.display = 'none';
-      cropper.destroy();
+      reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(event.target.files[0]);
     }
 
     // Generate Card Function
     document.getElementById('generateCard').onclick = function () {
+      // Get form values
       const formData = {
         name: document.getElementById('name').value,
         businessName: document.getElementById('businessName').value,
@@ -297,36 +185,16 @@
         address: document.getElementById('address').value,
         phone: document.getElementById('phone').value,
         email: document.getElementById('email').value,
-        website: document.getElementById('website').value,
         facebook: document.getElementById('facebook').value,
         instagram: document.getElementById('instagram').value,
         youtube: document.getElementById('youtube').value,
-        profileImage: document.getElementById('imagePreview').src,
+        profileImage: document.getElementById('profileImage').files[0]
       };
 
       // Validate mandatory fields
-      const mandatoryFields = [
-        { id: 'name', label: 'Full Name' },
-        { id: 'businessName', label: 'Business Name' },
-        { id: 'businessInfo', label: 'Business Info' },
-        { id: 'address', label: 'Business Address' },
-        { id: 'phone', label: 'Phone Number' },
-        { id: 'email', label: 'Email Address' },
-      ];
-
-      let isValid = true;
-      mandatoryFields.forEach(field => {
-        const input = document.getElementById(field.id);
-        if (!input.value.trim()) {
-          input.style.borderColor = var(--accent-color);
-          isValid = false;
-        } else {
-          input.style.borderColor = var(--neutral-light);
-        }
-      });
-
-      if (!isValid) {
-        alert('Please fill all mandatory fields.');
+      if (!formData.name || !formData.businessName || !formData.businessInfo ||
+          !formData.address || !formData.phone || !formData.email) {
+        alert('Please fill all required fields');
         return;
       }
 
@@ -346,10 +214,58 @@
         }
       }
 
-      // Save data to local storage
-      localStorage.setItem('formData', JSON.stringify(formData));
-      window.location.href = 'card.html';
+      // Upload image to Imgur and get the URL
+      if (formData.profileImage) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64Image = e.target.result.split(',')[1]; // Get base64 string
+          uploadImageToImgur(base64Image, formData, params);
+        };
+        reader.readAsDataURL(formData.profileImage);
+      } else {
+        redirectToCard(formData);
+      }
     };
+
+    function uploadImageToImgur(base64Image, formData) {
+      const clientId = '048d9400ce02b71'; // Imgur Client ID
+      fetch('https://api.imgur.com/3/image', {
+        method: 'POST',
+        headers: {
+          Authorization: `Client-ID ${clientId}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ image: base64Image, type: 'base64' })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          formData.profileImage = data.data.link; // Get the Imgur link
+          redirectToCard(formData);
+        } else {
+          alert('Image upload failed. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error);
+        alert('Image upload failed. Please try again.');
+      });
+    }
+
+    function redirectToCard(formData) {
+      const params = new URLSearchParams();
+      params.set('name', formData.name);
+      params.set('businessName', formData.businessName);
+      params.set('businessInfo', formData.businessInfo);
+      params.set('address', formData.address);
+      params.set('phone', formData.phone);
+      params.set('email', formData.email);
+      params.set('facebook', formData.facebook);
+      params.set('instagram', formData.instagram);
+      params.set('youtube', formData.youtube);
+      params.set('profileImage', formData.profileImage);
+      window.location.href = `card.html?${params.toString()}`;
+    }
   </script>
 </body>
 </html>
