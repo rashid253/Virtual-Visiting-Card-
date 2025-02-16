@@ -25,14 +25,22 @@
       min-height: 100vh;
     }
 
-    .form-container, .card-container {
+    .card-container {
       width: 100%;
-      max-width: 400px; /* Reduced width for both form and card */
+      max-width: 400px;
       background: white;
       border-radius: 15px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.12);
       padding: 1.5rem;
       margin: 1rem;
+      transform: perspective(800px) rotateY(10deg);
+      transition: transform 0.5s ease;
+      border: 2px solid var(--secondary-color);
+      transform-style: preserve-3d;
+    }
+
+    .card-container:hover {
+      transform: perspective(800px) rotateY(10deg);
     }
 
     .mini-icons {
@@ -106,30 +114,27 @@
       margin: 0.5rem;
       font-size: 0.9rem;
       line-height: 1.5;
-      height: 150px; /* Fixed height for the section */
+      height: 150px;
       overflow: hidden;
       position: relative;
       background: #E0F7FA;
       border-bottom: 2px solid var(--secondary-color);
       font-family: 'Georgia', serif;
       border-radius: 8px;
-      word-wrap: break-word; /* Allow long words to break */
     }
 
     .business-info-content {
-      position: absolute; /* Keep it absolute */
-      width: 100%; /* Ensure it takes full width */
-      animation: scrollContent 10s linear infinite; /* Smooth scrolling animation */
-      transform: translateY(100%); /* Start off-screen */
-    }
-
-    @keyframes scrollContent {
-      0% {
-        transform: translateY(100%); /* Start from below the visible area */
-      }
-      100% {
-        transform: translateY(-100%); /* Move to above the visible area */
-      }
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      display: none;
+      text-align: center;
+      font-weight: bold;
+      color: var(--neutral-dark);
+      padding: 0.5rem;
+      overflow-y: auto;
     }
 
     .action-buttons {
@@ -158,9 +163,8 @@
       visibility: hidden;
     }
 
-    /* Mobile Responsiveness */
     @media (max-width: 480px) {
-      .form-container, .card-container {
+      .card-container {
         max-width: 90%;
         padding: 1rem;
       }
@@ -201,7 +205,6 @@
     <!-- Profile Section -->
     <div class="profile-section">
       <div class="profile-image-container">
-        <input type="file" id="profileImageInput" accept="image/*" style="display: none;" />
         <img id="cardProfileImage" class="profile-image" alt="Profile" />
         <h3 class="profile-name" id="cardName"></h3>
       </div>
@@ -215,7 +218,7 @@
 
     <!-- Business Info Section -->
     <div class="business-info-section">
-      <div class="business-info-content" id="businessInfoContent"></div>
+      <div id="businessInfoContent"></div>
     </div>
 
     <!-- Action Buttons in Section 3 -->
@@ -234,120 +237,82 @@
   </div>
 
   <script>
-    // Load data from local storage
-    const formData = JSON.parse(localStorage.getItem('formData'));
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
 
-    // If no data is found, use sample data for testing
-    if (!formData) {
-      localStorage.setItem('formData', JSON.stringify({
-        name: "John Doe",
-        businessName: "Doe Enterprises",
-        address: "123 Main St, City, Country",
-        phone: "+1234567890",
-        email: "john.doe@example.com",
-        businessInfo: "This is a sample business info.\nIt can have multiple lines.\nEach line will be displayed as a paragraph.",
-        facebook: "https://facebook.com",
-        instagram: "https://instagram.com",
-        youtube: "https://youtube.com"
-      }));
-      window.location.reload(); // Reload the page to load the new data
+    // Set profile image (if available)
+    const profileImage = params.get('profileImage');
+    if (profileImage) {
+      document.getElementById('cardProfileImage').src = profileImage;
     }
 
-    if (formData) {
-      // Populate profile information
-      document.getElementById('cardName').textContent = formData.name;
-      document.getElementById('cardBusinessName').textContent = formData.businessName;
-      document.getElementById('cardAddress').textContent = formData.address;
-      document.getElementById('cardPhone').textContent = formData.phone;
-      document.getElementById('cardEmail').textContent = formData.email;
+    // Update card information
+    document.getElementById('cardName').textContent = params.get('name');
+    document.getElementById('cardBusinessName').textContent = params.get('businessName');
+    document.getElementById('cardAddress').textContent = params.get('address');
+    document.getElementById('cardPhone').textContent = params.get('phone');
+    document.getElementById('cardEmail').textContent = params.get('email');
 
-      // Set profile image from local storage
-      const profileImage = localStorage.getItem('profileImage');
-      if (profileImage) {
-        document.getElementById('cardProfileImage').src = profileImage;
-      }
+    // Populate business info paragraphs
+    const businessInfoParagraphs = params.get('businessInfo').split('\n').filter(p => p.trim() !== '');
+    const businessInfoContainer = document.getElementById('businessInfoContent');
+    businessInfoContainer.innerHTML = businessInfoParagraphs
+      .map((p) => `<div class="business-info-content"><p>${p}</p></div>`)
+      .join('');
 
-      // Populate business info paragraphs
-      const businessInfoContainer = document.getElementById('businessInfoContent');
-      if (formData.businessInfo) {
-        const businessInfoParagraphs = formData.businessInfo.split('\n').filter(p => p.trim() !== '');
-        businessInfoContainer.innerHTML = businessInfoParagraphs
-          .map((p) => `<p>${p}</p>`)
-          .join('');
+    // Show only the first paragraph; cycle every 8 seconds.
+    const paragraphs = businessInfoContainer.querySelectorAll('.business-info-content');
+    let currentIndex = 0;
+    paragraphs.forEach((div, index) => {
+      div.style.display = (index === 0) ? 'block' : 'none';
+    });
+    setInterval(() => {
+      paragraphs[currentIndex].style.display = 'none';
+      currentIndex = (currentIndex + 1) % paragraphs.length;
+      paragraphs[currentIndex].style.display = 'block';
+    }, 8000);
+
+    // Handle social media links
+    const socialLinks = {
+      facebook: document.getElementById('facebookButton'),
+      instagram: document.getElementById('instagramButton'),
+      youtube: document.getElementById('youtubeButton')
+    };
+
+    Object.entries(socialLinks).forEach(([platform, element]) => {
+      const url = params.get(platform);
+      if (url) {
+        element.href = url;
+        element.style.visibility = 'visible';
       } else {
-        console.error("No business info data found in formData.");
-      }
-
-      // Handle social media links
-      const socialLinks = {
-        facebook: document.getElementById('facebookButton'),
-        instagram: document.getElementById('instagramButton'),
-        youtube: document.getElementById('youtubeButton')
-      };
-
-      Object.entries(socialLinks).forEach(([platform, element]) => {
-        if (formData[platform]) {
-          element.href = formData[platform];
-          element.style.visibility = 'visible';
-        } else {
-          element.style.visibility = 'hidden';
-        }
-      });
-    }
-
-    // Profile Image Upload Functionality
-    document.getElementById('profileImageInput').addEventListener('change', function (event) {
-      const file = event.target.files[0];
-      if (file) {
-        // Validate file type and size (similar to WhatsApp)
-        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        const maxSize = 5 * 1024 * 1024; // 5MB
-
-        if (!validImageTypes.includes(file.type)) {
-          alert("Please upload a valid image file (JPEG, PNG, GIF).");
-          return;
-        }
-
-        if (file.size > maxSize) {
-          alert("Image size should not exceed 5MB.");
-          return;
-        }
-
-        // Read the file and set it as the profile image
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const imageUrl = e.target.result;
-          document.getElementById('cardProfileImage').src = imageUrl;
-          localStorage.setItem('profileImage', imageUrl); // Save to local storage
-        };
-        reader.readAsDataURL(file);
+        element.style.visibility = 'hidden';
       }
     });
 
     // Mini Icons Functionality
     document.getElementById('miniCallButton').onclick = () => {
-      window.location.href = `tel:${formData.phone}`;
+      window.location.href = `tel:${params.get('phone')}`;
     };
 
     document.getElementById('miniEmailButton').onclick = () => {
-      window.location.href = `mailto:${formData.email}`;
+      window.location.href = `mailto:${params.get('email')}`;
     };
 
     document.getElementById('miniWhatsappButton').onclick = () => {
-      window.location.href = `https://wa.me/${formData.phone}`;
+      window.location.href = `https://wa.me/${params.get('phone')}`;
     };
 
     document.getElementById('miniMapButton').onclick = () => {
-      const address = encodeURIComponent(formData.address);
+      const address = encodeURIComponent(params.get('address'));
       window.open(`https://www.google.com/maps?q=${address}`, '_blank');
     };
 
     // Save to Contacts Functionality (vCard)
     document.getElementById('miniSaveButton').onclick = () => {
-      const name = formData.name;
-      const phone = formData.phone;
-      const email = formData.email;
-      const address = formData.address;
+      const name = params.get('name');
+      const phone = params.get('phone');
+      const email = params.get('email');
+      const address = params.get('address');
 
       // Generate vCard content with proper CRLF line breaks
       const vCardContent =
@@ -371,15 +336,15 @@
 
     // Button Actions in Section 3
     document.getElementById('callButton').onclick = () => {
-      window.location.href = `tel:${formData.phone}`;
+      window.location.href = `tel:${params.get('phone')}`;
     };
 
     document.getElementById('whatsappButton').onclick = () => {
-      window.location.href = `https://wa.me/${formData.phone}`;
+      window.location.href = `https://wa.me/${params.get('phone')}`;
     };
 
     document.getElementById('emailButton').onclick = () => {
-      window.location.href = `mailto:${formData.email}`;
+      window.location.href = `mailto:${params.get('email')}`;
     };
   </script>
 </body>
