@@ -60,8 +60,6 @@
       0%, 100% { transform: translateY(0) scale(1); }
       50% { transform: translateY(-15px) scale(1.05); }
     }
-
-    /* This class will be added dynamically based on selection */
     .animate-rotate { animation: rotateAnim 1s ease-in-out; }
     .animate-bounce { animation: bounceAnim 1s ease-in-out; }
 
@@ -80,7 +78,7 @@
       transform: translateY(-3px);
     }
 
-    /* Top-left: Controls Container (Theme & Animation Dropdowns, and an Apply button) */
+    /* Top-left: Controls Container (Theme & Animate dropdowns) */
     #controlsContainer {
       position: absolute;
       top: 10px;
@@ -88,12 +86,12 @@
       z-index: 10;
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 0.15rem;
     }
-    /* Dropdown Buttons (for both Theme and Animation) */
+    /* Dropdown Buttons for both Theme and Animate */
     .dropdown-btn {
-      padding: 0.2rem 0.4rem;
-      font-size: 0.7rem;
+      padding: 0.2rem 0.3rem;
+      font-size: 0.65rem;
       border: 1px solid #ccc;
       border-radius: 4px;
       background: #fff;
@@ -123,26 +121,12 @@
     }
     .dropdown-options li {
       padding: 0.2rem;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       cursor: pointer;
       transition: background 0.3s ease, color 0.3s ease;
     }
     .dropdown-options li:hover {
       background: var(--secondary-color);
-      color: #fff;
-    }
-    /* Apply Animation Button (small) */
-    #applyAnimButton {
-      padding: 0.2rem 0.4rem;
-      font-size: 0.7rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background: #fff;
-      cursor: pointer;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    #applyAnimButton:hover {
-      background: var(--accent-color);
       color: #fff;
     }
 
@@ -207,7 +191,7 @@
       line-height: 1.4;
       white-space: nowrap;
     }
-    /* Connect Button – icon only, at bottom-right of profile section */
+    /* Connect Button – icon only, at bottom-right */
     .connect-btn {
       position: absolute;
       bottom: 10px;
@@ -277,7 +261,7 @@
     }
     .social-icon:hover { transform: translateY(-3px); }
 
-    /* Ripple Effect for interactive elements */
+    /* Ripple Effect */
     .ripple {
       position: absolute;
       background: rgba(255,255,255,0.5);
@@ -293,19 +277,9 @@
     }
 
     @media (max-width: 480px) {
-      .card-container {
-        max-width: 90%;
-        padding: 1rem;
-      }
-      .profile-section {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
-      .profile-image-container, .profile-info {
-        width: 100%;
-        padding: 0;
-      }
+      .card-container { max-width: 90%; padding: 1rem; }
+      .profile-section { flex-direction: column; align-items: center; text-align: center; }
+      .profile-image-container, .profile-info { width: 100%; padding: 0; }
       .profile-info { margin-top: 1rem; }
       .contact-info { white-space: normal; }
     }
@@ -313,7 +287,7 @@
 </head>
 <body>
   <div class="card-container" id="cardContainer">
-    <!-- Top-left: Controls Container (Theme & Animation dropdowns, and an Apply button) -->
+    <!-- Top-left: Controls Container (Theme & Animate dropdowns) -->
     <div id="controlsContainer">
       <!-- Theme Dropdown -->
       <button id="themeButton" class="dropdown-btn">
@@ -325,17 +299,15 @@
         <li data-theme="red">Red</li>
         <li data-theme="green">Green</li>
       </ul>
-      <!-- Animation Dropdown -->
+      <!-- Animate Dropdown (label changed to "Animate") -->
       <button id="animateButton" class="dropdown-btn">
-        Animation <i class="fas fa-caret-down"></i>
+        Animate <i class="fas fa-caret-down"></i>
       </button>
       <ul id="animateOptions" class="dropdown-options">
         <li data-anim="none">None</li>
         <li data-anim="rotate">Rotate</li>
         <li data-anim="bounce">Bounce</li>
       </ul>
-      <!-- Apply Animation Button -->
-      <button id="applyAnimButton">Apply</button>
     </div>
     <!-- Top-right: Share Icon -->
     <div class="top-share-icon" id="topShareIcon" title="Share">
@@ -524,7 +496,7 @@
       });
     });
 
-    // Animation Dropdown Logic
+    // Animate Dropdown Logic – auto apply on option click
     const animateButton = document.getElementById('animateButton');
     const animateOptions = document.getElementById('animateOptions');
     animateButton.addEventListener('click', (e) => {
@@ -536,32 +508,26 @@
         animateOptions.style.display = 'none';
       }
     });
-    let selectedAnimation = "none";
     animateOptions.querySelectorAll('li').forEach(option => {
       option.addEventListener('click', () => {
-        selectedAnimation = option.getAttribute('data-anim');
+        const selectedAnim = option.getAttribute('data-anim');
         animateOptions.style.display = 'none';
+        const card = document.getElementById('cardContainer');
+        card.classList.remove('animate-rotate', 'animate-bounce');
+        if (selectedAnim === 'rotate') {
+          card.classList.add('animate-rotate');
+        } else if (selectedAnim === 'bounce') {
+          card.classList.add('animate-bounce');
+        }
+        // Remove the animation class after 1 second to allow re-triggering
+        setTimeout(() => {
+          card.classList.remove('animate-rotate', 'animate-bounce');
+        }, 1000);
       });
     });
 
-    // Apply Animation Button – triggers the selected animation on the card
-    document.getElementById('applyAnimButton').addEventListener('click', () => {
-      const card = document.getElementById('cardContainer');
-      // Remove any previously applied animation classes
-      card.classList.remove('animate-rotate', 'animate-bounce');
-      if (selectedAnimation === "rotate") {
-        card.classList.add('animate-rotate');
-      } else if (selectedAnimation === "bounce") {
-        card.classList.add('animate-bounce');
-      }
-      // Remove animation class after 1s so it can be re-triggered later
-      setTimeout(() => {
-        card.classList.remove('animate-rotate', 'animate-bounce');
-      }, 1000);
-    });
-
     // Add ripple effect for interactive elements
-    document.querySelectorAll('.action-btn, .icon, .connect-btn, .dropdown-btn, #applyAnimButton').forEach(btn => {
+    document.querySelectorAll('.action-btn, .icon, .connect-btn, .dropdown-btn').forEach(btn => {
       btn.addEventListener('click', function(e) {
         const ripple = document.createElement('span');
         ripple.className = 'ripple';
