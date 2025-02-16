@@ -7,44 +7,111 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
   <style>
     :root {
-      --primary-color: #2C3E50;    /* Professional Navy */
-      --secondary-color: #3498DB;  /* Trust Blue */
-      --accent-color: #E74C3E;     /* Alert Red */
-      --neutral-light: rgba(236, 240, 241, 0.9); /* Light Gray with transparency */
-      --neutral-dark: #34495E;     /* Dark Gray */
-      --background-color: #F0F4F8; /* Light background for contrast */
-      --card-background: #FFFFFF;  /* White background for card */
+      --primary-color: #1E1E1E;       /* Dark Text */
+      --secondary-color: #009688;     /* Teal */
+      --accent-color: #FF5722;        /* Deep Orange */
+      --neutral-light: rgba(245, 245, 245, 0.9); /* Almost White */
+      --neutral-dark: #333333;        /* Dark Gray */
+      --card-background: #FFFFFF;     /* White */
+      --body-bg: linear-gradient(135deg, #CFD8DC, #ECEFF1);
     }
-
+    
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       margin: 0;
       padding: 1rem;
-      background: linear-gradient(135deg, #e9ecef, #f0f4f8);
+      background: var(--body-bg);
+      transition: background 0.5s ease;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
-
+    
     .card-container {
+      position: relative;
       width: 100%;
       max-width: 400px;
       background: var(--card-background);
-      border-radius: 15px;
+      border-radius: 20px; /* increased for a rounded look */
+      border: 2px solid transparent;
+      /* initial gradient border */
+      border-image: linear-gradient(45deg, var(--secondary-color), var(--accent-color), #3F51B5) 1;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
       padding: 1.5rem;
       margin: 1rem;
-      transform: perspective(800px) rotateY(0deg);
-      transition: transform 0.5s ease;
-      border: 2px solid var(--secondary-color);
+      transform: perspective(1000px) rotateY(0deg);
+      transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
       transform-style: preserve-3d;
     }
-
+    
     .card-container:hover {
-      transform: perspective(800px) rotateY(5deg);
+      transform: perspective(1000px) rotateY(5deg) rotateX(2deg) scale(1.02);
     }
-
+    
+    /* Top Share Icon (top-right) */
+    .top-share-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      color: var(--neutral-dark);
+      cursor: pointer;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    .top-share-icon:hover {
+      color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+    
+    /* Custom Theme Dropdown (top-left) */
+    #themeDropdownContainer {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+    }
+    #themeButton {
+      padding: 0.3rem 0.5rem;
+      font-size: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    #themeButton:hover {
+      background: var(--secondary-color);
+      color: #fff;
+    }
+    #themeButton i {
+      margin-left: 0.3rem;
+    }
+    #themeOptions {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      display: none;
+      width: 100%;
+      z-index: 10;
+    }
+    #themeOptions li {
+      padding: 0.3rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    #themeOptions li:hover {
+      background: var(--secondary-color);
+      color: #fff;
+    }
+    
     .mini-icons {
       display: flex;
       justify-content: center;
@@ -52,25 +119,25 @@
       padding: 1rem;
       border-bottom: 2px solid var(--secondary-color);
     }
-
     .mini-icons .icon {
       font-size: 1.5rem;
       color: var(--neutral-dark);
       cursor: pointer;
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, transform 0.3s ease;
+      position: relative;
     }
-
     .mini-icons .icon:hover {
       color: var(--secondary-color);
+      transform: translateY(-3px);
     }
-
+    
     .profile-section {
+      position: relative;
       display: flex;
       padding: 1rem;
       margin: 0.5rem;
       border-bottom: 2px solid var(--secondary-color);
     }
-
     .profile-image-container {
       width: 40%;
       display: flex;
@@ -78,7 +145,6 @@
       align-items: center;
       padding-right: 1rem;
     }
-
     .profile-image {
       width: 90px;
       height: 90px;
@@ -86,7 +152,6 @@
       border: 2px solid var(--neutral-light);
       object-fit: cover;
     }
-
     .profile-name {
       color: var(--primary-color);
       margin: 0.5rem 0 0;
@@ -94,7 +159,6 @@
       text-align: center;
       word-break: keep-all;
     }
-
     .profile-info {
       width: 60%;
       padding-left: 1rem;
@@ -102,7 +166,6 @@
       flex-direction: column;
       justify-content: center;
     }
-
     .contact-info {
       color: var(--neutral-dark);
       margin: 0.3rem 0;
@@ -110,7 +173,20 @@
       line-height: 1.4;
       white-space: nowrap;
     }
-
+    /* Connect Button – icon only, at bottom-right of profile section */
+    .connect-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 1.2rem;
+      color: var(--secondary-color);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .connect-btn:hover {
+      transform: translateY(-3px);
+    }
+    
     .business-info-section {
       padding: 1rem;
       margin: 0.5rem;
@@ -124,7 +200,6 @@
       font-family: 'Georgia', serif;
       border-radius: 8px;
     }
-
     .business-info-content {
       position: absolute;
       left: 0;
@@ -138,54 +213,77 @@
       padding: 0.5rem;
       overflow-y: auto;
     }
-
+    
     .action-buttons {
       display: grid;
       gap: 0.5rem;
       padding: 0.8rem;
     }
-
     .action-btn {
       padding: 0.6rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 5px;
       cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
-
+    .action-btn:active {
+      transform: scale(0.98);
+    }
+    
     .social-links {
       display: flex;
       justify-content: center;
       gap: 1rem;
       padding: 1rem;
     }
-
     .social-icon {
       font-size: 1.5rem;
       color: var(--neutral-dark);
       visibility: hidden;
+      transition: transform 0.3s ease;
+      position: relative;
     }
-
+    .social-icon:hover {
+      transform: translateY(-3px);
+    }
+    
+    /* Ripple Effect for Buttons & Icons */
+    .ripple {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: rippleEffect 0.6s linear;
+      pointer-events: none;
+      width: 20px;
+      height: 20px;
+    }
+    @keyframes rippleEffect {
+      to {
+        transform: scale(10);
+        opacity: 0;
+      }
+    }
+    
     @media (max-width: 480px) {
       .card-container {
         max-width: 90%;
         padding: 1rem;
       }
-
       .profile-section {
         flex-direction: column;
         align-items: center;
         text-align: center;
       }
-
       .profile-image-container, .profile-info {
         width: 100%;
         padding: 0;
       }
-
       .profile-info {
         margin-top: 1rem;
       }
-
       .contact-info {
         white-space: normal;
       }
@@ -193,17 +291,28 @@
   </style>
 </head>
 <body>
-  <!-- Business Card -->
-  <div class="card-container">
-    <!-- Mini Icons in Section 1 -->
+  <div class="card-container" id="cardContainer">
+    <!-- Top-left: Theme Dropdown -->
+    <div id="themeDropdownContainer">
+      <button id="themeButton">Theme <i class="fas fa-caret-down"></i></button>
+      <ul id="themeOptions">
+        <li data-theme="default">Default</li>
+        <li data-theme="blue">Blue</li>
+        <li data-theme="red">Red</li>
+        <li data-theme="green">Green</li>
+      </ul>
+    </div>
+    <!-- Top-right: Share Icon -->
+    <div class="top-share-icon" id="topShareIcon" title="Share">
+      <i class="fas fa-share-alt"></i>
+    </div>
+    <!-- Mini Icons Section -->
     <div class="mini-icons">
       <i class="fas fa-phone icon" id="miniCallButton" title="Call"></i>
       <i class="fas fa-envelope icon" id="miniEmailButton" title="Email"></i>
       <i class="fab fa-whatsapp icon" id="miniWhatsappButton" title="WhatsApp"></i>
       <i class="fas fa-map-marker-alt icon" id="miniMapButton" title="Open in Google Maps"></i>
-      <i class="fas fa-save icon" id="miniSaveButton" title="Save to Contacts"></i>
     </div>
-
     <!-- Profile Section -->
     <div class="profile-section">
       <div class="profile-image-container">
@@ -216,71 +325,62 @@
         <p class="contact-info" id="cardPhone"></p>
         <p class="contact-info" id="cardEmail"></p>
       </div>
+      <!-- Connect Button (icon only) -->
+      <div class="connect-btn" id="connectButton" title="Save Contact">
+        <i class="fas fa-save"></i>
+      </div>
     </div>
-
     <!-- Business Info Section -->
     <div class="business-info-section">
       <div id="businessInfoContent"></div>
     </div>
-
-    <!-- Action Buttons in Section 3 -->
+    <!-- Action Buttons Section -->
     <div class="action-buttons">
       <button class="action-btn" id="callButton" style="background: var(--secondary-color); color: white;">Call</button>
       <button class="action-btn" id="whatsappButton" style="background: #25D366; color: white;">WhatsApp</button>
       <button class="action-btn" id="emailButton" style="background: var(--accent-color); color: white;">Email</button>
     </div>
-
-    <!-- Social Links -->
+    <!-- Social Links Section -->
     <div class="social-links">
       <a id="facebookButton" class="social-icon"><i class="fab fa-facebook-f"></i></a>
       <a id="instagramButton" class="social-icon"><i class="fab fa-instagram"></i></a>
       <a id="youtubeButton" class="social-icon"><i class="fab fa-youtube"></i></a>
     </div>
   </div>
-
+  
   <script>
-    // Get URL parameters
+    // Set profile image and card info from URL parameters
     const params = new URLSearchParams(window.location.search);
-
-    // Set profile image (if available)
-    const profileImage = params.get('profileImage');
-    if (profileImage) {
-      document.getElementById('cardProfileImage').src = profileImage;
+    if (params.get('profileImage')) {
+      document.getElementById('cardProfileImage').src = params.get('profileImage');
     }
-
-    // Update card information
     document.getElementById('cardName').textContent = params.get('name');
     document.getElementById('cardBusinessName').textContent = params.get('businessName');
     document.getElementById('cardAddress').textContent = params.get('address');
     document.getElementById('cardPhone').textContent = params.get('phone');
     document.getElementById('cardEmail').textContent = params.get('email');
-
-    // Populate business info paragraphs
+    
+    // Populate and cycle through business info paragraphs
     const businessInfoParagraphs = params.get('businessInfo').split('\n').filter(p => p.trim() !== '');
     const businessInfoContainer = document.getElementById('businessInfoContent');
-    businessInfoContainer.innerHTML = businessInfoParagraphs
-      .map((p) => `<div class="business-info-content"><p>${p}</p></div>`)
-      .join('');
-
-    // Show only the first paragraph; cycle every 8 seconds.
+    businessInfoContainer.innerHTML = businessInfoParagraphs.map(p => `<div class="business-info-content"><p>${p}</p></div>`).join('');
     const paragraphs = businessInfoContainer.querySelectorAll('.business-info-content');
     let currentIndex = 0;
     paragraphs.forEach((div, index) => {
-      div.style.display = (index === 0) ? 'block' : 'none';
+      div.style.display = index === 0 ? 'block' : 'none';
     });
     setInterval(() => {
       paragraphs[currentIndex].style.display = 'none';
       currentIndex = (currentIndex + 1) % paragraphs.length;
       paragraphs[currentIndex].style.display = 'block';
     }, 8000);
-
-    // Handle social media links
+    
+    // Setup social media links
     const socialLinks = {
       facebook: document.getElementById('facebookButton'),
       instagram: document.getElementById('instagramButton'),
       youtube: document.getElementById('youtubeButton')
     };
-
     Object.entries(socialLinks).forEach(([platform, element]) => {
       const url = params.get(platform);
       if (url) {
@@ -290,33 +390,22 @@
         element.style.visibility = 'hidden';
       }
     });
-
+    
     // Mini Icons Functionality
-    document.getElementById('miniCallButton').onclick = () => {
-      window.location.href = `tel:${params.get('phone')}`;
-    };
-
-    document.getElementById('miniEmailButton').onclick = () => {
-      window.location.href = `mailto:${params.get('email')}`;
-    };
-
-    document.getElementById('miniWhatsappButton').onclick = () => {
-      window.location.href = `https://wa.me/${params.get('phone')}`;
-    };
-
+    document.getElementById('miniCallButton').onclick = () => window.location.href = `tel:${params.get('phone')}`;
+    document.getElementById('miniEmailButton').onclick = () => window.location.href = `mailto:${params.get('email')}`;
+    document.getElementById('miniWhatsappButton').onclick = () => window.location.href = `https://wa.me/${params.get('phone')}`;
     document.getElementById('miniMapButton').onclick = () => {
       const address = encodeURIComponent(params.get('address'));
       window.open(`https://www.google.com/maps?q=${address}`, '_blank');
     };
-
-    // Save to Contacts Functionality (vCard)
-    document.getElementById('miniSaveButton').onclick = () => {
+    
+    // Connect Button (vCard) Functionality
+    document.getElementById('connectButton').onclick = () => {
       const name = params.get('name');
       const phone = params.get('phone');
       const email = params.get('email');
       const address = params.get('address');
-
-      // Generate vCard content with proper CRLF line breaks
       const vCardContent =
         "BEGIN:VCARD\r\n" +
         "VERSION:3.0\r\n" +
@@ -326,7 +415,6 @@
         "EMAIL;TYPE=INTERNET:" + email + "\r\n" +
         "ADR;TYPE=WORK:;;" + address + ";;;;\r\n" +
         "END:VCARD\r\n";
-
       const blob = new Blob([vCardContent], { type: 'text/vcard' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -335,19 +423,90 @@
       link.click();
       URL.revokeObjectURL(url);
     };
-
-    // Button Actions in Section 3
-    document.getElementById('callButton').onclick = () => {
-      window.location.href = `tel:${params.get('phone')}`;
+    
+    // Action Buttons Functionality
+    document.getElementById('callButton').onclick = () => window.location.href = `tel:${params.get('phone')}`;
+    document.getElementById('whatsappButton').onclick = () => window.location.href = `https://wa.me/${params.get('phone')}`;
+    document.getElementById('emailButton').onclick = () => window.location.href = `mailto:${params.get('email')}`;
+    
+    // Top Share Icon Functionality using Web Share API
+    document.getElementById('topShareIcon').onclick = async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: params.get('name'),
+            text: 'Check out this business card',
+            url: window.location.href
+          });
+        } catch (error) {
+          console.error('Error sharing:', error);
+        }
+      } else {
+        alert('Sharing is not supported on this browser.');
+      }
     };
-
-    document.getElementById('whatsappButton').onclick = () => {
-      window.location.href = `https://wa.me/${params.get('phone')}`;
-    };
-
-    document.getElementById('emailButton').onclick = () => {
-      window.location.href = `mailto:${params.get('email')}`;
-    };
+    
+    // Custom Theme Dropdown Logic
+    const themeButton = document.getElementById('themeButton');
+    const themeOptions = document.getElementById('themeOptions');
+    themeButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event bubbling
+      themeOptions.style.display = themeOptions.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('themeDropdownContainer').contains(e.target)) {
+        themeOptions.style.display = 'none';
+      }
+    });
+    themeOptions.querySelectorAll('li').forEach(option => {
+      option.addEventListener('click', () => {
+        const selectedTheme = option.getAttribute('data-theme');
+        const card = document.querySelector('.card-container');
+        if (selectedTheme === 'default') {
+          document.documentElement.style.setProperty('--secondary-color', '#009688');
+          document.documentElement.style.setProperty('--accent-color', '#FF5722');
+          document.documentElement.style.setProperty('--card-background', '#FFFFFF');
+          document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #CFD8DC, #ECEFF1)');
+          card.style.borderImage = `linear-gradient(45deg, #009688, #FF5722, #3F51B5) 1`;
+          card.style.boxShadow = "0 8px 30px rgba(0, 0, 0, 0.2)";
+        } else if (selectedTheme === 'blue') {
+          document.documentElement.style.setProperty('--secondary-color', '#2196F3');
+          document.documentElement.style.setProperty('--accent-color', '#E91E63');
+          document.documentElement.style.setProperty('--card-background', '#F0F8FF');
+          document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #BBDEFB, #E3F2FD)');
+          card.style.borderImage = `linear-gradient(45deg, #2196F3, #E91E63, #3F51B5) 1`;
+          card.style.boxShadow = "0 8px 30px rgba(33,150,243,0.4)";
+        } else if (selectedTheme === 'red') {
+          document.documentElement.style.setProperty('--secondary-color', '#F44336');
+          document.documentElement.style.setProperty('--accent-color', '#9C27B0');
+          document.documentElement.style.setProperty('--card-background', '#FFF0F0');
+          document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #FFCDD2, #FFEBEE)');
+          card.style.borderImage = `linear-gradient(45deg, #F44336, #9C27B0, #FF9800) 1`;
+          card.style.boxShadow = "0 8px 30px rgba(244,67,54,0.4)";
+        } else if (selectedTheme === 'green') {
+          document.documentElement.style.setProperty('--secondary-color', '#4CAF50');
+          document.documentElement.style.setProperty('--accent-color', '#8BC34A');
+          document.documentElement.style.setProperty('--card-background', '#E8F5E9');
+          document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #C8E6C9, #E8F5E9)');
+          card.style.borderImage = `linear-gradient(45deg, #4CAF50, #8BC34A, #388E3C) 1`;
+          card.style.boxShadow = "0 8px 30px rgba(76,175,80,0.4)";
+        }
+        themeOptions.style.display = 'none';
+      });
+    });
+    
+    // Add ripple effect for interactive elements
+    document.querySelectorAll('.action-btn, .icon, .connect-btn, #themeButton').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        this.appendChild(ripple);
+        const rect = this.getBoundingClientRect();
+        ripple.style.left = (e.clientX - rect.left) + 'px';
+        ripple.style.top = (e.clientY - rect.top) + 'px';
+        setTimeout(() => { ripple.remove(); }, 600);
+      });
+    });
   </script>
 </body>
 </html>
