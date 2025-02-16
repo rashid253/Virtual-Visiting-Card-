@@ -9,7 +9,7 @@
     :root {
       --primary-color: #2C3E50;    /* Professional Navy */
       --secondary-color: #3498DB;  /* Trust Blue */
-      --accent-color: #E74C3C;     /* Alert Red */
+      --accent-color: #E74C3E;     /* Alert Red */
       --neutral-light: rgba(236, 240, 241, 0.9); /* Light Gray with transparency */
       --neutral-dark: #34495E;     /* Dark Gray */
     }
@@ -94,6 +94,25 @@
       cursor: pointer;
     }
 
+    .country-code {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .country-code select {
+      width: 30%;
+      padding: 0.5rem;
+      border: 1px solid var(--neutral-light);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .country-code img {
+      width: 20px;
+      height: 15px;
+    }
+
     @media (max-width: 480px) {
       .form-container {
         max-width: 90%;
@@ -132,31 +151,41 @@
         <textarea id="businessInfo" placeholder="Enter 3 to 5 paragraphs (Max 150 words each) separated by a new line" rows="6" required></textarea>
         <small style="color: var(--neutral-dark); font-size: 0.8rem;">
           <strong>Instructions:</strong> Write 3 to 5 paragraphs. Each paragraph must not exceed 150 words. Separate paragraphs with a new line.
-                </small>
+        </small>
       </div>
 
       <div class="input-group">
         <input type="text" id="address" placeholder="Business Address" required />
       </div>
 
-      <div class="input-group">
-        <input type="tel" id="phone" placeholder="Phone Number" required />
+      <div class="input-group country-code">
+        <select id="countryCode" required>
+          <option value="" disabled selected>Select Country Code</option>
+          <option value="+1" data-flag="https://flagcdn.com/us.svg">USA (+1)</option>
+          <option value="+44" data-flag="https://flagcdn.com/gb.svg">UK (+44)</option>
+          <option value="+91" data-flag="https://flagcdn.com/in.svg">India (+91)</option>
+          <option value="+61" data-flag="https://flagcdn.com/au.svg">Australia (+61)</option>
+          <option value="+49" data-flag="https://flagcdn.com/de.svg">Germany (+49)</option>
+          <!-- Add more countries as needed -->
+        </select>
+        <img id="countryFlag" src="" alt="Country Flag" style="display:none;" />
+        <input type="tel" id="phone" placeholder="Phone Number" required pattern="^\+\d{1,3}\d{9,15}$" title="Phone number must include country code (e.g., +1234567890)" />
       </div>
 
       <div class="input-group">
-        <input type="email" id="email" placeholder="Email Address" required />
+        <input type="email" id="email" placeholder="Email Address" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." />
       </div>
 
       <div class="input-group">
-        <input type="url" id="facebook" placeholder="Facebook URL" />
+        <input type="url" id="facebook" placeholder="Facebook URL" pattern="https?://(www\.)?facebook\.com/.*" title="Please enter a valid Facebook URL." />
       </div>
 
       <div class="input-group">
-        <input type="url" id="instagram" placeholder="Instagram URL" />
+        <input type="url" id="instagram" placeholder="Instagram URL" pattern="https?://(www\.)?instagram\.com/.*" title="Please enter a valid Instagram URL." />
       </div>
 
       <div class="input-group">
-        <input type="url" id="youtube" placeholder="YouTube URL" />
+        <input type="url" id="youtube" placeholder="YouTube URL" pattern="https?://(www\.)?youtube\.com/.*" title="Please enter a valid YouTube URL." />
       </div>
     </div>
 
@@ -175,6 +204,53 @@
       reader.readAsDataURL(event.target.files[0]);
     }
 
+    // Update country flag based on selected country code
+    document.getElementById('countryCode').addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      const flagUrl = selectedOption.getAttribute('data-flag');
+      const countryFlag = document.getElementById('countryFlag');
+      countryFlag.src = flagUrl;
+      countryFlag.style.display = 'inline';
+    });
+
+    // Resize and upload image
+    function resizeImage(file, callback) {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 300; // Set max width
+          const MAX_HEIGHT = 300; // Set max height
+          let width = img.width;
+          let height = img.height;
+
+          // Calculate new dimensions
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => {
+            callback(blob);
+          }, 'image/jpeg', 0.7); // Compress to JPEG with 70% quality
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+
     // Generate Card Function
     document.getElementById('generateCard').onclick = function () {
       // Get form values
@@ -183,7 +259,7 @@
         businessName: document.getElementById('businessName').value,
         businessInfo: document.getElementById('businessInfo').value,
         address: document.getElementById('address').value,
-        phone: document.getElementById('phone').value,
+        phone: document.getElementById('countryCode').value + document.getElementById('phone').value,
         email: document.getElementById('email').value,
         facebook: document.getElementById('facebook').value,
         instagram: document.getElementById('instagram').value,
@@ -216,12 +292,14 @@
 
       // Upload image to Imgur and get the URL
       if (formData.profileImage) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const base64Image = e.target.result.split(',')[1]; // Get base64 string
-          uploadImageToImgur(base64Image, formData, params);
-        };
-        reader.readAsDataURL(formData.profileImage);
+        resizeImage(formData.profileImage, (resizedImage) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const base64Image = e.target.result.split(',')[1]; // Get base64 string
+            uploadImageToImgur(base64Image, formData);
+          };
+          reader.readAsDataURL(resizedImage);
+        });
       } else {
         redirectToCard(formData);
       }
