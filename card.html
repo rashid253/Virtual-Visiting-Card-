@@ -4,18 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Business Card</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    rel="stylesheet"
+  />
   <style>
     :root {
-      --primary-color: #1E1E1E;       /* Dark Text */
+      --primary-color: #1e1e1e;       /* Dark Text */
       --secondary-color: #009688;     /* Teal */
-      --accent-color: #FF5722;        /* Deep Orange */
-      --neutral-light: rgba(245, 245, 245, 0.9); /* Almost White */
+      --accent-color: #ff5722;        /* Deep Orange */
+      --neutral-light: rgba(245,245,245,0.9); /* Almost White */
       --neutral-dark: #333333;        /* Dark Gray */
-      --card-background: #FFFFFF;     /* White */
-      --body-bg: linear-gradient(135deg, #CFD8DC, #ECEFF1);
+      --card-background: #ffffff;     /* White */
+      --body-bg: linear-gradient(135deg, #cfd8dc, #eceff1);
     }
-    
+
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       margin: 0;
@@ -27,29 +30,42 @@
       align-items: center;
       min-height: 100vh;
     }
-    
+
     .card-container {
       position: relative;
       width: 100%;
       max-width: 400px;
       background: var(--card-background);
-      border-radius: 20px; /* increased for a rounded look */
+      border-radius: 20px;
       border: 2px solid transparent;
-      /* initial gradient border */
-      border-image: linear-gradient(45deg, var(--secondary-color), var(--accent-color), #3F51B5) 1;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      border-image: linear-gradient(45deg, var(--secondary-color), var(--accent-color), #3f51b5) 1;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
       padding: 1.5rem;
       margin: 1rem;
       transform: perspective(1000px) rotateY(0deg);
-      transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: transform 0.6s cubic-bezier(0.25,0.8,0.25,1);
       transform-style: preserve-3d;
     }
-    
     .card-container:hover {
       transform: perspective(1000px) rotateY(5deg) rotateX(2deg) scale(1.02);
     }
-    
-    /* Top Share Icon (top-right) */
+
+    /* Keyframe animations for animate options */
+    @keyframes rotateAnim {
+      0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1); }
+      50% { transform: perspective(1000px) rotateY(15deg) rotateX(15deg) scale(1.05); }
+      100% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1); }
+    }
+    @keyframes bounceAnim {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.05); }
+    }
+
+    /* This class will be added dynamically based on selection */
+    .animate-rotate { animation: rotateAnim 1s ease-in-out; }
+    .animate-bounce { animation: bounceAnim 1s ease-in-out; }
+
+    /* Top-right: Share Icon */
     .top-share-icon {
       position: absolute;
       top: 10px;
@@ -63,31 +79,35 @@
       color: var(--secondary-color);
       transform: translateY(-3px);
     }
-    
-    /* Custom Theme Dropdown (top-left) */
-    #themeDropdownContainer {
+
+    /* Top-left: Controls Container (Theme & Animation Dropdowns, and an Apply button) */
+    #controlsContainer {
       position: absolute;
       top: 10px;
       left: 10px;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
     }
-    #themeButton {
-      padding: 0.3rem 0.5rem;
-      font-size: 0.8rem;
+    /* Dropdown Buttons (for both Theme and Animation) */
+    .dropdown-btn {
+      padding: 0.2rem 0.4rem;
+      font-size: 0.7rem;
       border: 1px solid #ccc;
       border-radius: 4px;
       background: #fff;
       cursor: pointer;
       transition: background 0.3s ease, color 0.3s ease;
     }
-    #themeButton:hover {
+    .dropdown-btn:hover {
       background: var(--secondary-color);
       color: #fff;
     }
-    #themeButton i {
-      margin-left: 0.3rem;
-    }
-    #themeOptions {
+    .dropdown-btn i { margin-left: 0.2rem; }
+
+    /* Dropdown list styling */
+    .dropdown-options {
       list-style: none;
       margin: 0;
       padding: 0;
@@ -101,17 +121,31 @@
       width: 100%;
       z-index: 10;
     }
-    #themeOptions li {
-      padding: 0.3rem;
-      font-size: 0.8rem;
+    .dropdown-options li {
+      padding: 0.2rem;
+      font-size: 0.7rem;
       cursor: pointer;
       transition: background 0.3s ease, color 0.3s ease;
     }
-    #themeOptions li:hover {
+    .dropdown-options li:hover {
       background: var(--secondary-color);
       color: #fff;
     }
-    
+    /* Apply Animation Button (small) */
+    #applyAnimButton {
+      padding: 0.2rem 0.4rem;
+      font-size: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    #applyAnimButton:hover {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
     .mini-icons {
       display: flex;
       justify-content: center;
@@ -130,7 +164,7 @@
       color: var(--secondary-color);
       transform: translateY(-3px);
     }
-    
+
     .profile-section {
       position: relative;
       display: flex;
@@ -183,10 +217,8 @@
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-    .connect-btn:hover {
-      transform: translateY(-3px);
-    }
-    
+    .connect-btn:hover { transform: translateY(-3px); }
+
     .business-info-section {
       padding: 1rem;
       margin: 0.5rem;
@@ -195,7 +227,7 @@
       height: 150px;
       overflow: hidden;
       position: relative;
-      background: #E0F7FA;
+      background: #e0f7fa;
       border-bottom: 2px solid var(--secondary-color);
       font-family: 'Georgia', serif;
       border-radius: 8px;
@@ -213,7 +245,7 @@
       padding: 0.5rem;
       overflow-y: auto;
     }
-    
+
     .action-buttons {
       display: grid;
       gap: 0.5rem;
@@ -228,10 +260,8 @@
       position: relative;
       overflow: hidden;
     }
-    .action-btn:active {
-      transform: scale(0.98);
-    }
-    
+    .action-btn:active { transform: scale(0.98); }
+
     .social-links {
       display: flex;
       justify-content: center;
@@ -245,14 +275,12 @@
       transition: transform 0.3s ease;
       position: relative;
     }
-    .social-icon:hover {
-      transform: translateY(-3px);
-    }
-    
-    /* Ripple Effect for Buttons & Icons */
+    .social-icon:hover { transform: translateY(-3px); }
+
+    /* Ripple Effect for interactive elements */
     .ripple {
       position: absolute;
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255,255,255,0.5);
       border-radius: 50%;
       transform: scale(0);
       animation: rippleEffect 0.6s linear;
@@ -261,12 +289,9 @@
       height: 20px;
     }
     @keyframes rippleEffect {
-      to {
-        transform: scale(10);
-        opacity: 0;
-      }
+      to { transform: scale(10); opacity: 0; }
     }
-    
+
     @media (max-width: 480px) {
       .card-container {
         max-width: 90%;
@@ -281,26 +306,36 @@
         width: 100%;
         padding: 0;
       }
-      .profile-info {
-        margin-top: 1rem;
-      }
-      .contact-info {
-        white-space: normal;
-      }
+      .profile-info { margin-top: 1rem; }
+      .contact-info { white-space: normal; }
     }
   </style>
 </head>
 <body>
   <div class="card-container" id="cardContainer">
-    <!-- Top-left: Theme Dropdown -->
-    <div id="themeDropdownContainer">
-      <button id="themeButton">Theme <i class="fas fa-caret-down"></i></button>
-      <ul id="themeOptions">
+    <!-- Top-left: Controls Container (Theme & Animation dropdowns, and an Apply button) -->
+    <div id="controlsContainer">
+      <!-- Theme Dropdown -->
+      <button id="themeButton" class="dropdown-btn">
+        Theme <i class="fas fa-caret-down"></i>
+      </button>
+      <ul id="themeOptions" class="dropdown-options">
         <li data-theme="default">Default</li>
         <li data-theme="blue">Blue</li>
         <li data-theme="red">Red</li>
         <li data-theme="green">Green</li>
       </ul>
+      <!-- Animation Dropdown -->
+      <button id="animateButton" class="dropdown-btn">
+        Animation <i class="fas fa-caret-down"></i>
+      </button>
+      <ul id="animateOptions" class="dropdown-options">
+        <li data-anim="none">None</li>
+        <li data-anim="rotate">Rotate</li>
+        <li data-anim="bounce">Bounce</li>
+      </ul>
+      <!-- Apply Animation Button -->
+      <button id="applyAnimButton">Apply</button>
     </div>
     <!-- Top-right: Share Icon -->
     <div class="top-share-icon" id="topShareIcon" title="Share">
@@ -337,7 +372,7 @@
     <!-- Action Buttons Section -->
     <div class="action-buttons">
       <button class="action-btn" id="callButton" style="background: var(--secondary-color); color: white;">Call</button>
-      <button class="action-btn" id="whatsappButton" style="background: #25D366; color: white;">WhatsApp</button>
+      <button class="action-btn" id="whatsappButton" style="background: #25d366; color: white;">WhatsApp</button>
       <button class="action-btn" id="emailButton" style="background: var(--accent-color); color: white;">Email</button>
     </div>
     <!-- Social Links Section -->
@@ -347,7 +382,7 @@
       <a id="youtubeButton" class="social-icon"><i class="fab fa-youtube"></i></a>
     </div>
   </div>
-  
+
   <script>
     // Set profile image and card info from URL parameters
     const params = new URLSearchParams(window.location.search);
@@ -359,22 +394,20 @@
     document.getElementById('cardAddress').textContent = params.get('address');
     document.getElementById('cardPhone').textContent = params.get('phone');
     document.getElementById('cardEmail').textContent = params.get('email');
-    
+
     // Populate and cycle through business info paragraphs
     const businessInfoParagraphs = params.get('businessInfo').split('\n').filter(p => p.trim() !== '');
     const businessInfoContainer = document.getElementById('businessInfoContent');
     businessInfoContainer.innerHTML = businessInfoParagraphs.map(p => `<div class="business-info-content"><p>${p}</p></div>`).join('');
     const paragraphs = businessInfoContainer.querySelectorAll('.business-info-content');
     let currentIndex = 0;
-    paragraphs.forEach((div, index) => {
-      div.style.display = index === 0 ? 'block' : 'none';
-    });
+    paragraphs.forEach((div, index) => { div.style.display = index === 0 ? 'block' : 'none'; });
     setInterval(() => {
       paragraphs[currentIndex].style.display = 'none';
       currentIndex = (currentIndex + 1) % paragraphs.length;
       paragraphs[currentIndex].style.display = 'block';
     }, 8000);
-    
+
     // Setup social media links
     const socialLinks = {
       facebook: document.getElementById('facebookButton'),
@@ -383,14 +416,10 @@
     };
     Object.entries(socialLinks).forEach(([platform, element]) => {
       const url = params.get(platform);
-      if (url) {
-        element.href = url;
-        element.style.visibility = 'visible';
-      } else {
-        element.style.visibility = 'hidden';
-      }
+      if (url) { element.href = url; element.style.visibility = 'visible'; }
+      else { element.style.visibility = 'hidden'; }
     });
-    
+
     // Mini Icons Functionality
     document.getElementById('miniCallButton').onclick = () => window.location.href = `tel:${params.get('phone')}`;
     document.getElementById('miniEmailButton').onclick = () => window.location.href = `mailto:${params.get('email')}`;
@@ -399,7 +428,7 @@
       const address = encodeURIComponent(params.get('address'));
       window.open(`https://www.google.com/maps?q=${address}`, '_blank');
     };
-    
+
     // Connect Button (vCard) Functionality
     document.getElementById('connectButton').onclick = () => {
       const name = params.get('name');
@@ -423,12 +452,12 @@
       link.click();
       URL.revokeObjectURL(url);
     };
-    
+
     // Action Buttons Functionality
     document.getElementById('callButton').onclick = () => window.location.href = `tel:${params.get('phone')}`;
     document.getElementById('whatsappButton').onclick = () => window.location.href = `https://wa.me/${params.get('phone')}`;
     document.getElementById('emailButton').onclick = () => window.location.href = `mailto:${params.get('email')}`;
-    
+
     // Top Share Icon Functionality using Web Share API
     document.getElementById('topShareIcon').onclick = async () => {
       if (navigator.share) {
@@ -445,16 +474,16 @@
         alert('Sharing is not supported on this browser.');
       }
     };
-    
-    // Custom Theme Dropdown Logic
+
+    // Theme Dropdown Logic
     const themeButton = document.getElementById('themeButton');
     const themeOptions = document.getElementById('themeOptions');
     themeButton.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent event bubbling
+      e.stopPropagation();
       themeOptions.style.display = themeOptions.style.display === 'block' ? 'none' : 'block';
     });
     document.addEventListener('click', (e) => {
-      if (!document.getElementById('themeDropdownContainer').contains(e.target)) {
+      if (!document.getElementById('controlsContainer').contains(e.target)) {
         themeOptions.style.display = 'none';
       }
     });
@@ -468,7 +497,7 @@
           document.documentElement.style.setProperty('--card-background', '#FFFFFF');
           document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #CFD8DC, #ECEFF1)');
           card.style.borderImage = `linear-gradient(45deg, #009688, #FF5722, #3F51B5) 1`;
-          card.style.boxShadow = "0 8px 30px rgba(0, 0, 0, 0.2)";
+          card.style.boxShadow = "0 8px 30px rgba(0,0,0,0.2)";
         } else if (selectedTheme === 'blue') {
           document.documentElement.style.setProperty('--secondary-color', '#2196F3');
           document.documentElement.style.setProperty('--accent-color', '#E91E63');
@@ -494,9 +523,45 @@
         themeOptions.style.display = 'none';
       });
     });
-    
+
+    // Animation Dropdown Logic
+    const animateButton = document.getElementById('animateButton');
+    const animateOptions = document.getElementById('animateOptions');
+    animateButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      animateOptions.style.display = animateOptions.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('controlsContainer').contains(e.target)) {
+        animateOptions.style.display = 'none';
+      }
+    });
+    let selectedAnimation = "none";
+    animateOptions.querySelectorAll('li').forEach(option => {
+      option.addEventListener('click', () => {
+        selectedAnimation = option.getAttribute('data-anim');
+        animateOptions.style.display = 'none';
+      });
+    });
+
+    // Apply Animation Button – triggers the selected animation on the card
+    document.getElementById('applyAnimButton').addEventListener('click', () => {
+      const card = document.getElementById('cardContainer');
+      // Remove any previously applied animation classes
+      card.classList.remove('animate-rotate', 'animate-bounce');
+      if (selectedAnimation === "rotate") {
+        card.classList.add('animate-rotate');
+      } else if (selectedAnimation === "bounce") {
+        card.classList.add('animate-bounce');
+      }
+      // Remove animation class after 1s so it can be re-triggered later
+      setTimeout(() => {
+        card.classList.remove('animate-rotate', 'animate-bounce');
+      }, 1000);
+    });
+
     // Add ripple effect for interactive elements
-    document.querySelectorAll('.action-btn, .icon, .connect-btn, #themeButton').forEach(btn => {
+    document.querySelectorAll('.action-btn, .icon, .connect-btn, .dropdown-btn, #applyAnimButton').forEach(btn => {
       btn.addEventListener('click', function(e) {
         const ripple = document.createElement('span');
         ripple.className = 'ripple';
