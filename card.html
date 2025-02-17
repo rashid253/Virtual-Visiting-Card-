@@ -18,7 +18,7 @@
       --card-background: #ffffff;     /* White */
       --body-bg: linear-gradient(135deg, #cfd8dc, #eceff1);
     }
-
+    
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       margin: 0;
@@ -30,7 +30,7 @@
       align-items: center;
       min-height: 100vh;
     }
-
+    
     .card-container {
       position: relative;
       width: 100%;
@@ -49,7 +49,7 @@
     .card-container:hover {
       transform: perspective(1000px) rotateY(5deg) rotateX(2deg) scale(1.02);
     }
-
+    
     /* Keyframe animations for animate options */
     @keyframes rotateAnim {
       0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1); }
@@ -62,7 +62,7 @@
     }
     .animate-rotate { animation: rotateAnim 1s ease-in-out; }
     .animate-bounce { animation: bounceAnim 1s ease-in-out; }
-
+    
     /* Top-right: Share Icon */
     .top-share-icon {
       position: absolute;
@@ -77,8 +77,8 @@
       color: var(--secondary-color);
       transform: translateY(-3px);
     }
-
-    /* Top-left: Style Dropdown Container */
+    
+    /* Top-left: Style Controls Container */
     #styleControlsContainer {
       position: absolute;
       top: 10px;
@@ -100,8 +100,8 @@
       color: #fff;
     }
     #styleButton i { margin-left: 0.2rem; }
-
-    /* Dropdown content for Style Controls */
+    
+    /* Dropdown content for style controls */
     #styleDropdown {
       display: none;
       position: absolute;
@@ -114,7 +114,7 @@
       z-index: 10;
       font-size: 0.65rem;
     }
-    /* Section header */
+    /* Each section header inside the dropdown */
     .dropdown-section-label {
       padding: 0.2rem;
       background: #f0f0f0;
@@ -135,7 +135,7 @@
       background: var(--secondary-color);
       color: #fff;
     }
-    /* Apply Button inside dropdown */
+    /* Apply Button inside the dropdown */
     #applyStyleButton {
       width: 100%;
       padding: 0.25rem;
@@ -152,7 +152,7 @@
     #applyStyleButton:hover {
       background: #d43f1f;
     }
-
+    
     .mini-icons {
       display: flex;
       justify-content: center;
@@ -171,7 +171,7 @@
       color: var(--secondary-color);
       transform: translateY(-3px);
     }
-
+    
     .profile-section {
       position: relative;
       display: flex;
@@ -225,7 +225,7 @@
       transition: transform 0.3s ease;
     }
     .connect-btn:hover { transform: translateY(-3px); }
-
+    
     .business-info-section {
       padding: 1rem;
       margin: 0.5rem;
@@ -252,7 +252,7 @@
       padding: 0.5rem;
       overflow-y: auto;
     }
-
+    
     .action-buttons {
       display: grid;
       gap: 0.5rem;
@@ -268,7 +268,7 @@
       overflow: hidden;
     }
     .action-btn:active { transform: scale(0.98); }
-
+    
     .social-links {
       display: flex;
       justify-content: center;
@@ -283,7 +283,7 @@
       position: relative;
     }
     .social-icon:hover { transform: translateY(-3px); }
-
+    
     /* Ripple Effect */
     .ripple {
       position: absolute;
@@ -298,7 +298,7 @@
     @keyframes rippleEffect {
       to { transform: scale(10); opacity: 0; }
     }
-
+    
     @media (max-width: 480px) {
       .card-container { max-width: 90%; padding: 1rem; }
       .profile-section { flex-direction: column; align-items: center; text-align: center; }
@@ -310,12 +310,12 @@
 </head>
 <body>
   <div class="card-container" id="cardContainer">
-    <!-- Top-left: Style Controls (single dropdown for Theme & Animate) -->
+    <!-- Top-left: Style Controls (Single Dropdown for Theme & Animate) -->
     <div id="styleControlsContainer">
       <button id="styleButton" class="dropdown-btn">
         Style <i class="fas fa-caret-down"></i>
       </button>
-      <div id="styleDropdown" class="dropdown-options" style="position: absolute; top: 110%; left: 0;">
+      <div id="styleDropdown" class="dropdown-options">
         <!-- Theme Section -->
         <div class="dropdown-section">
           <div class="dropdown-section-label">Theme</div>
@@ -473,9 +473,8 @@
             text: 'Check out this business card',
             url: window.location.href
           });
-          // Once shared, hide the style controls so settings are locked
-          const styleContainer = document.getElementById('styleControlsContainer');
-          if (styleContainer) { styleContainer.style.display = 'none'; }
+          // Lock style controls after sharing
+          document.getElementById('styleControlsContainer').style.display = 'none';
         } catch (error) {
           console.error('Error sharing:', error);
         }
@@ -502,9 +501,9 @@
     themeOptions.forEach(option => {
       option.addEventListener('click', () => {
         selectedTheme = option.getAttribute('data-theme');
-        // Highlight selected option (optional)
+        // (Optional: Highlight the selected theme option)
         themeOptions.forEach(opt => opt.style.background = '');
-        option.style.background = var(--secondary-color);
+        option.style.background = "#ddd";
       });
     });
 
@@ -513,13 +512,13 @@
     animateOptions.forEach(option => {
       option.addEventListener('click', () => {
         selectedAnim = option.getAttribute('data-anim');
-        // Highlight selected option (optional)
+        // (Optional: Highlight the selected animation option)
         animateOptions.forEach(opt => opt.style.background = '');
-        option.style.background = var(--secondary-color);
+        option.style.background = "#ddd";
       });
     });
 
-    // Apply button – when clicked, apply both theme and animate settings and then lock the style controls
+    // Apply Button – when clicked, apply both theme and animate settings and lock style controls
     document.getElementById('applyStyleButton').addEventListener('click', () => {
       const card = document.querySelector('.card-container');
       // Apply theme settings
@@ -552,14 +551,14 @@
         card.style.borderImage = `linear-gradient(45deg, #4CAF50, #8BC34A, #388E3C) 1`;
         card.style.boxShadow = "0 8px 30px rgba(76,175,80,0.4)";
       }
-      // Apply animate effect if not "none"
+      // Apply animate effect if selected (if "none", no effect)
       card.classList.remove('animate-rotate', 'animate-bounce');
       if (selectedAnim === "rotate") {
         card.classList.add('animate-rotate');
       } else if (selectedAnim === "bounce") {
         card.classList.add('animate-bounce');
       }
-      // Lock settings: hide the style controls so further changes cannot be made
+      // Lock the style controls so further changes cannot be made
       document.getElementById('styleControlsContainer').style.display = 'none';
     });
 
