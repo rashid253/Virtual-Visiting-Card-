@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Business Card</title>
+  <!-- Font Awesome CDN -->
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     rel="stylesheet"
@@ -11,8 +12,8 @@
   <style>
     :root {
       --primary-color: #1e1e1e;       /* Dark Text */
-      --secondary-color: #009688;     /* Teal */
-      --accent-color: #ff5722;        /* Deep Orange */
+      --secondary-color: #009688;     /* Teal (Default) */
+      --accent-color: #ff5722;        /* Deep Orange (Default) */
       --neutral-light: rgba(245,245,245,0.9); /* Almost White */
       --neutral-dark: #333333;        /* Dark Gray */
       --card-background: #ffffff;     /* White */
@@ -78,14 +79,14 @@
       transform: translateY(-3px);
     }
     
-    /* Top-left: Style Controls Container */
+    /* Top-left: Combined Style Controls Container */
     #styleControlsContainer {
       position: absolute;
       top: 10px;
       left: 10px;
       z-index: 10;
     }
-    /* Style Button */
+    /* Style Button that toggles the dropdown */
     #styleButton {
       padding: 0.2rem 0.3rem;
       font-size: 0.65rem;
@@ -114,7 +115,7 @@
       z-index: 10;
       font-size: 0.65rem;
     }
-    /* Each section header inside the dropdown */
+    /* Section header inside dropdown */
     .dropdown-section-label {
       padding: 0.2rem;
       background: #f0f0f0;
@@ -135,7 +136,7 @@
       background: var(--secondary-color);
       color: #fff;
     }
-    /* Apply Button inside the dropdown */
+    /* Apply Button inside dropdown */
     #applyStyleButton {
       width: 100%;
       padding: 0.25rem;
@@ -315,7 +316,7 @@
       <button id="styleButton" class="dropdown-btn">
         Style <i class="fas fa-caret-down"></i>
       </button>
-      <div id="styleDropdown" class="dropdown-options">
+      <div id="styleDropdown">
         <!-- Theme Section -->
         <div class="dropdown-section">
           <div class="dropdown-section-label">Theme</div>
@@ -501,7 +502,7 @@
     themeOptions.forEach(option => {
       option.addEventListener('click', () => {
         selectedTheme = option.getAttribute('data-theme');
-        // (Optional: Highlight the selected theme option)
+        // (Optional) Highlight selected theme option
         themeOptions.forEach(opt => opt.style.background = '');
         option.style.background = "#ddd";
       });
@@ -512,16 +513,16 @@
     animateOptions.forEach(option => {
       option.addEventListener('click', () => {
         selectedAnim = option.getAttribute('data-anim');
-        // (Optional: Highlight the selected animation option)
+        // (Optional) Highlight selected animate option
         animateOptions.forEach(opt => opt.style.background = '');
         option.style.background = "#ddd";
       });
     });
 
-    // Apply Button – when clicked, apply both theme and animate settings and lock style controls
+    // Apply Button – when clicked, apply both theme and animate settings and then lock style controls.
     document.getElementById('applyStyleButton').addEventListener('click', () => {
       const card = document.querySelector('.card-container');
-      // Apply theme settings
+      let cssVars = "";
       if (selectedTheme === 'default') {
         document.documentElement.style.setProperty('--secondary-color', '#009688');
         document.documentElement.style.setProperty('--accent-color', '#FF5722');
@@ -529,6 +530,12 @@
         document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #CFD8DC, #ECEFF1)');
         card.style.borderImage = `linear-gradient(45deg, #009688, #FF5722, #3F51B5) 1`;
         card.style.boxShadow = "0 8px 30px rgba(0,0,0,0.2)";
+        cssVars = `
+          --secondary-color: #009688;
+          --accent-color: #FF5722;
+          --card-background: #FFFFFF;
+          --body-bg: linear-gradient(135deg, #CFD8DC, #ECEFF1);
+        `;
       } else if (selectedTheme === 'blue') {
         document.documentElement.style.setProperty('--secondary-color', '#2196F3');
         document.documentElement.style.setProperty('--accent-color', '#E91E63');
@@ -536,6 +543,12 @@
         document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #BBDEFB, #E3F2FD)');
         card.style.borderImage = `linear-gradient(45deg, #2196F3, #E91E63, #3F51B5) 1`;
         card.style.boxShadow = "0 8px 30px rgba(33,150,243,0.4)";
+        cssVars = `
+          --secondary-color: #2196F3;
+          --accent-color: #E91E63;
+          --card-background: #F0F8FF;
+          --body-bg: linear-gradient(135deg, #BBDEFB, #E3F2FD);
+        `;
       } else if (selectedTheme === 'red') {
         document.documentElement.style.setProperty('--secondary-color', '#F44336');
         document.documentElement.style.setProperty('--accent-color', '#9C27B0');
@@ -543,6 +556,12 @@
         document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #FFCDD2, #FFEBEE)');
         card.style.borderImage = `linear-gradient(45deg, #F44336, #9C27B0, #FF9800) 1`;
         card.style.boxShadow = "0 8px 30px rgba(244,67,54,0.4)";
+        cssVars = `
+          --secondary-color: #F44336;
+          --accent-color: #9C27B0;
+          --card-background: #FFF0F0;
+          --body-bg: linear-gradient(135deg, #FFCDD2, #FFEBEE);
+        `;
       } else if (selectedTheme === 'green') {
         document.documentElement.style.setProperty('--secondary-color', '#4CAF50');
         document.documentElement.style.setProperty('--accent-color', '#8BC34A');
@@ -550,15 +569,25 @@
         document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #C8E6C9, #E8F5E9)');
         card.style.borderImage = `linear-gradient(45deg, #4CAF50, #8BC34A, #388E3C) 1`;
         card.style.boxShadow = "0 8px 30px rgba(76,175,80,0.4)";
+        cssVars = `
+          --secondary-color: #4CAF50;
+          --accent-color: #8BC34A;
+          --card-background: #E8F5E9;
+          --body-bg: linear-gradient(135deg, #C8E6C9, #E8F5E9);
+        `;
       }
-      // Apply animate effect if selected (if "none", no effect)
+      // Apply animate effect if not "none"
       card.classList.remove('animate-rotate', 'animate-bounce');
       if (selectedAnim === "rotate") {
         card.classList.add('animate-rotate');
       } else if (selectedAnim === "bounce") {
         card.classList.add('animate-bounce');
       }
-      // Lock the style controls so further changes cannot be made
+      // Create an inline style block to "lock in" these settings
+      const styleBlock = document.createElement('style');
+      styleBlock.innerHTML = `:root { ${cssVars} }`;
+      document.head.appendChild(styleBlock);
+      // Hide the style controls so further changes cannot be made
       document.getElementById('styleControlsContainer').style.display = 'none';
     });
 
