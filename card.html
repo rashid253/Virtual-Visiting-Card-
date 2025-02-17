@@ -25,7 +25,7 @@
       margin: 0;
       padding: 1rem;
       background: var(--body-bg);
-      transition: background 0.5s ease;
+      /* Transitions removed */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -44,25 +44,12 @@
       padding: 1.5rem;
       margin: 1rem;
       transform: perspective(1000px) rotateY(0deg);
-      transition: transform 0.6s cubic-bezier(0.25,0.8,0.25,1);
+      /* Transition removed */
       transform-style: preserve-3d;
     }
     .card-container:hover {
       transform: perspective(1000px) rotateY(5deg) rotateX(2deg) scale(1.02);
     }
-
-    /* Keyframe animations */
-    @keyframes rotateAnim {
-      0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1); }
-      50% { transform: perspective(1000px) rotateY(15deg) rotateX(15deg) scale(1.05); }
-      100% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1); }
-    }
-    @keyframes bounceAnim {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-15px) scale(1.05); }
-    }
-    .animate-rotate { animation: rotateAnim 1s ease-in-out; }
-    .animate-bounce { animation: bounceAnim 1s ease-in-out; }
 
     /* Share Icon (top-right) */
     .top-share-icon {
@@ -72,7 +59,6 @@
       font-size: 1.5rem;
       color: var(--neutral-dark);
       cursor: pointer;
-      transition: color 0.3s, transform 0.3s;
     }
     .top-share-icon:hover {
       color: var(--secondary-color);
@@ -93,7 +79,6 @@
       border-radius: 4px;
       background: #fff;
       cursor: pointer;
-      transition: background 0.3s, color 0.3s;
     }
     #styleButton:hover {
       background: var(--secondary-color);
@@ -128,7 +113,6 @@
     .dropdown-options li {
       padding: 0.2rem;
       cursor: pointer;
-      transition: background 0.3s, color 0.3s;
     }
     .dropdown-options li:hover {
       background: var(--secondary-color);
@@ -145,7 +129,6 @@
       cursor: pointer;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
-      transition: background 0.3s;
     }
     #applyStyleButton:hover {
       background: #d43f1f;
@@ -163,7 +146,6 @@
       font-size: 1.5rem;
       color: var(--neutral-dark);
       cursor: pointer;
-      transition: color 0.3s, transform 0.3s;
       position: relative;
       border-radius: 50%;
       padding: 0.5rem;
@@ -225,7 +207,6 @@
       font-size: 1.2rem;
       color: var(--secondary-color);
       cursor: pointer;
-      transition: transform 0.3s;
     }
     .connect-btn:hover {
       transform: translateY(-3px);
@@ -273,13 +254,11 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
       position: relative;
       overflow: hidden;
       color: #fff;
       box-sizing: border-box;
     }
-    /* Changed active state to use brightness instead of scale */
     .action-btn:active {
       filter: brightness(90%);
     }
@@ -295,7 +274,6 @@
       font-size: 1.5rem;
       color: var(--neutral-dark);
       visibility: hidden;
-      transition: transform 0.3s;
       position: relative;
       border-radius: 50%;
       text-decoration: none;
@@ -305,25 +283,6 @@
     }
     .social-icon:hover {
       transform: translateY(-3px);
-    }
-
-    /* Ripple Effect for Buttons & Icons */
-    .ripple {
-      position: absolute;
-      background: rgba(255,255,255,0.5);
-      border-radius: 50%;
-      transform: scale(0);
-      animation: rippleEffect 0.6s linear;
-      pointer-events: none;
-      width: 20px;
-      height: 20px;
-    }
-    /* Reduced final scale from 10 to 5 to avoid scattering */
-    @keyframes rippleEffect {
-      to {
-        transform: scale(5);
-        opacity: 0;
-      }
     }
 
     @media (max-width: 480px) {
@@ -367,15 +326,7 @@
             <li data-theme="green">Green</li>
           </ul>
         </div>
-        <!-- Animate Section -->
-        <div class="dropdown-section">
-          <div class="dropdown-section-label">Animate</div>
-          <ul class="dropdown-options">
-            <li data-anim="none">None</li>
-            <li data-anim="rotate">Rotate</li>
-            <li data-anim="bounce">Bounce</li>
-          </ul>
-        </div>
+        <!-- Animate section removed -->
         <!-- Apply Button -->
         <button id="applyStyleButton">Apply</button>
       </div>
@@ -448,7 +399,6 @@
 
   <script>
     let selectedTheme = "default";
-    let selectedAnim = "none";
 
     const params = new URLSearchParams(window.location.search);
 
@@ -599,7 +549,7 @@
       }
     });
 
-    // Theme & Animate selections
+    // Theme selection
     const themeOpts = styleDropdown.querySelectorAll('[data-theme]');
     themeOpts.forEach(opt => {
       opt.addEventListener('click', () => {
@@ -608,17 +558,9 @@
         opt.style.background = "#ddd";
       });
     });
-    const animateOpts = styleDropdown.querySelectorAll('[data-anim]');
-    animateOpts.forEach(opt => {
-      opt.addEventListener('click', () => {
-        selectedAnim = opt.getAttribute('data-anim');
-        animateOpts.forEach(o => o.style.background = '');
-        opt.style.background = "#ddd";
-      });
-    });
 
-    // 9) Apply Style
-    function applyThemeAndAnim() {
+    // 9) Apply Theme
+    function applyTheme() {
       const card = document.querySelector('.card-container');
       // Apply theme
       if (selectedTheme === 'default') {
@@ -654,52 +596,24 @@
         card.style.boxShadow  = "0 8px 30px rgba(76,175,80,0.4)";
       }
 
-      // Transient animation
-      card.classList.remove('animate-rotate', 'animate-bounce');
-      if (selectedAnim === "rotate") {
-        card.classList.add('animate-rotate');
-      } else if (selectedAnim === "bounce") {
-        card.classList.add('animate-bounce');
-      }
-      card.addEventListener('animationend', function endHandler() {
-        card.classList.remove('animate-rotate', 'animate-bounce');
-        card.removeEventListener('animationend', endHandler);
-      });
-
       // Update URL so theme is locked
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.set('theme', selectedTheme);
-      newUrl.searchParams.set('animate', selectedAnim);
       history.replaceState(null, "", newUrl.toString());
 
       // Hide style controls
       document.getElementById('styleControlsContainer').style.display = 'none';
     }
 
-    document.getElementById('applyStyleButton').addEventListener('click', applyThemeAndAnim);
+    document.getElementById('applyStyleButton').addEventListener('click', applyTheme);
 
-    // 10) On page load, check if there's a locked theme or animate
+    // 10) On page load, check if there's a locked theme
     window.addEventListener('DOMContentLoaded', () => {
       const lockedTheme = params.get('theme');
-      const lockedAnim  = params.get('animate');
       if (lockedTheme) selectedTheme = lockedTheme;
-      if (lockedAnim)  selectedAnim  = lockedAnim;
-      if (lockedTheme || lockedAnim) {
-        applyThemeAndAnim();
+      if (lockedTheme) {
+        applyTheme();
       }
-    });
-
-    // 11) Ripple effect for clickable elements
-    document.querySelectorAll('.action-btn, .icon, .connect-btn, .dropdown-btn').forEach(elem => {
-      elem.addEventListener('click', (e) => {
-        const ripple = document.createElement('span');
-        ripple.className = 'ripple';
-        elem.appendChild(ripple);
-        const rect = elem.getBoundingClientRect();
-        ripple.style.left = (e.clientX - rect.left) + 'px';
-        ripple.style.top  = (e.clientY - rect.top) + 'px';
-        setTimeout(() => ripple.remove(), 600);
-      });
     });
   </script>
 </body>
