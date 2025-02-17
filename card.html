@@ -10,47 +10,382 @@
     rel="stylesheet"
   />
   <style>
-    /* (Keep all original CSS styles unchanged) */
-    /* ... (All previous CSS content remains exactly the same) ... */
+    :root {
+      --primary-color: #1e1e1e;       /* Dark Text */
+      --secondary-color: #009688;     /* Teal (Default) */
+      --accent-color: #ff5722;        /* Deep Orange (Default) */
+      --neutral-light: rgba(245,245,245,0.9);
+      --neutral-dark: #333333;
+      --card-background: #ffffff;
+      --body-bg: linear-gradient(135deg, #cfd8dc, #eceff1);
+    }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: var(--body-bg);
+      transition: background 0.5s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .card-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      background: var(--card-background);
+      border-radius: 20px;
+      border: 2px solid transparent;
+      border-image: linear-gradient(45deg, var(--secondary-color), var(--accent-color), #3f51b5) 1;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      padding: 1.5rem;
+      margin: 1rem;
+      transform: perspective(1000px) rotateY(0deg);
+      transition: transform 0.6s cubic-bezier(0.25,0.8,0.25,1);
+      transform-style: preserve-3d;
+    }
+    .card-container:hover {
+      transform: perspective(1000px) rotateY(5deg) rotateX(2deg) scale(1.02);
+    }
+    
+    /* Keyframe animations for animate options */
+    @keyframes rotateAnim {
+      0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1); }
+      50% { transform: perspective(1000px) rotateY(15deg) rotateX(15deg) scale(1.05); }
+      100% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1); }
+    }
+    @keyframes bounceAnim {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.05); }
+    }
+    .animate-rotate { animation: rotateAnim 1s ease-in-out; }
+    .animate-bounce { animation: bounceAnim 1s ease-in-out; }
+    
+    /* Top-right: Share Icon */
+    .top-share-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      color: var(--neutral-dark);
+      cursor: pointer;
+      transition: color 0.3s, transform 0.3s;
+    }
+    .top-share-icon:hover {
+      color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+    
+    /* Top-left: Combined Style Controls */
+    #styleControlsContainer {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+    }
+    /* Style Button */
+    #styleButton {
+      padding: 0.2rem 0.3rem;
+      font-size: 0.65rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+    #styleButton:hover {
+      background: var(--secondary-color);
+      color: #fff;
+    }
+    #styleButton i { margin-left: 0.2rem; }
+    
+    /* Dropdown content for style controls */
+    #styleDropdown {
+      display: none;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 150px;
+      z-index: 10;
+      font-size: 0.65rem;
+    }
+    .dropdown-section-label {
+      padding: 0.2rem;
+      background: #f0f0f0;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+    }
+    .dropdown-options {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .dropdown-options li {
+      padding: 0.2rem;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+    .dropdown-options li:hover {
+      background: var(--secondary-color);
+      color: #fff;
+    }
+    /* Apply Button inside dropdown */
+    #applyStyleButton {
+      width: 100%;
+      padding: 0.25rem;
+      font-size: 0.65rem;
+      border: none;
+      border-top: 1px solid #ccc;
+      background: var(--accent-color);
+      color: #fff;
+      cursor: pointer;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+      transition: background 0.3s;
+    }
+    #applyStyleButton:hover {
+      background: #d43f1f;
+    }
+    
+    /* Mini Icons Section */
+    .mini-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 2px solid var(--secondary-color);
+    }
+    .mini-icons .icon {
+      font-size: 1.5rem;
+      color: var(--neutral-dark);
+      cursor: pointer;
+      transition: color 0.3s, transform 0.3s;
+      position: relative;
+    }
+    .mini-icons .icon:hover {
+      color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+    
+    .profile-section {
+      position: relative;
+      display: flex;
+      padding: 1rem;
+      margin: 0.5rem;
+      border-bottom: 2px solid var(--secondary-color);
+    }
+    .profile-image-container {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-right: 1rem;
+    }
+    .profile-image {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 2px solid var(--neutral-light);
+      object-fit: cover;
+    }
+    .profile-name {
+      color: var(--primary-color);
+      margin: 0.5rem 0 0;
+      font-size: 1.1rem;
+      text-align: center;
+      word-break: keep-all;
+    }
+    .profile-info {
+      width: 60%;
+      padding-left: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .contact-info {
+      color: var(--neutral-dark);
+      margin: 0.3rem 0;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+    /* Connect Button */
+    .connect-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 1.2rem;
+      color: var(--secondary-color);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .connect-btn:hover { transform: translateY(-3px); }
+    
+    .business-info-section {
+      padding: 1rem;
+      margin: 0.5rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      height: 150px;
+      overflow: hidden;
+      position: relative;
+      background: #e0f7fa;
+      border-bottom: 2px solid var(--secondary-color);
+      font-family: 'Georgia', serif;
+      border-radius: 8px;
+    }
+    .business-info-content {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      display: none;
+      text-align: center;
+      font-weight: bold;
+      color: var(--neutral-dark);
+      padding: 0.5rem;
+      overflow-y: auto;
+    }
+    
+    .action-buttons {
+      display: grid;
+      gap: 0.5rem;
+      padding: 0.8rem;
+    }
+    .action-btn {
+      padding: 0.6rem;
+      border: none;
+      border-radius: 10px;  /* Increased from 5px for smoother edges */
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .action-btn:active { transform: scale(0.98); }
+    
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .social-icon {
+      font-size: 1.5rem;
+      color: var(--neutral-dark);
+      visibility: hidden;
+      transition: transform 0.3s;
+      position: relative;
+      border-radius: 50%;
+    }
+    .social-icon:hover { transform: translateY(-3px); }
+    
+    /* Ripple Effect */
+    .ripple {
+      position: absolute;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: rippleEffect 0.6s linear;
+      pointer-events: none;
+      width: 20px;
+      height: 20px;
+    }
+    @keyframes rippleEffect {
+      to { transform: scale(10); opacity: 0; }
+    }
+    
+    @media (max-width: 480px) {
+      .card-container { max-width: 90%; padding: 1rem; }
+      .profile-section { flex-direction: column; align-items: center; text-align: center; }
+      .profile-image-container, .profile-info { width: 100%; padding: 0; }
+      .profile-info { margin-top: 1rem; }
+      .contact-info { white-space: normal; }
+    }
   </style>
 </head>
 <body>
-  <!-- (Keep all HTML structure unchanged) -->
-  <!-- ... (All previous HTML content remains exactly the same) ... -->
-
-  <!-- Example HTML elements with IDs used in the script -->
-  <img id="cardProfileImage" alt="Profile Image" />
-  <h1 id="cardName"></h1>
-  <h2 id="cardBusinessName"></h2>
-  <p id="cardAddress"></p>
-  <p id="cardPhone"></p>
-  <p id="cardEmail"></p>
-  <div id="businessInfoContent"></div>
-
-  <!-- Social Media Icons -->
-  <a id="facebookButton" class="social-icon" target="_blank">
-    <i class="fab fa-facebook"></i>
-  </a>
-  <a id="instagramButton" class="social-icon" target="_blank">
-    <i class="fab fa-instagram"></i>
-  </a>
-  <a id="youtubeButton" class="social-icon" target="_blank">
-    <i class="fab fa-youtube"></i>
-  </a>
-
-  <!-- Mini Icons -->
-  <button id="miniCallButton">Call</button>
-  <button id="miniEmailButton">Email</button>
-  <button id="miniWhatsappButton">WhatsApp</button>
-  <button id="miniMapButton">Map</button>
-
-  <!-- Connect Button -->
-  <button id="connectButton">Connect</button>
-
-  <!-- Action Buttons -->
-  <button id="callButton">Call</button>
-  <button id="whatsappButton">WhatsApp</button>
-  <button id="emailButton">Email</button>
+  <div class="card-container" id="cardContainer">
+    <!-- Top-left: Style Controls (Combined dropdown for Theme & Animate) -->
+    <div id="styleControlsContainer">
+      <button id="styleButton" class="dropdown-btn">
+        Style <i class="fas fa-caret-down"></i>
+      </button>
+      <div id="styleDropdown">
+        <!-- Theme Section -->
+        <div class="dropdown-section">
+          <div class="dropdown-section-label">Theme</div>
+          <ul class="dropdown-options">
+            <li data-theme="default">Default</li>
+            <li data-theme="blue">Blue</li>
+            <li data-theme="red">Red</li>
+            <li data-theme="green">Green</li>
+          </ul>
+        </div>
+        <!-- Animate Section -->
+        <div class="dropdown-section">
+          <div class="dropdown-section-label">Animate</div>
+          <ul class="dropdown-options">
+            <li data-anim="none">None</li>
+            <li data-anim="rotate">Rotate</li>
+            <li data-anim="bounce">Bounce</li>
+          </ul>
+        </div>
+        <!-- Apply Button -->
+        <button id="applyStyleButton">Apply</button>
+      </div>
+    </div>
+    <!-- Top-right: Share Icon -->
+    <div class="top-share-icon" id="topShareIcon" title="Share">
+      <i class="fas fa-share-alt"></i>
+    </div>
+    <!-- Mini Icons Section -->
+    <div class="mini-icons">
+      <i class="fas fa-phone icon" id="miniCallButton" title="Call"></i>
+      <i class="fas fa-envelope icon" id="miniEmailButton" title="Email"></i>
+      <i class="fab fa-whatsapp icon" id="miniWhatsappButton" title="WhatsApp"></i>
+      <i class="fas fa-map-marker-alt icon" id="miniMapButton" title="Open in Google Maps"></i>
+    </div>
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-image-container">
+        <img id="cardProfileImage" class="profile-image" alt="Profile" />
+        <h3 class="profile-name" id="cardName"></h3>
+      </div>
+      <div class="profile-info">
+        <p class="contact-info" id="cardBusinessName"></p>
+        <p class="contact-info" id="cardAddress"></p>
+        <p class="contact-info" id="cardPhone"></p>
+        <p class="contact-info" id="cardEmail"></p>
+      </div>
+      <!-- Connect Button (icon only) -->
+      <div class="connect-btn" id="connectButton" title="Save Contact">
+        <i class="fas fa-save"></i>
+      </div>
+    </div>
+    <!-- Business Info Section -->
+    <div class="business-info-section">
+      <div id="businessInfoContent"></div>
+    </div>
+    <!-- Action Buttons Section -->
+    <div class="action-buttons">
+      <button class="action-btn" id="callButton" style="background: var(--secondary-color); color: white;">Call</button>
+      <button class="action-btn" id="whatsappButton" style="background: #25d366; color: white;">WhatsApp</button>
+      <button class="action-btn" id="emailButton" style="background: var(--accent-color); color: white;">Email</button>
+    </div>
+    <!-- Social Links Section -->
+    <div class="social-links">
+      <a id="facebookButton" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+      <a id="instagramButton" class="social-icon"><i class="fab fa-instagram"></i></a>
+      <a id="youtubeButton" class="social-icon"><i class="fab fa-youtube"></i></a>
+    </div>
+  </div>
 
   <script>
     // Variables to hold selected options
@@ -59,126 +394,224 @@
 
     // Get URL parameters and set card details
     const params = new URLSearchParams(window.location.search);
-
-    // Safe parameter handling with fallbacks
-    const getParam = (name) => params.get(name) || '';
-
-    // Set profile information
-    document.getElementById('cardProfileImage').src = getParam('profileImage') || 'https://via.placeholder.com/90';
-    document.getElementById('cardName').textContent = getParam('name');
-    document.getElementById('cardBusinessName').textContent = getParam('businessName');
-    document.getElementById('cardAddress').textContent = getParam('address');
-    document.getElementById('cardPhone').textContent = getParam('phone');
-    document.getElementById('cardEmail').textContent = getParam('email');
-
-    // Business Info Section Fix
-    const businessInfoContainer = document.getElementById('businessInfoContent');
-    const businessInfo = getParam('businessInfo');
-    if (businessInfo) {
-      const paragraphs = businessInfo.split('\n').filter(p => p.trim() !== '');
-      if (paragraphs.length > 0) {
-        businessInfoContainer.innerHTML = paragraphs.map(p => `
-          <div class="business-info-content">
-            <p>${p}</p>
-          </div>
-        `).join('');
-        
-        let currentIndex = 0;
-        const infoDivs = businessInfoContainer.querySelectorAll('.business-info-content');
-        infoDivs.forEach((div, index) => div.style.display = index === 0 ? 'block' : 'none');
-        
-        setInterval(() => {
-          infoDivs[currentIndex].style.display = 'none';
-          currentIndex = (currentIndex + 1) % infoDivs.length;
-          infoDivs[currentIndex].style.display = 'block';
-        }, 8000);
-      } else {
-        businessInfoContainer.innerHTML = `
-          <div class="business-info-content">
-            <p>No business information available</p>
-          </div>
-        `;
-      }
+    if (params.get('profileImage')) {
+      document.getElementById('cardProfileImage').src = params.get('profileImage');
     }
-
-    // Social Links Fix
-    const socialConfig = {
-      facebook: { id: 'facebookButton', param: 'facebook' },
-      instagram: { id: 'instagramButton', param: 'instagram' },
-      youtube: { id: 'youtubeButton', param: 'youtube' }
+    document.getElementById('cardName').textContent = params.get('name');
+    document.getElementById('cardBusinessName').textContent = params.get('businessName');
+    document.getElementById('cardAddress').textContent = params.get('address');
+    document.getElementById('cardPhone').textContent = params.get('phone');
+    document.getElementById('cardEmail').textContent = params.get('email');
+    
+    // Populate and cycle through business info paragraphs
+    const businessInfoParagraphs = params.get('businessInfo').split('\n').filter(p => p.trim() !== '');
+    const businessInfoContainer = document.getElementById('businessInfoContent');
+    businessInfoContainer.innerHTML = businessInfoParagraphs.map(p => `<div class="business-info-content"><p>${p}</p></div>`).join('');
+    const paragraphs = businessInfoContainer.querySelectorAll('.business-info-content');
+    let currentIndex = 0;
+    paragraphs.forEach((div, index) => { div.style.display = index === 0 ? 'block' : 'none'; });
+    setInterval(() => {
+      paragraphs[currentIndex].style.display = 'none';
+      currentIndex = (currentIndex + 1) % paragraphs.length;
+      paragraphs[currentIndex].style.display = 'block';
+    }, 8000);
+    
+    // Setup social media links
+    const socialLinks = {
+      facebook: document.getElementById('facebookButton'),
+      instagram: document.getElementById('instagramButton'),
+      youtube: document.getElementById('youtubeButton')
     };
-
-    Object.values(socialConfig).forEach(({ id, param }) => {
-      const url = getParam(param);
-      const element = document.getElementById(id);
-      if (element) {
-        if (url) {
-          element.href = url;
-          // Use display property so that the button retains its shape
-          element.style.display = 'inline-block';
-        } else {
-          element.style.display = 'none';
+    Object.entries(socialLinks).forEach(([platform, element]) => {
+      const url = params.get(platform);
+      if (url) { element.href = url; element.style.visibility = 'visible'; }
+      else { element.style.visibility = 'hidden'; }
+    });
+    
+    // Mini Icons Functionality
+    document.getElementById('miniCallButton').onclick = () => window.location.href = `tel:${params.get('phone')}`;
+    document.getElementById('miniEmailButton').onclick = () => window.location.href = `mailto:${params.get('email')}`;
+    document.getElementById('miniWhatsappButton').onclick = () => window.location.href = `https://wa.me/${params.get('phone')}`;
+    document.getElementById('miniMapButton').onclick = () => {
+      const address = encodeURIComponent(params.get('address'));
+      window.open(`https://www.google.com/maps?q=${address}`, '_blank');
+    };
+    
+    // Connect Button (vCard) Functionality
+    document.getElementById('connectButton').onclick = () => {
+      const name = params.get('name');
+      const phone = params.get('phone');
+      const email = params.get('email');
+      const address = params.get('address');
+      const vCardContent =
+        "BEGIN:VCARD\r\n" +
+        "VERSION:3.0\r\n" +
+        "N:;" + name + ";;;\r\n" +
+        "FN:" + name + "\r\n" +
+        "TEL;TYPE=CELL:" + phone + "\r\n" +
+        "EMAIL;TYPE=INTERNET:" + email + "\r\n" +
+        "ADR;TYPE=WORK:;;" + address + ";;;;\r\n" +
+        "END:VCARD\r\n";
+      const blob = new Blob([vCardContent], { type: 'text/vcard' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${name}.vcf`;
+      link.click();
+      URL.revokeObjectURL(url);
+    };
+    
+    // Action Buttons Functionality
+    document.getElementById('callButton').onclick = () => window.location.href = `tel:${params.get('phone')}`;
+    document.getElementById('whatsappButton').onclick = () => window.location.href = `https://wa.me/${params.get('phone')}`;
+    document.getElementById('emailButton').onclick = () => window.location.href = `mailto:${params.get('email')}`;
+    
+    // Top Share Icon Functionality using Web Share API
+    document.getElementById('topShareIcon').onclick = async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: params.get('name'),
+            text: 'Check out this business card',
+            url: window.location.href
+          });
+          // Lock style controls after sharing
+          document.getElementById('styleControlsContainer').style.display = 'none';
+        } catch (error) {
+          console.error('Error sharing:', error);
         }
+      } else {
+        alert('Sharing is not supported on this browser.');
+      }
+    };
+    
+    // Style Dropdown Logic
+    const styleButton = document.getElementById('styleButton');
+    const styleDropdown = document.getElementById('styleDropdown');
+    styleButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      styleDropdown.style.display = styleDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('styleControlsContainer').contains(e.target)) {
+        styleDropdown.style.display = 'none';
       }
     });
-
-    // Mini Icons Functionality
-    const miniCallButton = document.getElementById('miniCallButton');
-    const miniEmailButton = document.getElementById('miniEmailButton');
-    const miniWhatsappButton = document.getElementById('miniWhatsappButton');
-    const miniMapButton = document.getElementById('miniMapButton');
-
-    if (miniCallButton)
-      miniCallButton.onclick = () => window.location.href = `tel:${getParam('phone')}`;
-    if (miniEmailButton)
-      miniEmailButton.onclick = () => window.location.href = `mailto:${getParam('email')}`;
-    if (miniWhatsappButton)
-      miniWhatsappButton.onclick = () => window.location.href = `https://wa.me/${getParam('phone')}`;
-    if (miniMapButton)
-      miniMapButton.onclick = () => {
-        window.open(`https://www.google.com/maps?q=${encodeURIComponent(getParam('address'))}`, '_blank');
-      };
-
-    // Connect Button Fix
-    const connectButton = document.getElementById('connectButton');
-    if (connectButton)
-      connectButton.onclick = () => {
-        const vCardContent = [
-          'BEGIN:VCARD',
-          'VERSION:3.0',
-          `N:;${getParam('name')};;;`,
-          `FN:${getParam('name')}`,
-          `TEL;TYPE=CELL:${getParam('phone')}`,
-          `EMAIL;TYPE=INTERNET:${getParam('email')}`,
-          `ADR;TYPE=WORK:;;${getParam('address')};;;;`,
-          'END:VCARD'
-        ].join('\r\n');
-
-        const blob = new Blob([vCardContent], { type: 'text/vcard' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${getParam('name')}.vcf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      };
-
-    // Action Buttons Fix
-    const callButton = document.getElementById('callButton');
-    const whatsappButton = document.getElementById('whatsappButton');
-    const emailButton = document.getElementById('emailButton');
-
-    if (callButton)
-      callButton.onclick = () => window.location.href = `tel:${getParam('phone')}`;
-    if (whatsappButton)
-      whatsappButton.onclick = () => window.location.href = `https://wa.me/${getParam('phone')}`;
-    if (emailButton)
-      emailButton.onclick = () => window.location.href = `mailto:${getParam('email')}`;
-
-    // (Keep rest of the JavaScript code unchanged)
-    // ... (All remaining original JavaScript code for style controls, etc) ...
+    
+    // Theme options inside dropdown
+    const themeOpts = styleDropdown.querySelectorAll('[data-theme]');
+    themeOpts.forEach(option => {
+      option.addEventListener('click', () => {
+        selectedTheme = option.getAttribute('data-theme');
+        // Optional highlight
+        themeOpts.forEach(opt => opt.style.background = '');
+        option.style.background = "#ddd";
+      });
+    });
+    
+    // Animate options inside dropdown
+    const animateOpts = styleDropdown.querySelectorAll('[data-anim]');
+    animateOpts.forEach(option => {
+      option.addEventListener('click', () => {
+        selectedAnim = option.getAttribute('data-anim');
+        // Optional highlight
+        animateOpts.forEach(opt => opt.style.background = '');
+        option.style.background = "#ddd";
+      });
+    });
+    
+    // Function to apply theme and transient animate effect
+    function applyThemeAndAnim() {
+      const card = document.querySelector('.card-container');
+      let cssVars = "";
+      if (selectedTheme === 'default') {
+        document.documentElement.style.setProperty('--secondary-color', '#009688');
+        document.documentElement.style.setProperty('--accent-color', '#FF5722');
+        document.documentElement.style.setProperty('--card-background', '#FFFFFF');
+        document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #CFD8DC, #ECEFF1)');
+        card.style.borderImage = `linear-gradient(45deg, #009688, #FF5722, #3F51B5) 1`;
+        card.style.boxShadow = "0 8px 30px rgba(0,0,0,0.2)";
+        cssVars = `theme=default`;
+      } else if (selectedTheme === 'blue') {
+        document.documentElement.style.setProperty('--secondary-color', '#2196F3');
+        document.documentElement.style.setProperty('--accent-color', '#E91E63');
+        document.documentElement.style.setProperty('--card-background', '#F0F8FF');
+        document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #BBDEFB, #E3F2FD)');
+        card.style.borderImage = `linear-gradient(45deg, #2196F3, #E91E63, #3F51B5) 1`;
+        card.style.boxShadow = "0 8px 30px rgba(33,150,243,0.4)";
+        cssVars = `theme=blue`;
+      } else if (selectedTheme === 'red') {
+        document.documentElement.style.setProperty('--secondary-color', '#F44336');
+        document.documentElement.style.setProperty('--accent-color', '#9C27B0');
+        document.documentElement.style.setProperty('--card-background', '#FFF0F0');
+        document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #FFCDD2, #FFEBEE)');
+        card.style.borderImage = `linear-gradient(45deg, #F44336, #9C27B0, #FF9800) 1`;
+        card.style.boxShadow = "0 8px 30px rgba(244,67,54,0.4)";
+        cssVars = `theme=red`;
+      } else if (selectedTheme === 'green') {
+        document.documentElement.style.setProperty('--secondary-color', '#4CAF50');
+        document.documentElement.style.setProperty('--accent-color', '#8BC34A');
+        document.documentElement.style.setProperty('--card-background', '#E8F5E9');
+        document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #C8E6C9, #E8F5E9)');
+        card.style.borderImage = `linear-gradient(45deg, #4CAF50, #8BC34A, #388E3C) 1`;
+        card.style.boxShadow = "0 8px 30px rgba(76,175,80,0.4)";
+        cssVars = `theme=green`;
+      }
+      // Apply animate effect transiently (if not "none")
+      card.classList.remove('animate-rotate', 'animate-bounce');
+      if (selectedAnim === "rotate") {
+        card.classList.add('animate-rotate');
+        cssVars += `&animate=rotate`;
+      } else if (selectedAnim === "bounce") {
+        card.classList.add('animate-bounce');
+        cssVars += `&animate=bounce`;
+      } else {
+        cssVars += `&animate=none`;
+      }
+      // Remove animation classes after animation ends (transient effect)
+      card.addEventListener('animationend', function handler() {
+        card.classList.remove('animate-rotate', 'animate-bounce');
+        card.removeEventListener('animationend', handler);
+      });
+      
+      // Update URL parameters so that theme remains locked
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('theme', selectedTheme);
+      currentUrl.searchParams.set('animate', selectedAnim);
+      history.replaceState(null, "", currentUrl.toString());
+      
+      // Hide the style controls so further changes cannot be made
+      document.getElementById('styleControlsContainer').style.display = 'none';
+    }
+    
+    // Apply Button – when clicked, apply the style settings
+    document.getElementById('applyStyleButton').addEventListener('click', () => {
+      applyThemeAndAnim();
+    });
+    
+    // On page load, if style parameters exist, auto-apply them and lock controls
+    window.addEventListener('DOMContentLoaded', () => {
+      const lockedTheme = params.get('theme');
+      const lockedAnim = params.get('animate');
+      if (lockedTheme) { selectedTheme = lockedTheme; }
+      if (lockedAnim) { selectedAnim = lockedAnim; }
+      if (lockedTheme || lockedAnim) {
+        applyThemeAndAnim();
+      }
+    });
+    
+    // Add ripple effect for interactive elements
+    document.querySelectorAll('.action-btn, .icon, .connect-btn, .dropdown-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        this.appendChild(ripple);
+        const rect = this.getBoundingClientRect();
+        ripple.style.left = (e.clientX - rect.left) + 'px';
+        ripple.style.top = (e.clientY - rect.top) + 'px';
+        setTimeout(() => { ripple.remove(); }, 600);
+      });
+    });
   </script>
 </body>
 </html>
