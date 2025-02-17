@@ -142,7 +142,7 @@
       border-top: 1px solid #ccc;
       background: var(--accent-color);
       color: #fff;
-      cursor: pointer;
+      cursor: button;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
       transition: background 0.3s;
@@ -165,6 +165,10 @@
       cursor: pointer;
       transition: color 0.3s, transform 0.3s;
       position: relative;
+      border-radius: 50%;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      box-sizing: border-box;
     }
     .mini-icons .icon:hover {
       color: var(--secondary-color);
@@ -267,12 +271,13 @@
       text-decoration: none;
       padding: 0.6rem;
       border: none;
-      border-radius: 10px; /* smoother edges */
+      border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s, transform 0.2s;
       position: relative;
       overflow: hidden;
       color: #fff;
+      box-sizing: border-box;
     }
     .action-btn:active {
       transform: scale(0.98);
@@ -293,6 +298,9 @@
       position: relative;
       border-radius: 50%;
       text-decoration: none;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      box-sizing: border-box;
     }
     .social-icon:hover {
       transform: translateY(-3px);
@@ -378,10 +386,18 @@
 
     <!-- Mini Icons (Call, Email, WhatsApp, Map) -->
     <div class="mini-icons">
-      <i class="fas fa-phone icon" id="miniCallButton" title="Call"></i>
-      <i class="fas fa-envelope icon" id="miniEmailButton" title="Email"></i>
-      <i class="fab fa-whatsapp icon" id="miniWhatsappButton" title="WhatsApp"></i>
-      <i class="fas fa-map-marker-alt icon" id="miniMapButton" title="Open in Google Maps"></i>
+      <a id="miniCallButton" class="icon" title="Call">
+        <i class="fas fa-phone"></i>
+      </a>
+      <a id="miniEmailButton" class="icon" title="Email">
+        <i class="fas fa-envelope"></i>
+      </a>
+      <a id="miniWhatsappButton" class="icon" title="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a id="miniMapButton" class="icon" title="Open in Google Maps">
+        <i class="fas fa-map-marker-alt"></i>
+      </a>
     </div>
 
     <!-- Profile Section -->
@@ -407,7 +423,7 @@
       <div id="businessInfoContent"></div>
     </div>
 
-    <!-- Action Buttons Section (Now anchor tags for reliability) -->
+    <!-- Action Buttons Section -->
     <div class="action-buttons">
       <a id="callButton" class="action-btn" style="background: var(--secondary-color);">
         Call
@@ -420,7 +436,7 @@
       </a>
     </div>
 
-    <!-- Social Links Section (Now anchor tags) -->
+    <!-- Social Links Section -->
     <div class="social-links">
       <a id="facebookButton" class="social-icon"><i class="fab fa-facebook-f"></i></a>
       <a id="instagramButton" class="social-icon"><i class="fab fa-instagram"></i></a>
@@ -533,7 +549,6 @@
     };
 
     // 6) Action Buttons Section (Anchors) – Set HREF
-    //    Using anchor tags ensures reliable linking on mobile
     const callButton     = document.getElementById('callButton');
     const whatsappButton = document.getElementById('whatsappButton');
     const emailButton    = document.getElementById('emailButton');
@@ -542,7 +557,6 @@
       callButton.href     = `tel:${phoneParam}`;
       whatsappButton.href = `https://wa.me/${phoneParam}`;
     } else {
-      // If no phone param, disable them
       callButton.removeAttribute('href');
       whatsappButton.removeAttribute('href');
     }
@@ -561,7 +575,6 @@
             text:  "Check out this business card",
             url:   window.location.href
           });
-          // Hide style controls after sharing
           document.getElementById('styleControlsContainer').style.display = 'none';
         } else {
           alert("Sharing is not supported on this browser.");
@@ -646,7 +659,6 @@
       } else if (selectedAnim === "bounce") {
         card.classList.add('animate-bounce');
       }
-      // Remove animation class after it ends
       card.addEventListener('animationend', function endHandler() {
         card.classList.remove('animate-rotate', 'animate-bounce');
         card.removeEventListener('animationend', endHandler);
