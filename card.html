@@ -142,7 +142,7 @@
       border-top: 1px solid #ccc;
       background: var(--accent-color);
       color: #fff;
-      cursor: button;
+      cursor: pointer;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
       transition: background 0.3s;
@@ -279,8 +279,9 @@
       color: #fff;
       box-sizing: border-box;
     }
+    /* Changed active state to use brightness instead of scale */
     .action-btn:active {
-      transform: scale(0.98);
+      filter: brightness(90%);
     }
 
     /* Social Links Section */
@@ -317,9 +318,10 @@
       width: 20px;
       height: 20px;
     }
+    /* Reduced final scale from 10 to 5 to avoid scattering */
     @keyframes rippleEffect {
       to {
-        transform: scale(10);
+        transform: scale(5);
         opacity: 0;
       }
     }
@@ -454,11 +456,11 @@
     if (params.get('profileImage')) {
       document.getElementById('cardProfileImage').src = params.get('profileImage');
     }
-    document.getElementById('cardName').textContent        = params.get('name')        || "";
-    document.getElementById('cardBusinessName').textContent= params.get('businessName')|| "";
-    document.getElementById('cardAddress').textContent     = params.get('address')     || "";
-    document.getElementById('cardPhone').textContent       = params.get('phone')       || "";
-    document.getElementById('cardEmail').textContent       = params.get('email')       || "";
+    document.getElementById('cardName').textContent         = params.get('name')        || "";
+    document.getElementById('cardBusinessName').textContent = params.get('businessName')|| "";
+    document.getElementById('cardAddress').textContent      = params.get('address')     || "";
+    document.getElementById('cardPhone').textContent        = params.get('phone')       || "";
+    document.getElementById('cardEmail').textContent        = params.get('email')       || "";
 
     // 2) Business Info Section
     const businessInfo = params.get('businessInfo') || "";
