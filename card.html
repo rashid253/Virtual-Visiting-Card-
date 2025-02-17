@@ -78,18 +78,15 @@
       transform: translateY(-3px);
     }
 
-    /* Top-left: Controls Container (Theme & Animate dropdowns) */
-    #controlsContainer {
+    /* Top-left: Style Dropdown Container */
+    #styleControlsContainer {
       position: absolute;
       top: 10px;
       left: 10px;
       z-index: 10;
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
     }
-    /* Dropdown Buttons for both Theme and Animate */
-    .dropdown-btn {
+    /* Style Button */
+    #styleButton {
       padding: 0.2rem 0.3rem;
       font-size: 0.65rem;
       border: 1px solid #ccc;
@@ -98,36 +95,62 @@
       cursor: pointer;
       transition: background 0.3s ease, color 0.3s ease;
     }
-    .dropdown-btn:hover {
+    #styleButton:hover {
       background: var(--secondary-color);
       color: #fff;
     }
-    .dropdown-btn i { margin-left: 0.2rem; }
+    #styleButton i { margin-left: 0.2rem; }
 
-    /* Dropdown list styling */
+    /* Dropdown content for Style Controls */
+    #styleDropdown {
+      display: none;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 150px;
+      z-index: 10;
+      font-size: 0.65rem;
+    }
+    /* Section header */
+    .dropdown-section-label {
+      padding: 0.2rem;
+      background: #f0f0f0;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+    }
     .dropdown-options {
       list-style: none;
       margin: 0;
       padding: 0;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      position: absolute;
-      top: 110%;
-      left: 0;
-      display: none;
-      width: 100%;
-      z-index: 10;
     }
     .dropdown-options li {
       padding: 0.2rem;
-      font-size: 0.65rem;
       cursor: pointer;
       transition: background 0.3s ease, color 0.3s ease;
     }
     .dropdown-options li:hover {
       background: var(--secondary-color);
       color: #fff;
+    }
+    /* Apply Button inside dropdown */
+    #applyStyleButton {
+      width: 100%;
+      padding: 0.25rem;
+      font-size: 0.65rem;
+      border: none;
+      border-top: 1px solid #ccc;
+      background: var(--accent-color);
+      color: #fff;
+      cursor: pointer;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    #applyStyleButton:hover {
+      background: #d43f1f;
     }
 
     .mini-icons {
@@ -287,27 +310,34 @@
 </head>
 <body>
   <div class="card-container" id="cardContainer">
-    <!-- Top-left: Controls Container (Theme & Animate dropdowns) -->
-    <div id="controlsContainer">
-      <!-- Theme Dropdown -->
-      <button id="themeButton" class="dropdown-btn">
-        Theme <i class="fas fa-caret-down"></i>
+    <!-- Top-left: Style Controls (single dropdown for Theme & Animate) -->
+    <div id="styleControlsContainer">
+      <button id="styleButton" class="dropdown-btn">
+        Style <i class="fas fa-caret-down"></i>
       </button>
-      <ul id="themeOptions" class="dropdown-options">
-        <li data-theme="default">Default</li>
-        <li data-theme="blue">Blue</li>
-        <li data-theme="red">Red</li>
-        <li data-theme="green">Green</li>
-      </ul>
-      <!-- Animate Dropdown (label changed to "Animate") -->
-      <button id="animateButton" class="dropdown-btn">
-        Animate <i class="fas fa-caret-down"></i>
-      </button>
-      <ul id="animateOptions" class="dropdown-options">
-        <li data-anim="none">None</li>
-        <li data-anim="rotate">Rotate</li>
-        <li data-anim="bounce">Bounce</li>
-      </ul>
+      <div id="styleDropdown" class="dropdown-options" style="position: absolute; top: 110%; left: 0;">
+        <!-- Theme Section -->
+        <div class="dropdown-section">
+          <div class="dropdown-section-label">Theme</div>
+          <ul class="dropdown-options">
+            <li data-theme="default">Default</li>
+            <li data-theme="blue">Blue</li>
+            <li data-theme="red">Red</li>
+            <li data-theme="green">Green</li>
+          </ul>
+        </div>
+        <!-- Animate Section -->
+        <div class="dropdown-section">
+          <div class="dropdown-section-label">Animate</div>
+          <ul class="dropdown-options">
+            <li data-anim="none">None</li>
+            <li data-anim="rotate">Rotate</li>
+            <li data-anim="bounce">Bounce</li>
+          </ul>
+        </div>
+        <!-- Apply Button -->
+        <button id="applyStyleButton">Apply</button>
+      </div>
     </div>
     <!-- Top-right: Share Icon -->
     <div class="top-share-icon" id="topShareIcon" title="Share">
@@ -356,6 +386,10 @@
   </div>
 
   <script>
+    // Variables to hold selected options
+    let selectedTheme = "default";
+    let selectedAnim = "none";
+
     // Set profile image and card info from URL parameters
     const params = new URLSearchParams(window.location.search);
     if (params.get('profileImage')) {
@@ -439,6 +473,9 @@
             text: 'Check out this business card',
             url: window.location.href
           });
+          // Once shared, hide the style controls so settings are locked
+          const styleContainer = document.getElementById('styleControlsContainer');
+          if (styleContainer) { styleContainer.style.display = 'none'; }
         } catch (error) {
           console.error('Error sharing:', error);
         }
@@ -447,83 +484,83 @@
       }
     };
 
-    // Theme Dropdown Logic
-    const themeButton = document.getElementById('themeButton');
-    const themeOptions = document.getElementById('themeOptions');
-    themeButton.addEventListener('click', (e) => {
+    // Style Dropdown Logic
+    const styleButton = document.getElementById('styleButton');
+    const styleDropdown = document.getElementById('styleDropdown');
+    styleButton.addEventListener('click', (e) => {
       e.stopPropagation();
-      themeOptions.style.display = themeOptions.style.display === 'block' ? 'none' : 'block';
+      styleDropdown.style.display = styleDropdown.style.display === 'block' ? 'none' : 'block';
     });
     document.addEventListener('click', (e) => {
-      if (!document.getElementById('controlsContainer').contains(e.target)) {
-        themeOptions.style.display = 'none';
+      if (!document.getElementById('styleControlsContainer').contains(e.target)) {
+        styleDropdown.style.display = 'none';
       }
     });
-    themeOptions.querySelectorAll('li').forEach(option => {
+
+    // Theme options inside the style dropdown
+    const themeOptions = styleDropdown.querySelectorAll('[data-theme]');
+    themeOptions.forEach(option => {
       option.addEventListener('click', () => {
-        const selectedTheme = option.getAttribute('data-theme');
-        const card = document.querySelector('.card-container');
-        if (selectedTheme === 'default') {
-          document.documentElement.style.setProperty('--secondary-color', '#009688');
-          document.documentElement.style.setProperty('--accent-color', '#FF5722');
-          document.documentElement.style.setProperty('--card-background', '#FFFFFF');
-          document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #CFD8DC, #ECEFF1)');
-          card.style.borderImage = `linear-gradient(45deg, #009688, #FF5722, #3F51B5) 1`;
-          card.style.boxShadow = "0 8px 30px rgba(0,0,0,0.2)";
-        } else if (selectedTheme === 'blue') {
-          document.documentElement.style.setProperty('--secondary-color', '#2196F3');
-          document.documentElement.style.setProperty('--accent-color', '#E91E63');
-          document.documentElement.style.setProperty('--card-background', '#F0F8FF');
-          document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #BBDEFB, #E3F2FD)');
-          card.style.borderImage = `linear-gradient(45deg, #2196F3, #E91E63, #3F51B5) 1`;
-          card.style.boxShadow = "0 8px 30px rgba(33,150,243,0.4)";
-        } else if (selectedTheme === 'red') {
-          document.documentElement.style.setProperty('--secondary-color', '#F44336');
-          document.documentElement.style.setProperty('--accent-color', '#9C27B0');
-          document.documentElement.style.setProperty('--card-background', '#FFF0F0');
-          document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #FFCDD2, #FFEBEE)');
-          card.style.borderImage = `linear-gradient(45deg, #F44336, #9C27B0, #FF9800) 1`;
-          card.style.boxShadow = "0 8px 30px rgba(244,67,54,0.4)";
-        } else if (selectedTheme === 'green') {
-          document.documentElement.style.setProperty('--secondary-color', '#4CAF50');
-          document.documentElement.style.setProperty('--accent-color', '#8BC34A');
-          document.documentElement.style.setProperty('--card-background', '#E8F5E9');
-          document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #C8E6C9, #E8F5E9)');
-          card.style.borderImage = `linear-gradient(45deg, #4CAF50, #8BC34A, #388E3C) 1`;
-          card.style.boxShadow = "0 8px 30px rgba(76,175,80,0.4)";
-        }
-        themeOptions.style.display = 'none';
+        selectedTheme = option.getAttribute('data-theme');
+        // Highlight selected option (optional)
+        themeOptions.forEach(opt => opt.style.background = '');
+        option.style.background = var(--secondary-color);
       });
     });
 
-    // Animate Dropdown Logic – auto apply on option click
-    const animateButton = document.getElementById('animateButton');
-    const animateOptions = document.getElementById('animateOptions');
-    animateButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      animateOptions.style.display = animateOptions.style.display === 'block' ? 'none' : 'block';
-    });
-    document.addEventListener('click', (e) => {
-      if (!document.getElementById('controlsContainer').contains(e.target)) {
-        animateOptions.style.display = 'none';
-      }
-    });
-    animateOptions.querySelectorAll('li').forEach(option => {
+    // Animate options inside the style dropdown
+    const animateOptions = styleDropdown.querySelectorAll('[data-anim]');
+    animateOptions.forEach(option => {
       option.addEventListener('click', () => {
-        const selectedAnim = option.getAttribute('data-anim');
-        animateOptions.style.display = 'none';
-        const card = document.getElementById('cardContainer');
-        card.classList.remove('animate-rotate', 'animate-bounce');
-        if (selectedAnim === 'rotate') {
-          card.classList.add('animate-rotate');
-        } else if (selectedAnim === 'bounce') {
-          card.classList.add('animate-bounce');
-        }
-        // Remove the animation class after 1 second to allow re-triggering
-        setTimeout(() => {
-          card.classList.remove('animate-rotate', 'animate-bounce');
-        }, 1000);
+        selectedAnim = option.getAttribute('data-anim');
+        // Highlight selected option (optional)
+        animateOptions.forEach(opt => opt.style.background = '');
+        option.style.background = var(--secondary-color);
       });
+    });
+
+    // Apply button – when clicked, apply both theme and animate settings and then lock the style controls
+    document.getElementById('applyStyleButton').addEventListener('click', () => {
+      const card = document.querySelector('.card-container');
+      // Apply theme settings
+      if (selectedTheme === 'default') {
+        document.documentElement.style.setProperty('--secondary-color', '#009688');
+        document.documentElement.style.setProperty('--accent-color', '#FF5722');
+        document.documentElement.style.setProperty('--card-background', '#FFFFFF');
+        document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #CFD8DC, #ECEFF1)');
+        card.style.borderImage = `linear-gradient(45deg, #009688, #FF5722, #3F51B5) 1`;
+        card.style.boxShadow = "0 8px 30px rgba(0,0,0,0.2)";
+      } else if (selectedTheme === 'blue') {
+        document.documentElement.style.setProperty('--secondary-color', '#2196F3');
+        document.documentElement.style.setProperty('--accent-color', '#E91E63');
+        document.documentElement.style.setProperty('--card-background', '#F0F8FF');
+        document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #BBDEFB, #E3F2FD)');
+        card.style.borderImage = `linear-gradient(45deg, #2196F3, #E91E63, #3F51B5) 1`;
+        card.style.boxShadow = "0 8px 30px rgba(33,150,243,0.4)";
+      } else if (selectedTheme === 'red') {
+        document.documentElement.style.setProperty('--secondary-color', '#F44336');
+        document.documentElement.style.setProperty('--accent-color', '#9C27B0');
+        document.documentElement.style.setProperty('--card-background', '#FFF0F0');
+        document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #FFCDD2, #FFEBEE)');
+        card.style.borderImage = `linear-gradient(45deg, #F44336, #9C27B0, #FF9800) 1`;
+        card.style.boxShadow = "0 8px 30px rgba(244,67,54,0.4)";
+      } else if (selectedTheme === 'green') {
+        document.documentElement.style.setProperty('--secondary-color', '#4CAF50');
+        document.documentElement.style.setProperty('--accent-color', '#8BC34A');
+        document.documentElement.style.setProperty('--card-background', '#E8F5E9');
+        document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #C8E6C9, #E8F5E9)');
+        card.style.borderImage = `linear-gradient(45deg, #4CAF50, #8BC34A, #388E3C) 1`;
+        card.style.boxShadow = "0 8px 30px rgba(76,175,80,0.4)";
+      }
+      // Apply animate effect if not "none"
+      card.classList.remove('animate-rotate', 'animate-bounce');
+      if (selectedAnim === "rotate") {
+        card.classList.add('animate-rotate');
+      } else if (selectedAnim === "bounce") {
+        card.classList.add('animate-bounce');
+      }
+      // Lock settings: hide the style controls so further changes cannot be made
+      document.getElementById('styleControlsContainer').style.display = 'none';
     });
 
     // Add ripple effect for interactive elements
