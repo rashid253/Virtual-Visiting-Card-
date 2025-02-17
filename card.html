@@ -11,9 +11,9 @@
   />
   <style>
     :root {
-      --primary-color: #1e1e1e;         /* Dark Text */
-      --secondary-color: #009688;       /* Default Teal */
-      --accent-color: #ff5722;          /* Default Deep Orange */
+      --primary-color: #1e1e1e;
+      --secondary-color: #009688;
+      --accent-color: #ff5722;
       --neutral-light: rgba(245,245,245,0.9);
       --neutral-dark: #333333;
       --card-background: #ffffff;
@@ -25,7 +25,7 @@
       margin: 0;
       padding: 1rem;
       background: var(--body-bg);
-      /* Transitions removed */
+      /* All transitions removed */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -44,12 +44,9 @@
       padding: 1.5rem;
       margin: 1rem;
       transform: perspective(1000px) rotateY(0deg);
-      /* Transition removed */
-      transform-style: preserve-3d;
+      /* Removed transform transition and hover effect */
     }
-    .card-container:hover {
-      transform: perspective(1000px) rotateY(5deg) rotateX(2deg) scale(1.02);
-    }
+    /* Removed card-container hover transform */
 
     /* Share Icon (top-right) */
     .top-share-icon {
@@ -62,7 +59,7 @@
     }
     .top-share-icon:hover {
       color: var(--secondary-color);
-      transform: translateY(-3px);
+      /* Removed transform effect */
     }
 
     /* Style Controls (top-left) */
@@ -154,7 +151,7 @@
     }
     .mini-icons .icon:hover {
       color: var(--secondary-color);
-      transform: translateY(-3px);
+      /* Removed hover transform */
     }
 
     /* Profile Section */
@@ -209,7 +206,7 @@
       cursor: pointer;
     }
     .connect-btn:hover {
-      transform: translateY(-3px);
+      /* Removed hover transform */
     }
 
     /* Business Info Section */
@@ -282,7 +279,7 @@
       box-sizing: border-box;
     }
     .social-icon:hover {
-      transform: translateY(-3px);
+      /* Removed hover transform */
     }
 
     @media (max-width: 480px) {
@@ -326,7 +323,7 @@
             <li data-theme="green">Green</li>
           </ul>
         </div>
-        <!-- Animate section removed -->
+        <!-- (Animate section removed) -->
         <!-- Apply Button -->
         <button id="applyStyleButton">Apply</button>
       </div>
@@ -399,27 +396,25 @@
 
   <script>
     let selectedTheme = "default";
-
     const params = new URLSearchParams(window.location.search);
 
     // 1) Populate Profile Image and Info
     if (params.get('profileImage')) {
       document.getElementById('cardProfileImage').src = params.get('profileImage');
     }
-    document.getElementById('cardName').textContent         = params.get('name')        || "";
-    document.getElementById('cardBusinessName').textContent = params.get('businessName')|| "";
-    document.getElementById('cardAddress').textContent      = params.get('address')     || "";
-    document.getElementById('cardPhone').textContent        = params.get('phone')       || "";
-    document.getElementById('cardEmail').textContent        = params.get('email')       || "";
+    document.getElementById('cardName').textContent          = params.get('name')         || "";
+    document.getElementById('cardBusinessName').textContent  = params.get('businessName') || "";
+    document.getElementById('cardAddress').textContent       = params.get('address')      || "";
+    document.getElementById('cardPhone').textContent         = params.get('phone')        || "";
+    document.getElementById('cardEmail').textContent         = params.get('email')        || "";
 
     // 2) Business Info Section
     const businessInfo = params.get('businessInfo') || "";
-    const paragraphs   = businessInfo.split('\n').filter(p => p.trim() !== '');
+    const paragraphs = businessInfo.split('\n').filter(p => p.trim() !== '');
     const businessInfoContainer = document.getElementById('businessInfoContent');
     businessInfoContainer.innerHTML = paragraphs
       .map(p => `<div class="business-info-content"><p>${p}</p></div>`)
       .join('');
-
     const paragraphDivs = businessInfoContainer.querySelectorAll('.business-info-content');
     let currentIndex = 0;
     paragraphDivs.forEach((div, idx) => {
@@ -433,9 +428,9 @@
 
     // 3) Social Links
     const socialLinks = {
-      facebook:  document.getElementById('facebookButton'),
+      facebook: document.getElementById('facebookButton'),
       instagram: document.getElementById('instagramButton'),
-      youtube:   document.getElementById('youtubeButton')
+      youtube: document.getElementById('youtubeButton')
     };
     Object.entries(socialLinks).forEach(([platform, element]) => {
       const url = params.get(platform);
@@ -452,7 +447,6 @@
     const phoneParam = params.get('phone') || "";
     const emailParam = params.get('email') || "";
     const addressParam = params.get('address') || "";
-
     document.getElementById('miniCallButton').onclick = () => {
       if (phoneParam) {
         window.location.href = `tel:${phoneParam}`;
@@ -477,9 +471,9 @@
 
     // 5) Connect Button (vCard)
     document.getElementById('connectButton').onclick = () => {
-      const name    = params.get('name')    || "Contact";
-      const phone   = phoneParam;
-      const email   = emailParam;
+      const name = params.get('name') || "Contact";
+      const phone = phoneParam;
+      const email = emailParam;
       const address = addressParam;
       const vCardContent =
         "BEGIN:VCARD\r\n" +
@@ -490,33 +484,38 @@
         `EMAIL;TYPE=INTERNET:${email}\r\n` +
         `ADR;TYPE=WORK:;;${address};;;;\r\n` +
         "END:VCARD\r\n";
-
       const blob = new Blob([vCardContent], { type: 'text/vcard' });
-      const url  = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href  = url;
+      link.href = url;
       link.download = `${name}.vcf`;
       link.click();
       URL.revokeObjectURL(url);
     };
 
-    // 6) Action Buttons Section (Anchors) – Set HREF
-    const callButton     = document.getElementById('callButton');
+    // 6) Action Buttons – Set HREF and add click intercept for Call button
+    const callButton = document.getElementById('callButton');
     const whatsappButton = document.getElementById('whatsappButton');
-    const emailButton    = document.getElementById('emailButton');
-
+    const emailButton = document.getElementById('emailButton');
     if (phoneParam) {
-      callButton.href     = `tel:${phoneParam}`;
+      callButton.href = `tel:${phoneParam}`;
       whatsappButton.href = `https://wa.me/${phoneParam}`;
     } else {
       callButton.removeAttribute('href');
       whatsappButton.removeAttribute('href');
     }
     if (emailParam) {
-      emailButton.href    = `mailto:${emailParam}`;
+      emailButton.href = `mailto:${emailParam}`;
     } else {
       emailButton.removeAttribute('href');
     }
+    // Intercept call button click to prevent layout issues
+    callButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      setTimeout(() => {
+        window.location.href = callButton.href;
+      }, 100);
+    });
 
     // 7) Share Icon (Web Share API)
     document.getElementById('topShareIcon').onclick = async () => {
@@ -524,8 +523,8 @@
         if (navigator.share) {
           await navigator.share({
             title: params.get('name') || "My Business Card",
-            text:  "Check out this business card",
-            url:   window.location.href
+            text: "Check out this business card",
+            url: window.location.href
           });
           document.getElementById('styleControlsContainer').style.display = 'none';
         } else {
@@ -537,8 +536,8 @@
     };
 
     // 8) Style Dropdown Logic
-    const styleButton    = document.getElementById('styleButton');
-    const styleDropdown  = document.getElementById('styleDropdown');
+    const styleButton = document.getElementById('styleButton');
+    const styleDropdown = document.getElementById('styleDropdown');
     styleButton.addEventListener('click', (e) => {
       e.stopPropagation();
       styleDropdown.style.display = styleDropdown.style.display === 'block' ? 'none' : 'block';
@@ -548,7 +547,6 @@
         styleDropdown.style.display = 'none';
       }
     });
-
     // Theme selection
     const themeOpts = styleDropdown.querySelectorAll('[data-theme]');
     themeOpts.forEach(opt => {
@@ -558,60 +556,48 @@
         opt.style.background = "#ddd";
       });
     });
-
     // 9) Apply Theme
     function applyTheme() {
       const card = document.querySelector('.card-container');
-      // Apply theme
       if (selectedTheme === 'default') {
         document.documentElement.style.setProperty('--secondary-color', '#009688');
         document.documentElement.style.setProperty('--accent-color', '#FF5722');
         document.documentElement.style.setProperty('--card-background', '#FFFFFF');
         document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #CFD8DC, #ECEFF1)');
         card.style.borderImage = `linear-gradient(45deg, #009688, #FF5722, #3F51B5) 1`;
-        card.style.boxShadow  = "0 8px 30px rgba(0,0,0,0.2)";
-      }
-      else if (selectedTheme === 'blue') {
+        card.style.boxShadow = "0 8px 30px rgba(0,0,0,0.2)";
+      } else if (selectedTheme === 'blue') {
         document.documentElement.style.setProperty('--secondary-color', '#2196F3');
         document.documentElement.style.setProperty('--accent-color', '#E91E63');
         document.documentElement.style.setProperty('--card-background', '#F0F8FF');
         document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #BBDEFB, #E3F2FD)');
         card.style.borderImage = `linear-gradient(45deg, #2196F3, #E91E63, #3F51B5) 1`;
-        card.style.boxShadow  = "0 8px 30px rgba(33,150,243,0.4)";
-      }
-      else if (selectedTheme === 'red') {
+        card.style.boxShadow = "0 8px 30px rgba(33,150,243,0.4)";
+      } else if (selectedTheme === 'red') {
         document.documentElement.style.setProperty('--secondary-color', '#F44336');
         document.documentElement.style.setProperty('--accent-color', '#9C27B0');
         document.documentElement.style.setProperty('--card-background', '#FFF0F0');
         document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #FFCDD2, #FFEBEE)');
         card.style.borderImage = `linear-gradient(45deg, #F44336, #9C27B0, #FF9800) 1`;
-        card.style.boxShadow  = "0 8px 30px rgba(244,67,54,0.4)";
-      }
-      else if (selectedTheme === 'green') {
+        card.style.boxShadow = "0 8px 30px rgba(244,67,54,0.4)";
+      } else if (selectedTheme === 'green') {
         document.documentElement.style.setProperty('--secondary-color', '#4CAF50');
         document.documentElement.style.setProperty('--accent-color', '#8BC34A');
         document.documentElement.style.setProperty('--card-background', '#E8F5E9');
         document.documentElement.style.setProperty('--body-bg', 'linear-gradient(135deg, #C8E6C9, #E8F5E9)');
         card.style.borderImage = `linear-gradient(45deg, #4CAF50, #8BC34A, #388E3C) 1`;
-        card.style.boxShadow  = "0 8px 30px rgba(76,175,80,0.4)";
+        card.style.boxShadow = "0 8px 30px rgba(76,175,80,0.4)";
       }
-
-      // Update URL so theme is locked
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.set('theme', selectedTheme);
       history.replaceState(null, "", newUrl.toString());
-
-      // Hide style controls
       document.getElementById('styleControlsContainer').style.display = 'none';
     }
-
     document.getElementById('applyStyleButton').addEventListener('click', applyTheme);
-
-    // 10) On page load, check if there's a locked theme
     window.addEventListener('DOMContentLoaded', () => {
       const lockedTheme = params.get('theme');
-      if (lockedTheme) selectedTheme = lockedTheme;
       if (lockedTheme) {
+        selectedTheme = lockedTheme;
         applyTheme();
       }
     });
