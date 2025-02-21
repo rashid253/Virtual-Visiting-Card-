@@ -7,235 +7,184 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
   <style>
     :root {
-      --primary-color: #2C3E50;    /* Professional Navy */
-      --secondary-color: #3498DB;  /* Trust Blue */
-      --accent-color: #E74C3E;     /* Alert Red */
-      --neutral-light: rgba(236, 240, 241, 0.9); /* Light Gray with transparency */
-      --neutral-dark: #34495E;     /* Dark Gray */
+      --primary-color: #2C3E50;
+      --secondary-color: #3498DB;
+      --accent-color: #E74C3E;
+      --light-blue: #e0f7fa; /* Light blue for inner container background */
+      --neutral-light: #ecf0f1;
+      --neutral-dark: #34495E;
     }
-
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
       margin: 0;
       padding: 1rem;
       background: linear-gradient(135deg, #e9ecef, #f0f4f8);
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
-
+    /* 3D Prominent Form Container */
     .form-container {
+      background: var(--light-blue);
+      border-radius: 15px;
+      padding: 1.5rem;
       width: 100%;
       max-width: 450px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-      padding: 1.5rem;
-      margin: 1rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      transform: translateZ(0);
+      perspective: 1000px;
+      transition: transform 0.3s ease;
+      margin: 0 auto;
     }
-
+    .form-container:hover {
+      transform: translateY(-5px);
+    }
     .form-header {
-      color: var(--primary-color);
-      margin-bottom: 1.5rem;
       text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
     }
-
     .form-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
-      margin-bottom: 1.5rem;
     }
-
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      position: relative;
     }
-
     .input-group label {
       font-weight: 600;
       color: var(--neutral-dark);
+      margin-bottom: 0.2rem;
     }
-
-    .input-group .required {
-      color: var(--accent-color);
-    }
-
-    input, textarea, select {
-      width: 100%;
+    /* Fields are transparent (colorless) */
+    .input-group input,
+    .input-group textarea,
+    .input-group select {
       padding: 0.7rem;
       border: 1px solid var(--neutral-light);
       border-radius: 6px;
       font-size: 0.9rem;
-      transition: border-color 0.2s ease;
+      background: transparent;
+      color: var(--neutral-dark);
     }
-
-    input:focus, textarea:focus, select:focus {
+    .input-group input:focus,
+    .input-group textarea:focus,
+    .input-group select:focus {
       border-color: var(--secondary-color);
       outline: none;
     }
-
-    textarea {
-      resize: vertical;
-    }
-
-    .error {
-      border: 2px solid var(--accent-color);
-    }
-
-    /* Phone group styling with country code on LHS */
-    .phone-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .phone-group .country-code {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      flex: 0 0 90px; /* Fixed width for country code */
-    }
-    .phone-group .country-code select {
-      width: 100%;
-      padding: 0.5rem;
-    }
-    .phone-group input {
-      flex: 1;
-    }
-    .country-code img {
-      width: 20px;
-      height: 15px;
-    }
-
-    .image-upload-group {
-      grid-column: 1 / -1;
-      text-align: center;
-      border: 2px dashed var(--neutral-light);
-      padding: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      position: relative;
-    }
-
-    #profileImage {
+    /* Validation message style – hidden by default */
+    .validation-message {
+      font-size: 0.75rem;
+      color: var(--accent-color);
+      margin-top: 0.3rem;
       display: none;
     }
-
-    #imagePreview {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 0.5rem auto;
-      display: none;
+    .input-group.invalid .validation-message {
+      display: block;
     }
-
     #generateCard {
       background: var(--secondary-color);
       color: white;
-      width: 100%;
       padding: 0.8rem;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 1rem;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s ease;
+      margin-top: 1rem;
     }
-
+    #generateCard:hover {
+      background: var(--primary-color);
+    }
     @media (max-width: 480px) {
       .form-container {
-        max-width: 90%;
+        max-width: 100%;
         padding: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Form Section -->
   <div class="form-container">
     <div class="form-header">
       <h2>Create Business Card</h2>
-      <p>Fill in all required information</p>
     </div>
-
-    <div class="form-grid">
-      <div class="image-upload-group">
-        <label for="profileImage">
-          <i class="fas fa-camera fa-2x"></i>
-          <p>Upload Profile Photo</p>
-        </label>
-        <input type="file" id="profileImage" accept="image/*" onchange="previewImage(event)" />
-        <img id="imagePreview" alt="Profile Preview" />
-      </div>
-
-      <div class="input-group">
-        <label for="name">Full Name <span class="required">*</span></label>
-        <input type="text" id="name" placeholder="Full Name" required />
-      </div>
-
-      <div class="input-group">
-        <label for="businessName">Business Name <span class="required">*</span></label>
-        <input type="text" id="businessName" placeholder="Business Name" required />
-      </div>
-
-      <div class="input-group">
-        <label for="businessInfo">Business Info <span class="required">*</span></label>
-        <textarea id="businessInfo" placeholder="Enter 3 to 5 paragraphs (Max 150 words each) separated by a new line" rows="6" required></textarea>
-        <small style="color: var(--neutral-dark); font-size: 0.8rem;">
-          <strong>Instructions:</strong> Write 3 to 5 paragraphs. Each paragraph must not exceed 150 words. Separate paragraphs with a new line.
-        </small>
-      </div>
-
-      <div class="input-group">
-        <label for="address">Business Address <span class="required">*</span></label>
-        <input type="text" id="address" placeholder="Business Address" required />
-      </div>
-
-      <div class="input-group">
-        <label for="phone">Phone Number <span class="required">*</span></label>
-        <div class="phone-group">
-          <div class="country-code">
-            <img id="countryFlag" src="" alt="Country Flag" style="display:none;" />
-            <select id="countryCode" required>
-              <option value="" disabled selected>Select Code</option>
-              <!-- Options now display only the code (without brackets) -->
-              <option value="+61" data-flag="https://flagcdn.com/au.svg">+61</option>
-              <option value="+86" data-flag="https://flagcdn.com/cn.svg">+86</option>
-              <option value="+33" data-flag="https://flagcdn.com/fr.svg">+33</option>
-              <option value="+49" data-flag="https://flagcdn.com/de.svg">+49</option>
-              <option value="+91" data-flag="https://flagcdn.com/in.svg">+91</option>
-              <option value="+92" data-flag="https://flagcdn.com/pk.svg">+92</option>
-              <option value="+44" data-flag="https://flagcdn.com/gb.svg">+44</option>
-              <option value="+1" data-flag="https://flagcdn.com/us.svg">+1</option>
-            </select>
-          </div>
-          <input type="tel" id="phone" placeholder="Phone Number" required pattern="^\d{9,15}$" title="Phone number must be 9 to 15 digits without country code." />
+    <form id="businessCardForm" novalidate>
+      <div class="form-grid">
+        <!-- Profile Image Upload -->
+        <div class="input-group" id="profileImageGroup">
+          <label for="profileImage">
+            <i class="fas fa-camera fa-2x"></i> Upload Profile Photo
+          </label>
+          <input type="file" id="profileImage" accept="image/*" onchange="previewImage(event)" />
+          <img id="imagePreview" alt="Profile Preview" style="display:none; width:90px; height:90px; border-radius:50%; object-fit:cover; margin-top:0.5rem;">
+          <span class="validation-message">Please upload a valid image file.</span>
+        </div>
+        <!-- Full Name -->
+        <div class="input-group" id="nameGroup">
+          <label for="name">Full Name <span style="color: var(--accent-color);">*</span></label>
+          <input type="text" id="name" required />
+          <span class="validation-message">Full Name is required.</span>
+        </div>
+        <!-- Business Name -->
+        <div class="input-group" id="businessNameGroup">
+          <label for="businessName">Business Name <span style="color: var(--accent-color);">*</span></label>
+          <input type="text" id="businessName" required />
+          <span class="validation-message">Business Name is required.</span>
+        </div>
+        <!-- Business Info -->
+        <div class="input-group" id="businessInfoGroup">
+          <label for="businessInfo">Business Info <span style="color: var(--accent-color);">*</span></label>
+          <textarea id="businessInfo" rows="6" required></textarea>
+          <span class="validation-message">Enter 3 to 5 paragraphs (each ≤ 150 words).</span>
+        </div>
+        <!-- Business Address -->
+        <div class="input-group" id="addressGroup">
+          <label for="address">Business Address <span style="color: var(--accent-color);">*</span></label>
+          <input type="text" id="address" required />
+          <span class="validation-message">Business Address is required.</span>
+        </div>
+        <!-- Phone Number -->
+        <div class="input-group" id="phoneGroup">
+          <label for="phone">Phone Number <span style="color: var(--accent-color);">*</span></label>
+          <input type="tel" id="phone" required />
+          <span class="validation-message">Enter a valid phone number (9 to 15 digits).</span>
+        </div>
+        <!-- Email Address -->
+        <div class="input-group" id="emailGroup">
+          <label for="email">Email Address <span style="color: var(--accent-color);">*</span></label>
+          <input type="email" id="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+          <span class="validation-message">Enter a valid email address.</span>
+        </div>
+        <!-- Optional Social Media URLs -->
+        <div class="input-group" id="facebookGroup">
+          <label for="facebook">Facebook URL</label>
+          <input type="url" id="facebook" pattern="https?://(www\.)?facebook\.com/.*" />
+          <span class="validation-message">Enter a valid Facebook URL.</span>
+        </div>
+        <div class="input-group" id="instagramGroup">
+          <label for="instagram">Instagram URL</label>
+          <input type="url" id="instagram" pattern="https?://(www\.)?instagram\.com/.*" />
+          <span class="validation-message">Enter a valid Instagram URL.</span>
+        </div>
+        <div class="input-group" id="youtubeGroup">
+          <label for="youtube">YouTube URL</label>
+          <input type="url" id="youtube" pattern="https?://(www\.)?youtube\.com/.*" />
+          <span class="validation-message">Enter a valid YouTube URL.</span>
         </div>
       </div>
-
-      <div class="input-group">
-        <label for="email">Email Address <span class="required">*</span></label>
-        <input type="email" id="email" placeholder="Email Address" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." />
-      </div>
-
-      <div class="input-group">
-        <label for="facebook">Facebook URL</label>
-        <input type="url" id="facebook" placeholder="Facebook URL" pattern="https?://(www\.)?facebook\.com/.*" title="Please enter a valid Facebook URL." />
-      </div>
-
-      <div class="input-group">
-        <label for="instagram">Instagram URL</label>
-        <input type="url" id="instagram" placeholder="Instagram URL" pattern="https?://(www\.)?instagram\.com/.*" title="Please enter a valid Instagram URL." />
-      </div>
-
-      <div class="input-group">
-        <label for="youtube">YouTube URL</label>
-        <input type="url" id="youtube" placeholder="YouTube URL" pattern="https?://(www\.)?youtube\.com/.*" title="Please enter a valid YouTube URL." />
-      </div>
-    </div>
-
-    <button id="generateCard">Generate Card</button>
+      <button type="button" id="generateCard">Generate Card</button>
+    </form>
   </div>
 
   <script>
@@ -243,217 +192,45 @@
     function previewImage(event) {
       const reader = new FileReader();
       const preview = document.getElementById('imagePreview');
-      reader.onload = (e) => {
+      reader.onload = function(e) {
         preview.src = e.target.result;
         preview.style.display = 'block';
       };
-      reader.readAsDataURL(event.target.files[0]);
+      if (event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+      }
     }
 
-    // Update country flag based on selected country code
-    document.getElementById('countryCode').addEventListener('change', function() {
-      const selectedOption = this.options[this.selectedIndex];
-      const flagUrl = selectedOption.getAttribute('data-flag');
-      const countryFlag = document.getElementById('countryFlag');
-      countryFlag.src = flagUrl;
-      countryFlag.style.display = 'inline';
-    });
-
-    // Resize and compress image for upload (lower resolution & quality)
-    function resizeImage(file, callback) {
-      const img = new Image();
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        img.src = e.target.result;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 150;  // Reduced maximum width
-          const MAX_HEIGHT = 150; // Reduced maximum height
-          let width = img.width;
-          let height = img.height;
-
-          // Calculate new dimensions while preserving aspect ratio
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height = height * (MAX_WIDTH / width);
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width = width * (MAX_HEIGHT / height);
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          // Compress to JPEG at 40% quality
-          canvas.toBlob((blob) => {
-            callback(blob);
-          }, 'image/jpeg', 0.4);
-        };
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // Validate mandatory and optional fields
-    function validateForm() {
-      let valid = true;
-      // Clear any previous error highlighting
-      const fields = ['name', 'businessName', 'businessInfo', 'address', 'phone', 'email', 'countryCode'];
-      fields.forEach(id => {
-        const elem = document.getElementById(id);
-        if (elem) elem.classList.remove('error');
-      });
+    // Form Validation on "Generate Card" click
+    document.getElementById('generateCard').addEventListener('click', function(){
+      let formValid = true;
+      // List of required fields with their group IDs
+      const fields = [
+        { id: 'name', group: 'nameGroup' },
+        { id: 'businessName', group: 'businessNameGroup' },
+        { id: 'businessInfo', group: 'businessInfoGroup' },
+        { id: 'address', group: 'addressGroup' },
+        { id: 'phone', group: 'phoneGroup' },
+        { id: 'email', group: 'emailGroup' }
+      ];
       
-      // Check mandatory fields are not empty
-      fields.forEach(id => {
-        const elem = document.getElementById(id);
-        if (!elem.value.trim()) {
-          valid = false;
-          elem.classList.add('error');
+      fields.forEach(field => {
+        const inputElem = document.getElementById(field.id);
+        const groupElem = document.getElementById(field.group);
+        groupElem.classList.remove('invalid');
+        if (!inputElem.checkValidity()) {
+          groupElem.classList.add('invalid');
+          formValid = false;
         }
       });
-      if (!valid) {
-        alert("Please fill all required fields.");
-        return false;
-      }
       
-      // Validate phone number (digits only, 9 to 15 characters)
-      const phoneValue = document.getElementById('phone').value.trim();
-      if (!/^\d{9,15}$/.test(phoneValue)) {
-        document.getElementById('phone').classList.add('error');
-        alert("Phone number must be 9 to 15 digits.");
-        return false;
-      }
-      
-      // Validate email
-      const emailValue = document.getElementById('email').value.trim();
-      if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(emailValue)) {
-        document.getElementById('email').classList.add('error');
-        alert("Please enter a valid email address.");
-        return false;
-      }
-      
-      // Validate optional social media URLs if provided
-      const facebookValue = document.getElementById('facebook').value.trim();
-      if (facebookValue && !/^https?:\/\/(www\.)?facebook\.com\/.+$/i.test(facebookValue)) {
-        document.getElementById('facebook').classList.add('error');
-        alert("Please enter a valid Facebook URL.");
-        return false;
-      }
-      
-      const instagramValue = document.getElementById('instagram').value.trim();
-      if (instagramValue && !/^https?:\/\/(www\.)?instagram\.com\/.+$/i.test(instagramValue)) {
-        document.getElementById('instagram').classList.add('error');
-        alert("Please enter a valid Instagram URL.");
-        return false;
-      }
-      
-      const youtubeValue = document.getElementById('youtube').value.trim();
-      if (youtubeValue && !/^https?:\/\/(www\.)?youtube\.com\/.+$/i.test(youtubeValue)) {
-        document.getElementById('youtube').classList.add('error');
-        alert("Please enter a valid YouTube URL.");
-        return false;
-      }
-      
-      // Validate business info: 3 to 5 paragraphs, each up to 150 words
-      const businessInfo = document.getElementById('businessInfo').value.trim();
-      const paragraphs = businessInfo.split('\n').filter(p => p.trim() !== '');
-      if (paragraphs.length < 3 || paragraphs.length > 5) {
-        document.getElementById('businessInfo').classList.add('error');
-        alert("Please enter 3 to 5 paragraphs for the business info.");
-        return false;
-      }
-      for (const paragraph of paragraphs) {
-        const words = paragraph.split(/\s+/).filter(word => word.length > 0);
-        if (words.length > 150) {
-          document.getElementById('businessInfo').classList.add('error');
-          alert("Each paragraph must not exceed 150 words. Please review your business info.");
-          return false;
-        }
-      }
-      
-      return true;
-    }
-
-    // Generate Card Function
-    document.getElementById('generateCard').onclick = function () {
-      if (!validateForm()) {
-        return;
-      }
-
-      // Get form values
-      const formData = {
-        name: document.getElementById('name').value.trim(),
-        businessName: document.getElementById('businessName').value.trim(),
-        businessInfo: document.getElementById('businessInfo').value.trim(),
-        address: document.getElementById('address').value.trim(),
-        // Concatenate the selected country code and the phone number
-        phone: document.getElementById('countryCode').value + document.getElementById('phone').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        facebook: document.getElementById('facebook').value.trim(),
-        instagram: document.getElementById('instagram').value.trim(),
-        youtube: document.getElementById('youtube').value.trim(),
-        profileImage: document.getElementById('profileImage').files[0]
-      };
-
-      // If an image was selected, resize and upload it first
-      if (formData.profileImage) {
-        resizeImage(formData.profileImage, (resizedImage) => {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const base64Image = e.target.result.split(',')[1]; // Get base64 string
-            uploadImageToImgur(base64Image, formData);
-          };
-          reader.readAsDataURL(resizedImage);
-        });
+      if (formValid) {
+        alert("Form is valid. Proceeding with card generation.");
+        // Insert further code here to handle the form data.
       } else {
-        redirectToCard(formData);
+        alert("Please correct the highlighted errors.");
       }
-    };
-
-    function uploadImageToImgur(base64Image, formData) {
-      const clientId = '048d9400ce02b71'; // Imgur Client ID
-      fetch('https://api.imgur.com/3/image', {
-        method: 'POST',
-        headers: {
-          Authorization: `Client-ID ${clientId}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ image: base64Image, type: 'base64' })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          formData.profileImage = data.data.link; // Get the Imgur link
-          redirectToCard(formData);
-        } else {
-          alert('Image upload failed. Please try again.');
-        }
-      })
-      .catch(error => {
-        console.error('Error uploading image:', error);
-        alert('Image upload failed. Please try again.');
-      });
-    }
-
-    function redirectToCard(formData) {
-      const params = new URLSearchParams();
-      params.set('name', formData.name);
-      params.set('businessName', formData.businessName);
-      params.set('businessInfo', formData.businessInfo);
-      params.set('address', formData.address);
-      params.set('phone', formData.phone);
-      params.set('email', formData.email);
-      params.set('facebook', formData.facebook);
-      params.set('instagram', formData.instagram);
-      params.set('youtube', formData.youtube);
-      params.set('profileImage', formData.profileImage);
-      window.location.href = `card.html?${params.toString()}`;
-    }
+    });
   </script>
 </body>
 </html>
