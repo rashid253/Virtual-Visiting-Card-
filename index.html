@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stacked Cards Effect</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resettable Stacked Cards with Different Colors</title>
   <style>
     body {
       display: flex;
@@ -12,6 +12,7 @@
       height: 100vh;
       background-color: #f4f4f4;
       font-family: Arial, sans-serif;
+      margin: 0;
     }
     .card-stack {
       position: relative;
@@ -23,7 +24,6 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      background-color: #007bff;
       color: white;
       display: flex;
       justify-content: center;
@@ -34,10 +34,11 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       transition: transform 0.4s ease, top 0.4s ease;
     }
+    /* Default stacking with slight offsets and rotations */
     .card:nth-child(1) { top: 0; z-index: 3; transform: rotate(-5deg); }
     .card:nth-child(2) { top: 10px; z-index: 2; transform: rotate(-3deg); }
     .card:nth-child(3) { top: 20px; z-index: 1; transform: rotate(-2deg); }
-    /* Hover spread effect */
+    /* When hovering, spread out the cards */
     .card-stack:hover .card:nth-child(1) { transform: translateY(-30px) rotate(0); }
     .card-stack:hover .card:nth-child(2) { transform: translateY(-15px) rotate(0); }
     .card-stack:hover .card:nth-child(3) { transform: translateY(0) rotate(0); }
@@ -45,20 +46,41 @@
 </head>
 <body>
 
-  <div class="card-stack" id="card-stack">
-    <div class="card">Offer 1</div>
-    <div class="card">Offer 2</div>
-    <div class="card">Offer 3</div>
-  </div>
+  <div class="card-stack" id="card-stack"></div>
 
   <script>
+    // Array of colors for the cards
+    const cardColors = ['#007bff', '#e74c3c', '#27ae60'];
+    // Array of card labels (you can modify these as needed)
+    const cardLabels = ['Offer 1', 'Offer 2', 'Offer 3'];
+
+    // Function to create the deck inside the card-stack container
+    function createDeck() {
+      const stack = document.getElementById('card-stack');
+      // Clear previous content
+      stack.innerHTML = '';
+      // Loop through the cards and create elements
+      for (let i = 0; i < cardLabels.length; i++) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.backgroundColor = cardColors[i % cardColors.length];
+        card.innerText = cardLabels[i];
+        stack.appendChild(card);
+      }
+    }
+
+    // Initially create the deck
+    createDeck();
+
+    // On click, remove the top card. When no cards remain, reset the deck.
     document.getElementById("card-stack").addEventListener("click", function () {
-      let card = this.querySelector(".card:last-child");
+      const stack = this;
+      const card = stack.querySelector(".card:last-child");
       if (card) {
-          console.log("Removing card: " + card.innerText);
           card.remove();
       } else {
-          console.log("No more cards to remove.");
+          // If no cards remain, recreate the deck after a short delay
+          setTimeout(createDeck, 500);
       }
     });
   </script>
