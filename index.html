@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unique Flipping Cards Examples</title>
+  <title>Multiple Offer Card Effects</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,6 +13,7 @@
     }
     h1, h2 {
       text-align: center;
+      margin-bottom: 10px;
     }
     .container {
       display: flex;
@@ -21,7 +22,7 @@
       gap: 40px;
       margin-top: 20px;
     }
-    /* 1. Flip Card on Hover */
+    /* ----------------- 1. Flip Card on Hover ----------------- */
     .flip-card {
       background-color: transparent;
       width: 250px;
@@ -57,7 +58,7 @@
       background-color: #e74c3c;
       transform: rotateY(180deg);
     }
-    /* 2. Clickable Flip Card (Toggle on Click) */
+    /* ----------------- 2. Clickable Flip Card ----------------- */
     .click-card {
       background-color: transparent;
       width: 250px;
@@ -72,7 +73,6 @@
       transition: transform 0.6s;
       transform-style: preserve-3d;
     }
-    /* When the parent element has class 'flipped', rotate the inner content */
     .click-card.flipped .click-card-inner {
       transform: rotateY(180deg);
     }
@@ -95,7 +95,7 @@
       background-color: #d35400;
       transform: rotateY(180deg);
     }
-    /* 3. Stacked Cards (Deck Style) */
+    /* ----------------- 3. Stacked Cards (Deck Style) ----------------- */
     .card-stack {
       position: relative;
       width: 220px;
@@ -116,79 +116,170 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       transition: transform 0.4s ease, top 0.4s ease;
     }
-    /* Default positions for 3 cards */
-    .card-stack .card:nth-child(1) {
-      top: 0; z-index: 3; transform: rotate(-5deg); background: #007bff;
-    }
-    .card-stack .card:nth-child(2) {
-      top: 10px; z-index: 2; transform: rotate(-3deg); background: #e74c3c;
-    }
-    .card-stack .card:nth-child(3) {
-      top: 20px; z-index: 1; transform: rotate(-2deg); background: #27ae60;
-    }
-    /* Hover effect to spread out cards */
+    /* Default stacking with slight offsets */
+    .card-stack .card:nth-child(1) { top: 0; z-index: 3; transform: rotate(-5deg); background: #007bff; }
+    .card-stack .card:nth-child(2) { top: 10px; z-index: 2; transform: rotate(-3deg); background: #e74c3c; }
+    .card-stack .card:nth-child(3) { top: 20px; z-index: 1; transform: rotate(-2deg); background: #27ae60; }
     .card-stack:hover .card:nth-child(1) { transform: translateY(-30px) rotate(0); }
     .card-stack:hover .card:nth-child(2) { transform: translateY(-15px) rotate(0); }
     .card-stack:hover .card:nth-child(3) { transform: translateY(0) rotate(0); }
+    /* ----------------- 4. Accordion Style Offers ----------------- */
+    .accordion {
+      width: 300px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .accordion-item {
+      border-bottom: 1px solid #ddd;
+    }
+    .accordion-header {
+      background-color: #007bff;
+      color: white;
+      padding: 15px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      background-color: #f9f9f9;
+      transition: max-height 0.3s ease-out;
+      padding: 0 15px;
+    }
+    .accordion-item.active .accordion-content {
+      max-height: 100px;
+      padding: 15px;
+    }
+    /* ----------------- 5. Modal Popup Offer ----------------- */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 5px;
+      width: 80%;
+      max-width: 500px;
+      text-align: center;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h1>Unique Flipping Cards Examples</h1>
-  
-  <!-- Example 1: Flip Card on Hover -->
+  <h1>Offer Card Effects</h1>
+
+  <!-- 1. Flip Card on Hover -->
   <section>
-    <h2>1. Flip Card on Hover</h2>
+    <h2>Flip Card on Hover</h2>
     <div class="container">
       <div class="flip-card">
         <div class="flip-card-inner">
           <div class="flip-card-front">
-            Front Side
+            Special Offer!
           </div>
           <div class="flip-card-back">
-            Back Side
+            50% Discount!
           </div>
         </div>
       </div>
     </div>
   </section>
-  
-  <!-- Example 2: Clickable Flip Card (Toggle on Click) -->
+
+  <!-- 2. Clickable Flip Card -->
   <section>
-    <h2>2. Clickable Flip Card (Toggle on Click)</h2>
+    <h2>Clickable Flip Card</h2>
     <div class="container">
       <div class="click-card" id="clickCard">
         <div class="click-card-inner">
           <div class="click-card-front">
-            Click Me
+            Click for Offer
           </div>
           <div class="click-card-back">
-            Flipped!
+            Extra Savings!
           </div>
         </div>
       </div>
     </div>
   </section>
-  
-  <!-- Example 3: Stacked Cards (Deck Style) -->
+
+  <!-- 3. Stacked Cards (Deck Style) -->
   <section>
-    <h2>3. Stacked Cards (Deck Style)</h2>
+    <h2>Stacked Cards</h2>
     <div class="container">
       <div class="card-stack" id="cardStack">
-        <div class="card">Card 1</div>
-        <div class="card">Card 2</div>
-        <div class="card">Card 3</div>
+        <div class="card">Offer 1</div>
+        <div class="card">Offer 2</div>
+        <div class="card">Offer 3</div>
       </div>
     </div>
   </section>
-  
+
+  <!-- 4. Accordion Style Offers -->
+  <section>
+    <h2>Accordion Offers</h2>
+    <div class="accordion" id="accordion">
+      <div class="accordion-item">
+        <div class="accordion-header">Offer 1: 30% Off</div>
+        <div class="accordion-content">
+          Save 30% on selected items.
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">Offer 2: Buy One Get One</div>
+        <div class="accordion-content">
+          Buy one and get one free on select products.
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">Offer 3: Free Shipping</div>
+        <div class="accordion-content">
+          Enjoy free shipping on orders over $50.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Modal Popup Offer -->
+  <section>
+    <h2>Modal Popup Offer</h2>
+    <div class="container">
+      <button id="openModal" style="padding: 15px 25px; font-size: 18px; cursor: pointer;">View Offer Details</button>
+    </div>
+    <!-- The Modal -->
+    <div id="offerModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Exclusive Offer!</h2>
+        <p>Get 40% off on all products for a limited time.</p>
+      </div>
+    </div>
+  </section>
+
   <script>
-    // Toggle the 'flipped' class on the clickable flip card when clicked.
+    // 2. Clickable Flip Card: Toggle flip class on click.
     document.getElementById('clickCard').addEventListener('click', function() {
       this.classList.toggle('flipped');
     });
-  
-    // For the stacked cards deck:
-    // On click, remove the top card. If the deck has fewer than 3 cards, reset the deck after 1 second.
+
+    // 3. Stacked Cards: Remove top card on click; reset if less than 3 remain.
     document.getElementById('cardStack').addEventListener('click', function() {
       const stack = this;
       const card = stack.querySelector('.card:last-child');
@@ -197,12 +288,12 @@
       }
       if (stack.querySelectorAll('.card').length < 3) {
         setTimeout(() => {
-          // Reset deck by recreating the original three cards.
+          // Recreate original cards.
           stack.innerHTML = '';
           const cardsData = [
-            { text: 'Card 1', bg: '#007bff' },
-            { text: 'Card 2', bg: '#e74c3c' },
-            { text: 'Card 3', bg: '#27ae60' }
+            { text: 'Offer 1', bg: '#007bff' },
+            { text: 'Offer 2', bg: '#e74c3c' },
+            { text: 'Offer 3', bg: '#27ae60' }
           ];
           cardsData.forEach((data, index) => {
             const newCard = document.createElement('div');
@@ -227,6 +318,33 @@
         }, 1000);
       }
     });
+
+    // 4. Accordion Offers: Toggle active class on accordion item click.
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', function() {
+        // Remove active class from all items.
+        document.querySelectorAll('.accordion-item').forEach(item => item.classList.remove('active'));
+        // Toggle active class on current item.
+        this.parentElement.classList.toggle('active');
+      });
+    });
+
+    // 5. Modal Popup Offer: Open and close modal.
+    const modal = document.getElementById("offerModal");
+    const btn = document.getElementById("openModal");
+    const span = document.getElementById("closeModal");
+
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
   </script>
 </body>
 </html>
