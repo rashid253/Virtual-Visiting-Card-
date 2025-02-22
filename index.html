@@ -1,90 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resettable Stacked Cards with Separate Text</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f4f4f4;
-      font-family: Arial, sans-serif;
-    }
-    .card-stack {
-      position: relative;
-      width: 220px;
-      height: 300px;
-      cursor: pointer;
-    }
-    .card {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      font-weight: bold;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: transform 0.4s ease, top 0.4s ease;
-    }
-    /* Stack layering with slight offsets and rotations */
-    .card:nth-child(1) { top: 0; z-index: 3; transform: rotate(-5deg); }
-    .card:nth-child(2) { top: 10px; z-index: 2; transform: rotate(-3deg); }
-    .card:nth-child(3) { top: 20px; z-index: 1; transform: rotate(-2deg); }
-    /* Hover effect: spread out the cards */
-    .card-stack:hover .card:nth-child(1) { transform: translateY(-30px) rotate(0); }
-    .card-stack:hover .card:nth-child(2) { transform: translateY(-15px) rotate(0); }
-    .card-stack:hover .card:nth-child(3) { transform: translateY(0) rotate(0); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stacked Cards</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .card-stack {
+            position: relative;
+            width: 220px;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease, top 0.4s ease;
+        }
+
+        .card:nth-child(1) { top: 0; z-index: 3; transform: rotate(-5deg); }
+        .card:nth-child(2) { top: 10px; z-index: 2; transform: rotate(-3deg); }
+        .card:nth-child(3) { top: 20px; z-index: 1; transform: rotate(-2deg); }
+
+        /* Hover پر Spread Effect */
+        .card-stack:hover .card:nth-child(1) { transform: translateY(-30px) rotate(0); }
+        .card-stack:hover .card:nth-child(2) { transform: translateY(-15px) rotate(0); }
+        .card-stack:hover .card:nth-child(3) { transform: translateY(0) rotate(0); }
+
+    </style>
 </head>
 <body>
 
-  <div class="card-stack" id="card-stack"></div>
-
-  <script>
-    // Define unique texts and colors for each card.
-    const cardLabels = [
-      "Allah is the Greatest",
-      "Prayer is Essential",
-      "Charity Brings Blessings"
-    ];
-    const cardColors = ['#007bff', '#e74c3c', '#27ae60'];
-
-    // Function to create the complete deck of cards.
-    function createDeck() {
-      const stack = document.getElementById('card-stack');
-      stack.innerHTML = ''; // Clear any existing cards.
-      for (let i = 0; i < cardLabels.length; i++) {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.backgroundColor = cardColors[i % cardColors.length];
-        card.innerText = cardLabels[i];
-        stack.appendChild(card);
-      }
-    }
-
-    // Initially create the deck.
-    createDeck();
-
-    // On click, remove the top card. If any card is missing, reset the deck.
-    document.getElementById("card-stack").addEventListener("click", function () {
-      const stack = this;
-      const card = stack.querySelector(".card:last-child");
-      if (card) {
-        card.remove();
-      }
-      // If the stack has fewer cards than the original, reset it after 1 second.
-      if (stack.querySelectorAll(".card").length < cardLabels.length) {
-        setTimeout(createDeck, 1000);
-      }
-    });
-  </script>
+    <div class="card-stack">
+        <div class="card">Offer 1</div>
+        <div class="card">Offer 2</div>
+        <div class="card">Offer 3</div>
+    </div>
 
 </body>
 </html>
