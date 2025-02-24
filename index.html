@@ -208,8 +208,8 @@
       cursor: pointer;
       font-size: 1rem;
     }
-    /* Details Countdown */
-    #detailsCounter {
+    /* Countdown styling */
+    .counter {
       text-align: right;
       font-size: 0.9rem;
       margin-bottom: 8px;
@@ -361,14 +361,15 @@
   
   <label for="newTitle">Title (max 10 words):</label>
   <input type="text" id="newTitle" placeholder="Enter new title" required>
+  <div class="counter" id="titleCounter">10 words remaining</div>
   
   <label for="newDesc">Description (max 50 words):</label>
   <textarea id="newDesc" rows="3" placeholder="Enter new description" required></textarea>
+  <div class="counter" id="descCounter">50 words remaining</div>
   
-  <!-- New Details Field with Countdown -->
   <label for="newDetails">Details (max 100 words):</label>
   <textarea id="newDetails" rows="3" placeholder="Enter card details" required></textarea>
-  <div id="detailsCounter">100 words remaining</div>
+  <div class="counter" id="detailsCounter">100 words remaining</div>
   
   <label for="newImage">Upload New Image (optional):</label>
   <input type="file" id="newImage" accept="image/*">
@@ -431,10 +432,10 @@
   // ---------- Editable Text with Word Limits (In-Card Editing) ----------
   const TITLE_LIMIT = 10;
   const DESC_LIMIT = 50;
+  const DETAILS_LIMIT = 100;
   
   function enforceLimit(el, limit) {
-    // Use textContent to avoid unexpected formatting issues
-    let words = el.textContent.trim().split(/\s+/);
+    let words = el.textContent.trim().split(/\s+/).filter(word => word.length > 0);
     if (words.length > limit) {
       el.textContent = words.slice(0, limit).join(" ");
       placeCaretAtEnd(el);
@@ -461,7 +462,6 @@
   });
   
   // ---------- Image Upload and Auto-Resize with Card Background Fill ----------
-  // Updated resizeImage now accepts a fillColor parameter.
   function resizeImage(file, maxWidth, fillColor, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -477,12 +477,8 @@
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        
-        // Fill canvas with the given fillColor (card's background color)
         ctx.fillStyle = fillColor;
         ctx.fillRect(0, 0, width, height);
-        
-        // Draw the image on the canvas
         ctx.drawImage(img, 0, 0, width, height);
         callback(canvas.toDataURL('image/jpeg', 0.8));
       }
@@ -491,14 +487,12 @@
     reader.readAsDataURL(file);
   }
   
-  // For individual card image uploads
   document.querySelectorAll('.file-input').forEach(input => {
     input.addEventListener('change', function() {
       const cardNum = this.getAttribute('data-card');
       const file = this.files[0];
       if(file) {
         const card = document.querySelector('.card[data-card="' + cardNum + '"]');
-        // Get the card's background color
         const fillColor = window.getComputedStyle(card).backgroundColor;
         resizeImage(file, 300, fillColor, function(resizedDataUrl) {
           const imageEl = document.getElementById('img' + cardNum);
@@ -509,7 +503,6 @@
     });
   });
   
-  // For upload button click on card
   document.querySelectorAll('.upload-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -525,7 +518,6 @@
   
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', function(e) {
-      // Ignore clicks on upload or details buttons
       if(e.target.classList.contains('upload-btn') || e.target.classList.contains('details-btn')) return;
       const detailsText = this.getAttribute('data-details') || "No details available.";
       modalBody.innerHTML = `<h3>Card ${this.getAttribute('data-card')} Details</h3><p>${detailsText}</p>`;
@@ -553,22 +545,22 @@
     if(e.target === modal) modal.style.display = 'none';
   });
   
-  // ---------- Details Field Countdown ----------
-  const DETAILS_LIMIT = 100;
-  const detailsTextarea = document.getElementById('newDetails');
-  const detailsCounter = document.getElementById('detailsCounter');
+  // ---------- Form Field Countdown Updates ----------
+  function updateCountdown(fieldId, counterId, limit) {
+    const field = document.getElementById(fieldId);
+    const counter = document.getElementById(counterId);
+    field.addEventListener('input', function() {
+      let words = this.value.trim().split(/\s+/).filter(word => word.length > 0);
+      let count = words.length;
+      let remaining = limit - count;
+      counter.textContent = remaining + " words remaining";
+      counter.style.color = remaining < 0 ? "red" : "";
+    });
+  }
   
-  detailsTextarea.addEventListener('input', function() {
-    let words = this.value.trim().split(/\s+/).filter(word => word.length > 0);
-    let count = words.length;
-    let remaining = DETAILS_LIMIT - count;
-    detailsCounter.textContent = remaining + " words remaining";
-    if(remaining < 0){
-      detailsCounter.style.color = "red";
-    } else {
-      detailsCounter.style.color = "";
-    }
-  });
+  updateCountdown("newTitle", "titleCounter", TITLE_LIMIT);
+  updateCountdown("newDesc", "descCounter", DESC_LIMIT);
+  updateCountdown("newDetails", "detailsCounter", DETAILS_LIMIT);
   
   // ---------- Edit Form Functionality ----------
   document.getElementById('editForm').addEventListener('submit', function(e) {
@@ -578,15 +570,14 @@
     const newTitle = document.getElementById('newTitle').value.trim();
     const newDesc = document.getElementById('newDesc').value.trim();
     const newDetails = document.getElementById('newDetails').value.trim();
-    const imgPosition = document.getElementById('imgPosition').value; // "right" or "left"
+    const imgPosition = document.getElementById('imgPosition').value;
     const imageFile = document.getElementById('newImage').files[0];
     
-    // Word limits check
-    if(newTitle.split(/\s+/).length > TITLE_LIMIT) {
+    if(newTitle.split(/\s+/).filter(word => word.length > 0).length > TITLE_LIMIT) {
       alert("Title exceeds " + TITLE_LIMIT + " words.");
       return;
     }
-    if(newDesc.split(/\s+/).length > DESC_LIMIT) {
+    if(newDesc.split(/\s+/).filter(word => word.length > 0).length > DESC_LIMIT) {
       alert("Description exceeds " + DESC_LIMIT + " words.");
       return;
     }
@@ -595,15 +586,12 @@
       return;
     }
     
-    // Update card title and description
     document.getElementById('title' + cardNum).textContent = newTitle;
     document.getElementById('desc' + cardNum).textContent = newDesc;
     
-    // Update card details from the form field
     const card = document.querySelector(`.card[data-card="${cardNum}"]`);
     card.setAttribute('data-details', newDetails);
     
-    // Update image position: update card-content flex-direction and card's data attribute
     const cardContent = card.querySelector('.card-content');
     if(imgPosition === "left") {
       cardContent.classList.remove('row');
@@ -614,9 +602,7 @@
     }
     card.setAttribute('data-img-pos', imgPosition);
     
-    // Update image if provided
     if(imageFile) {
-      // Get the card's background color for filling
       const fillColor = window.getComputedStyle(card).backgroundColor;
       resizeImage(imageFile, 300, fillColor, function(resizedDataUrl) {
         const imageEl = document.getElementById('img' + cardNum);
@@ -627,7 +613,9 @@
     
     alert("Card " + cardNum + " updated successfully!");
     this.reset();
-    detailsCounter.textContent = DETAILS_LIMIT + " words remaining";
+    document.getElementById('titleCounter').textContent = TITLE_LIMIT + " words remaining";
+    document.getElementById('descCounter').textContent = DESC_LIMIT + " words remaining";
+    document.getElementById('detailsCounter').textContent = DETAILS_LIMIT + " words remaining";
   });
 </script>
 
