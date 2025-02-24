@@ -2,199 +2,304 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Modern Responsive Editable Template</title>
+  <title>Advanced Editable Flip Cards Template</title>
   <!-- Google Fonts for modern typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    /* Reset and basic styles */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #e6e9f0, #eef1f5);
       font-family: 'Poppins', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .template-container {
-      width: 90%;
-      max-width: 800px;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      display: flex;
-      flex-direction: row;
-      transition: transform 0.3s ease;
-    }
-    .template-container:hover {
-      transform: scale(1.02);
-    }
-    /* Text & Image section in one card */
-    .content-section {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-      padding: 20px;
-    }
-    /* Editable text area */
-    .text-content {
-      flex: 1;
+      background: linear-gradient(135deg, #e6e9f0, #eef1f5);
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
     }
-    .text-content h2,
-    .text-content p {
-      margin-bottom: 16px;
-      transition: border 0.3s ease;
+    /* Container for cards */
+    #cardContainer {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      width: 100%;
+      max-width: 1200px;
+      transition: transform 1s ease;
     }
-    .text-content h2[contenteditable="true"],
-    .text-content p[contenteditable="true"] {
-      border: 2px dashed #ccc;
-      padding: 8px;
+    /* Flip card container */
+    .card {
+      background: #fff;
+      width: 260px;
+      height: 360px;
+      perspective: 1000px;
+      position: relative;
+    }
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+    /* When card is flipped */
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    /* Front and back faces */
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       border-radius: 8px;
+      overflow: hidden;
+      padding: 10px;
     }
-    .text-content h2 {
-      font-size: 1.8rem;
+    /* Front face: Editable view */
+    .card-front {
+      /* Different background colors for each card via custom classes */
+    }
+    .card-1 .card-front { background: #ffe6f0; }
+    .card-2 .card-front { background: #e6f9ff; }
+    .card-3 .card-front { background: #e6ffe6; }
+    .card-4 .card-front { background: #fff0e6; }
+    /* Back face: Final view (no editing controls) */
+    .card-back {
+      background: #fff;
+      transform: rotateY(180deg);
+      padding: 10px;
+      text-align: center;
+    }
+    /* Text and image areas: zero margin between text and image */
+    .text-area, .image-area {
+      margin: 0;
+      padding: 0;
+    }
+    .text-area h2, .text-area p {
+      margin: 0;
+      padding: 4px 0;
+      text-align: left;
+    }
+    .text-area h2 {
+      font-size: 1.3rem;
       color: #ff007f;
       font-weight: 600;
     }
-    .text-content p {
-      font-size: 1rem;
+    .text-area p {
+      font-size: 0.9rem;
       color: #555;
-      line-height: 1.5;
+      line-height: 1.3;
     }
+    /* Editable fields show a dashed border when active */
+    [contenteditable="true"] {
+      border: 1px dashed #ccc;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    /* Image area: initially a bordered box for upload */
+    .image-area {
+      position: relative;
+      border: 2px dashed #007bff;
+    }
+    .image-area img {
+      display: block;
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .upload-btn {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(0,123,255,0.8);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    /* Error text */
     .error {
       color: red;
-      font-size: 0.9rem;
-      margin-top: -8px;
-      margin-bottom: 8px;
+      font-size: 0.8rem;
+      text-align: left;
     }
-    .edit-btn {
-      align-self: flex-start;
-      padding: 10px 24px;
+    /* Edit controls container */
+    .edit-controls {
+      text-align: center;
+      margin-top: 4px;
+    }
+    .edit-controls button {
+      padding: 6px 12px;
       background: #ff007f;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    /* Done button to trigger flip and animation */
+    #doneBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #28a745;
       color: #fff;
       border: none;
       border-radius: 30px;
       cursor: pointer;
       font-size: 1rem;
-      font-weight: 600;
-      transition: background 0.3s ease;
-      margin-top: 8px;
     }
-    .edit-btn:hover {
-      background: #e60073;
+    /* Horizontal slide animation (applied to container on done) */
+    .slide-animation {
+      animation: slideCards 2s forwards;
     }
-    /* Image section */
-    .image-content {
-      flex: 0 0 280px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-left: 1px solid #f0f0f0;
-      padding-left: 20px;
+    @keyframes slideCards {
+      from { transform: translateX(0); }
+      to { transform: translateX(50px); }
     }
-    .image-content img {
-      width: 100%;
-      max-width: 260px;
-      height: auto;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 3px solid #ff007f;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .image-content img:hover {
-      transform: scale(1.05);
-    }
-    .img-upload-btn {
-      margin-top: 12px;
-      padding: 10px 20px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      transition: background 0.3s ease;
-    }
-    .img-upload-btn:hover {
-      background: #0056b3;
-    }
-    input[type="file"] {
-      display: none;
-    }
-    /* Mobile Responsive */
+    /* Mobile responsive */
     @media (max-width: 600px) {
-      .template-container {
+      #cardContainer {
         flex-direction: column;
+        align-items: center;
       }
-      .content-section {
-        flex-direction: column;
-      }
-      .image-content {
-        border-left: none;
-        padding-left: 0;
-        margin-top: 20px;
+      .card {
+        margin-bottom: 20px;
       }
     }
   </style>
 </head>
 <body>
 
-<div class="template-container">
-  <div class="content-section">
-    <!-- Editable text area -->
-    <div class="text-content">
-      <h2 id="templateTitle" contenteditable="false">Your Beautiful Title</h2>
-      <p id="templateDescription" contenteditable="false">
-        This is your custom description. Click "Edit Template" to modify the text. Please keep the title under 10 words and description under 50 words.
-      </p>
-      <div id="textError" class="error"></div>
-      <button id="toggleEdit" class="edit-btn">Edit Template</button>
+<!-- Container for 4 cards -->
+<div id="cardContainer">
+  <!-- Card 1 -->
+  <div class="card card-1">
+    <div class="card-inner">
+      <!-- Front: Editable view -->
+      <div class="card-face card-front">
+        <div class="text-area">
+          <h2 id="title1" contenteditable="true">Title 1</h2>
+          <p id="desc1" contenteditable="true">Description 1 goes here...</p>
+          <div id="error1" class="error"></div>
+        </div>
+        <div class="image-area">
+          <img id="img1" src="https://via.placeholder.com/260x150.png?text=Upload+Image" alt="Image 1">
+          <button class="upload-btn" data-card="1">Upload</button>
+          <input type="file" class="file-input" data-card="1" accept="image/*">
+        </div>
+      </div>
+      <!-- Back: Final view (no editing) -->
+      <div class="card-face card-back">
+        <h2 id="finalTitle1">Title 1</h2>
+        <p id="finalDesc1">Description 1 goes here...</p>
+        <img id="finalImg1" src="https://via.placeholder.com/260x150.png?text=Upload+Image" alt="Final Image 1">
+      </div>
     </div>
-    <!-- Image upload area -->
-    <div class="image-content">
-      <img id="templateImage" src="https://via.placeholder.com/260x180.png?text=Upload+Your+Image" alt="Template Image">
-      <button id="uploadImageBtn" class="img-upload-btn">Upload Image</button>
-      <input type="file" id="imageInput" accept="image/*">
+  </div>
+  <!-- Card 2 -->
+  <div class="card card-2">
+    <div class="card-inner">
+      <div class="card-face card-front">
+        <div class="text-area">
+          <h2 id="title2" contenteditable="true">Title 2</h2>
+          <p id="desc2" contenteditable="true">Description 2 goes here...</p>
+          <div id="error2" class="error"></div>
+        </div>
+        <div class="image-area">
+          <img id="img2" src="https://via.placeholder.com/260x150.png?text=Upload+Image" alt="Image 2">
+          <button class="upload-btn" data-card="2">Upload</button>
+          <input type="file" class="file-input" data-card="2" accept="image/*">
+        </div>
+      </div>
+      <div class="card-face card-back">
+        <h2 id="finalTitle2">Title 2</h2>
+        <p id="finalDesc2">Description 2 goes here...</p>
+        <img id="finalImg2" src="https://via.placeholder.com/260x150.png?text=Upload+Image" alt="Final Image 2">
+      </div>
+    </div>
+  </div>
+  <!-- Card 3 -->
+  <div class="card card-3">
+    <div class="card-inner">
+      <div class="card-face card-front">
+        <div class="text-area">
+          <h2 id="title3" contenteditable="true">Title 3</h2>
+          <p id="desc3" contenteditable="true">Description 3 goes here...</p>
+          <div id="error3" class="error"></div>
+        </div>
+        <div class="image-area">
+          <img id="img3" src="https://via.placeholder.com/260x150.png?text=Upload+Image" alt="Image 3">
+          <button class="upload-btn" data-card="3">Upload</button>
+          <input type="file" class="file-input" data-card="3" accept="image/*">
+        </div>
+      </div>
+      <div class="card-face card-back">
+        <h2 id="finalTitle3">Title 3</h2>
+        <p id="finalDesc3">Description 3 goes here...</p>
+        <img id="finalImg3" src="https://via.placeholder.com/260x150.png?text=Upload+Image" alt="Final Image 3">
+      </div>
+    </div>
+  </div>
+  <!-- Card 4 -->
+  <div class="card card-4">
+    <div class="card-inner">
+      <div class="card-face card-front">
+        <div class="text-area">
+          <h2 id="title4" contenteditable="true">Title 4</h2>
+          <p id="desc4" contenteditable="true">Description 4 goes here...</p>
+          <div id="error4" class="error"></div>
+        </div>
+        <div class="image-area">
+          <img id="img4" src="https://via.placeholder.com/260x150.png?text=Upload+Image" alt="Image 4">
+          <button class="upload-btn" data-card="4">Upload</button>
+          <input type="file" class="file-input" data-card="4" accept="image/*">
+        </div>
+      </div>
+      <div class="card-face card-back">
+        <h2 id="finalTitle4">Title 4</h2>
+        <p id="finalDesc4">Description 4 goes here...</p>
+        <img id="finalImg4" src="https://via.placeholder.com/260x150.png?text=Upload+Image" alt="Final Image 4">
+      </div>
     </div>
   </div>
 </div>
 
+<!-- Done button triggers flip and animation -->
+<button id="doneBtn">Done</button>
+
 <script>
-  // Word Limits
-  const titleWordLimit = 10;
-  const descWordLimit = 50;
-  
-  // Helper to count words
-  function countWords(text) {
-    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  // Word limits for title and description
+  const TITLE_LIMIT = 10;
+  const DESC_LIMIT = 50;
+
+  // Helper: count words in a string
+  function countWords(str) {
+    return str.trim().split(/\s+/).filter(word => word).length;
   }
-  
-  // Enforce word limit by truncating extra words on input
-  function enforceWordLimit(el, limit) {
+
+  // Helper: enforce word limit (truncate extra words)
+  function enforceLimit(el, limit) {
     let words = el.innerText.trim().split(/\s+/);
-    if (words.length > limit) {
+    if(words.length > limit) {
       el.innerText = words.slice(0, limit).join(" ");
       placeCaretAtEnd(el);
     }
   }
-  
-  // Place caret at end of contenteditable element
+
+  // Helper: place caret at end of contenteditable element
   function placeCaretAtEnd(el) {
     el.focus();
-    if (typeof window.getSelection !== "undefined"
-        && typeof document.createRange !== "undefined") {
+    if(window.getSelection && document.createRange) {
       let range = document.createRange();
       range.selectNodeContents(el);
       range.collapse(false);
@@ -203,79 +308,67 @@
       sel.addRange(range);
     }
   }
-  
-  // Toggle editing for text fields
-  const toggleEditButton = document.getElementById('toggleEdit');
-  const templateTitle = document.getElementById('templateTitle');
-  const templateDescription = document.getElementById('templateDescription');
-  const textError = document.getElementById('textError');
-  
-  let isEditing = false;
-  
-  toggleEditButton.addEventListener('click', function() {
-    if (!isEditing) {
-      templateTitle.contentEditable = "true";
-      templateDescription.contentEditable = "true";
-      templateTitle.style.border = "2px dashed #ccc";
-      templateDescription.style.border = "2px dashed #ccc";
-      toggleEditButton.textContent = "Save Changes";
-      isEditing = true;
-    } else {
-      // Validate on save
-      const titleText = templateTitle.innerText.trim();
-      const descText = templateDescription.innerText.trim();
-      const titleCount = countWords(titleText);
-      const descCount = countWords(descText);
-      let valid = true;
-      let errorMsg = "";
-      if (titleCount > titleWordLimit) {
-        valid = false;
-        errorMsg += `Title exceeds ${titleWordLimit} words (Current: ${titleCount}). `;
+
+  // Attach input event listeners for all text fields in each card
+  document.querySelectorAll('.text-area h2[contenteditable], .text-area p[contenteditable]').forEach(el => {
+    el.addEventListener('input', function() {
+      if(el.tagName === "H2") enforceLimit(el, TITLE_LIMIT);
+      else enforceLimit(el, DESC_LIMIT);
+    });
+  });
+
+  // Handle file uploads for each card
+  document.querySelectorAll('.file-input').forEach(input => {
+    input.addEventListener('change', function(e) {
+      const cardNum = this.getAttribute('data-card');
+      const file = this.files[0];
+      if(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          // Set image source for both front and back image
+          document.getElementById('img' + cardNum).src = e.target.result;
+          document.getElementById('finalImg' + cardNum).src = e.target.result;
+          // Remove border from image area after upload
+          document.getElementById('img' + cardNum).parentElement.style.border = 'none';
+        }
+        reader.readAsDataURL(file);
       }
-      if (descCount > descWordLimit) {
-        valid = false;
-        errorMsg += `Description exceeds ${descWordLimit} words (Current: ${descCount}).`;
-      }
-      if (!valid) {
-        textError.innerText = errorMsg;
-      } else {
-        textError.innerText = "";
-        templateTitle.contentEditable = "false";
-        templateDescription.contentEditable = "false";
-        templateTitle.style.border = "none";
-        templateDescription.style.border = "none";
-        toggleEditButton.textContent = "Edit Template";
-        isEditing = false;
-      }
+    });
+  });
+
+  // Also bind upload buttons to trigger corresponding file inputs
+  document.querySelectorAll('.upload-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const cardNum = this.getAttribute('data-card');
+      document.querySelector('.file-input[data-card="'+cardNum+'"]').click();
+    });
+  });
+
+  // When Done button is clicked:
+  // 1. Copy final text values from editable fields to final view.
+  // 2. Remove editing borders and disable editing.
+  // 3. Flip each card.
+  // 4. Animate the entire container horizontally.
+  document.getElementById('doneBtn').addEventListener('click', function() {
+    // Loop over each card (1 to 4)
+    for(let i = 1; i <= 4; i++) {
+      // Copy text from front editable to back non-editable
+      document.getElementById('finalTitle' + i).innerText = document.getElementById('title' + i).innerText;
+      document.getElementById('finalDesc' + i).innerText = document.getElementById('desc' + i).innerText;
+      // Disable editing
+      document.getElementById('title' + i).setAttribute('contenteditable', 'false');
+      document.getElementById('desc' + i).setAttribute('contenteditable', 'false');
+      // Remove editing border styles
+      document.getElementById('title' + i).style.border = 'none';
+      document.getElementById('desc' + i).style.border = 'none';
+      // Flip the card
+      document.querySelector('.card:nth-child(' + i + ')').classList.add('flipped');
     }
-  });
-  
-  // Enforce word limit during text input
-  templateTitle.addEventListener('input', function() {
-    enforceWordLimit(templateTitle, titleWordLimit);
-  });
-  templateDescription.addEventListener('input', function() {
-    enforceWordLimit(templateDescription, descWordLimit);
-  });
-  
-  // Image Upload Logic
-  const uploadImageBtn = document.getElementById('uploadImageBtn');
-  const imageInput = document.getElementById('imageInput');
-  const templateImage = document.getElementById('templateImage');
-  
-  uploadImageBtn.addEventListener('click', function() {
-    imageInput.click();
-  });
-  
-  imageInput.addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        templateImage.src = e.target.result;
-      }
-      reader.readAsDataURL(file);
-    }
+    // Remove upload and edit buttons
+    document.querySelectorAll('.upload-btn').forEach(btn => btn.style.display = 'none');
+    document.getElementById('doneBtn').style.display = 'none';
+    // Animate the container (slide horizontally)
+    document.getElementById('cardContainer').classList.add('slide-animation');
   });
 </script>
 
