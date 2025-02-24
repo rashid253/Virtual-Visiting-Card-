@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Image Upload & Background Removal</title>
+  <title>Local Image Background Removal</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -12,16 +12,15 @@
       align-items: center;
       padding: 20px;
     }
-    .container {
+    .canvas-container {
       border: 3px solid #ff007f;
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 10px;
     }
-    .container img {
-      width: 300px;
-      height: 220px;
-      object-fit: cover;
+    canvas {
+      max-width: 100%;
+      display: block;
     }
     .btn {
       padding: 10px 20px;
@@ -42,64 +41,61 @@
 </head>
 <body>
 
-<div class="container">
-  <img id="templateImage" src="https://via.placeholder.com/300x220.png?text=Upload+an+Image" alt="Template Image">
+<div class="canvas-container">
+  <canvas id="canvas"></canvas>
 </div>
 <button id="uploadBtn" class="btn">Upload Image</button>
 <button id="removeBg" class="btn">Remove Background</button>
-<input type="file" id="imageInput" accept="image/*">
+<input type="file" id="fileInput" accept="image/*">
 
 <script>
+  const fileInput = document.getElementById('fileInput');
   const uploadBtn = document.getElementById('uploadBtn');
-  const imageInput = document.getElementById('imageInput');
-  const templateImage = document.getElementById('templateImage');
-  const removeBgButton = document.getElementById('removeBg');
+  const removeBgBtn = document.getElementById('removeBg');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
 
-  // When "Upload Image" is clicked, trigger file input
-  uploadBtn.addEventListener('click', function() {
-    imageInput.click();
+  // Trigger file input when "Upload Image" button is clicked
+  uploadBtn.addEventListener('click', () => {
+    fileInput.click();
   });
 
-  // When a file is selected, display it
-  imageInput.addEventListener('change', function() {
+  // Load the image from local file and draw it on the canvas
+  fileInput.addEventListener('change', function() {
     const file = this.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        templateImage.src = e.target.result;
+        const img = new Image();
+        // No crossOrigin needed for local blobs.
+        img.onload = function() {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+        }
+        img.src = e.target.result;
       }
       reader.readAsDataURL(file);
     }
   });
 
   // Remove background by making near-white pixels transparent
-  removeBgButton.addEventListener('click', function() {
-    const imgSrc = templateImage.src;
-    const img = new Image();
-    // Enable cross-origin processing if possible
-    img.crossOrigin = "Anonymous";
-    img.src = imgSrc;
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-      // Set threshold for near-white pixels; adjust if needed
-      const threshold = 240;
-      for (let i = 0; i < data.length; i += 4) {
-        if (data[i] >= threshold && data[i+1] >= threshold && data[i+2] >= threshold) {
-          data[i+3] = 0; // Make pixel transparent
-        }
+  removeBgBtn.addEventListener('click', function() {
+    // Ensure the canvas has an image
+    if (canvas.width === 0 || canvas.height === 0) {
+      alert("Please upload an image first.");
+      return;
+    }
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    // Set threshold value (lower if your image background is not pure white)
+    const threshold = 240;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i] >= threshold && data[i + 1] >= threshold && data[i + 2] >= threshold) {
+        data[i + 3] = 0; // Make pixel transparent
       }
-      ctx.putImageData(imgData, 0, 0);
-      templateImage.src = canvas.toDataURL();
     }
-    img.onerror = function() {
-      alert("Error processing image. Make sure the image allows cross-origin usage.");
-    }
+    ctx.putImageData(imageData, 0, 0);
   });
 </script>
 
