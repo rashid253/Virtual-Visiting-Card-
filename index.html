@@ -37,7 +37,6 @@
     .slides {
       display: flex;
       transition: transform 0.8s ease;
-      /* حذف کیا گیا: width: 400%; */
     }
     
     /* Each Slide: ہر سلائیڈ اپنی مکمل چوڑائی لیتا ہے */
@@ -329,6 +328,7 @@
         <button class="details-btn" data-card="4">View Details</button>
       </div>
     </div>
+    
   </div>
 </div>
 
@@ -420,9 +420,11 @@
   const DESC_LIMIT = 50;
   
   function enforceLimit(el, limit) {
-    let words = el.innerText.trim().split(/\s+/);
-    if(words.length > limit) {
-      el.innerText = words.slice(0, limit).join(" ");
+    // Use textContent to avoid unexpected formatting issues
+    let words = el.textContent.trim().split(/\s+/);
+    console.log(`Word count: ${words.length}`);
+    if (words.length > limit) {
+      el.textContent = words.slice(0, limit).join(" ");
       placeCaretAtEnd(el);
     }
   }
@@ -462,6 +464,12 @@
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
+        
+        // Fill canvas with white background to avoid black areas
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, width, height);
+        
+        // Draw the image on the canvas
         ctx.drawImage(img, 0, 0, width, height);
         callback(canvas.toDataURL('image/jpeg', 0.8));
       }
@@ -547,8 +555,8 @@
     }
     
     // Update card title and description
-    document.getElementById('title' + cardNum).innerText = newTitle;
-    document.getElementById('desc' + cardNum).innerText = newDesc;
+    document.getElementById('title' + cardNum).textContent = newTitle;
+    document.getElementById('desc' + cardNum).textContent = newDesc;
     
     // Update image position: update card-content flex-direction and card's data attribute
     const card = document.querySelector(`.card[data-card="${cardNum}"]`);
