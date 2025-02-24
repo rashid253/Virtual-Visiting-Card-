@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Auto Sliding Editable Carousel with Details Modal</title>
+  <title>Editable Carousel with Form & Layout Options</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,16 +12,17 @@
   <style>
     /* Reset */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #e6e9f0, #eef1f5);
+      padding: 20px;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
-      min-height: 100vh;
-      position: relative;
     }
+    
     /* Carousel Wrapper */
     .carousel-wrapper {
       position: relative;
@@ -30,78 +31,105 @@
       overflow: hidden;
       margin-bottom: 20px;
     }
+    
     /* Slides Container */
     .slides {
       display: flex;
       transition: transform 0.8s ease;
       width: 400%; /* 4 slides */
     }
-    /* Each Card/Slide */
+    
+    /* Each Slide */
     .slide {
       flex: 1 0 100%;
+      display: flex;
+      justify-content: center; /* Center the card horizontally */
       padding: 20px;
     }
-    /* Card Styles with Different Background Colors */
+    
+    /* Card Styles with Unique Colors */
     .card {
+      width: 90%;
+      max-width: 700px;
       border-radius: 12px;
-      padding: 16px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
       cursor: pointer;
       transition: transform 0.3s;
     }
     .card:hover { transform: scale(1.02); }
-    .card.card-1 { background: #fde2e2; width: 90%; margin: auto; }
-    .card.card-2 { background: #e2f0cb; width: 95%; margin: auto; }
-    .card.card-3 { background: #d0e6a5; width: 92%; margin: auto; }
-    .card.card-4 { background: #a8dadc; width: 88%; margin: auto; }
+    
+    /* Card 1: Light Red, dark red text */
+    .card.card-1 {
+      background: #fde2e2;
+      color: #7a1d1d;
+    }
+    /* Card 2: Light Green, dark green text */
+    .card.card-2 {
+      background: #e2f0cb;
+      color: #355e03;
+    }
+    /* Card 3: Light Olive, dark olive text */
+    .card.card-3 {
+      background: #d0e6a5;
+      color: #3b4e1d;
+    }
+    /* Card 4: Light Blue, dark blue text */
+    .card.card-4 {
+      background: #a8dadc;
+      color: #084c61;
+    }
+    
+    /* Card Content: Flex container for text and image */
+    .card-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 16px;
+    }
+    /* By default image on right side (row direction) */
+    .card-content.row {
+      flex-direction: row;
+    }
+    /* If image position left is selected */
+    .card-content.row-reverse {
+      flex-direction: row-reverse;
+    }
     
     /* Text Area */
     .text-area {
-      flex: none;
+      flex: 1;
     }
     .text-area h2,
     .text-area p {
-      margin: 0;
-      padding: 4px 0;
-      overflow-wrap: break-word;
+      margin-bottom: 8px;
+      word-wrap: break-word;
     }
     .text-area h2 {
       font-size: 1.8rem;
-      color: #333;
       font-weight: 600;
     }
     .text-area p {
       font-size: 1rem;
-      color: #555;
       line-height: 1.5;
     }
     .text-area [contenteditable="true"] {
-      border: 1px dashed #ccc;
+      border: 1px dashed rgba(0,0,0,0.3);
       padding: 4px;
       border-radius: 4px;
     }
-    .error {
-      color: red;
-      font-size: 0.9rem;
-      margin-top: -4px;
-    }
-    /* Image Upload Section */
+    
+    /* Image Area */
     .image-area {
-      text-align: center;
-      position: relative;
+      flex: 0 0 auto;
+      max-width: 300px;
     }
     .image-area img {
       width: 100%;
-      max-width: 300px;
       height: auto;
       object-fit: cover;
       border: 2px dashed #007bff;
-      margin: 0 auto;
-      display: block;
+      border-radius: 8px;
     }
     .upload-btn {
       margin-top: 8px;
@@ -114,7 +142,8 @@
       font-size: 0.9rem;
     }
     input[type="file"] { display: none; }
-    /* Details Option Button on Card */
+    
+    /* Details Button on Card */
     .details-btn {
       padding: 8px 16px;
       background: #28a745;
@@ -123,13 +152,13 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.9rem;
-      align-self: flex-start;
-      margin-top: auto;
+      margin: 16px;
     }
+    
     /* Centered Dots Navigation */
     .dots {
       text-align: center;
-      margin-top: 12px;
+      margin: 12px 0;
     }
     .dot {
       display: inline-block;
@@ -142,6 +171,43 @@
       transition: background 0.3s;
     }
     .dot.active { background: #ff007f; }
+    
+    /* Edit Form Styles */
+    form#editForm {
+      background: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+      margin-top: 30px;
+    }
+    form#editForm h3 { margin-bottom: 12px; color: #333; }
+    form#editForm label {
+      display: block;
+      margin: 8px 0 4px;
+      font-weight: 600;
+    }
+    form#editForm input[type="text"],
+    form#editForm textarea,
+    form#editForm select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    form#editForm textarea { resize: vertical; }
+    form#editForm button {
+      margin-top: 12px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
     
     /* Modal for Card Details */
     .modal {
@@ -176,11 +242,13 @@
       cursor: pointer;
       font-size: 1rem;
     }
-    /* Responsive adjustments */
+    
     @media (max-width: 600px) {
       .text-area h2 { font-size: 1.6rem; }
       .text-area p { font-size: 0.9rem; }
       .upload-btn, .details-btn, .dot { font-size: 0.8rem; }
+      .card-content { flex-direction: column; }
+      .image-area { max-width: 100%; }
     }
   </style>
 </head>
@@ -191,64 +259,71 @@
   <div class="slides">
     <!-- Slide 1 -->
     <div class="slide">
-      <div class="card card-1" data-card="1" data-details="تفصیلات برائے کارڈ 1: یہ ایک منفرد کارڈ ہے جس میں آپ مواد ایڈٹ کر سکتے ہیں۔">
-        <div class="text-area">
-          <h2 id="title1" contenteditable="true">Card 1 Title</h2>
-          <p id="desc1" contenteditable="true">Card 1 description goes here. (Keep title under 10 words and description under 50 words.)</p>
-          <div id="error1" class="error"></div>
-        </div>
-        <div class="image-area">
-          <img id="img1" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 1">
-          <button class="upload-btn" data-card="1">Upload Image</button>
-          <input type="file" class="file-input" data-card="1" accept="image/*">
+      <div class="card card-1" data-card="1" data-details="تفصیلات برائے کارڈ 1: یہ ایک منفرد کارڈ ہے جس میں آپ مواد ایڈٹ کر سکتے ہیں۔" data-img-pos="right">
+        <div class="card-content row">
+          <div class="text-area">
+            <h2 id="title1" contenteditable="true">Card 1 Title</h2>
+            <p id="desc1" contenteditable="true">Card 1 description goes here. (Keep title under 10 words and description under 50 words.)</p>
+          </div>
+          <div class="image-area">
+            <img id="img1" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 1">
+            <button class="upload-btn" data-card="1">Upload Image</button>
+            <input type="file" class="file-input" data-card="1" accept="image/*">
+          </div>
         </div>
         <button class="details-btn" data-card="1">View Details</button>
       </div>
     </div>
+    
     <!-- Slide 2 -->
     <div class="slide">
-      <div class="card card-2" data-card="2" data-details="تفصیلات برائے کارڈ 2: یہ کارڈ منفرد رنگ اور اسٹائل کے ساتھ آتا ہے۔">
-        <div class="text-area">
-          <h2 id="title2" contenteditable="true">Card 2 Title</h2>
-          <p id="desc2" contenteditable="true">Card 2 description goes here. (Keep title under 10 words and description under 50 words.)</p>
-          <div id="error2" class="error"></div>
-        </div>
-        <div class="image-area">
-          <img id="img2" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 2">
-          <button class="upload-btn" data-card="2">Upload Image</button>
-          <input type="file" class="file-input" data-card="2" accept="image/*">
+      <div class="card card-2" data-card="2" data-details="تفصیلات برائے کارڈ 2: یہ کارڈ منفرد رنگ اور اسٹائل کے ساتھ آتا ہے۔" data-img-pos="right">
+        <div class="card-content row">
+          <div class="text-area">
+            <h2 id="title2" contenteditable="true">Card 2 Title</h2>
+            <p id="desc2" contenteditable="true">Card 2 description goes here. (Keep title under 10 words and description under 50 words.)</p>
+          </div>
+          <div class="image-area">
+            <img id="img2" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 2">
+            <button class="upload-btn" data-card="2">Upload Image</button>
+            <input type="file" class="file-input" data-card="2" accept="image/*">
+          </div>
         </div>
         <button class="details-btn" data-card="2">View Details</button>
       </div>
     </div>
+    
     <!-- Slide 3 -->
     <div class="slide">
-      <div class="card card-3" data-card="3" data-details="تفصیلات برائے کارڈ 3: یہاں آپ کو مزید معلومات اور تخصیصات ملیں گی۔">
-        <div class="text-area">
-          <h2 id="title3" contenteditable="true">Card 3 Title</h2>
-          <p id="desc3" contenteditable="true">Card 3 description goes here. (Keep title under 10 words and description under 50 words.)</p>
-          <div id="error3" class="error"></div>
-        </div>
-        <div class="image-area">
-          <img id="img3" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 3">
-          <button class="upload-btn" data-card="3">Upload Image</button>
-          <input type="file" class="file-input" data-card="3" accept="image/*">
+      <div class="card card-3" data-card="3" data-details="تفصیلات برائے کارڈ 3: یہاں آپ کو مزید معلومات اور تخصیصات ملیں گی۔" data-img-pos="right">
+        <div class="card-content row">
+          <div class="text-area">
+            <h2 id="title3" contenteditable="true">Card 3 Title</h2>
+            <p id="desc3" contenteditable="true">Card 3 description goes here. (Keep title under 10 words and description under 50 words.)</p>
+          </div>
+          <div class="image-area">
+            <img id="img3" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 3">
+            <button class="upload-btn" data-card="3">Upload Image</button>
+            <input type="file" class="file-input" data-card="3" accept="image/*">
+          </div>
         </div>
         <button class="details-btn" data-card="3">View Details</button>
       </div>
     </div>
+    
     <!-- Slide 4 -->
     <div class="slide">
-      <div class="card card-4" data-card="4" data-details="تفصیلات برائے کارڈ 4: یہ کارڈ جدید ڈیزائن اور اسٹائل کے ساتھ ہے۔">
-        <div class="text-area">
-          <h2 id="title4" contenteditable="true">Card 4 Title</h2>
-          <p id="desc4" contenteditable="true">Card 4 description goes here. (Keep title under 10 words and description under 50 words.)</p>
-          <div id="error4" class="error"></div>
-        </div>
-        <div class="image-area">
-          <img id="img4" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 4">
-          <button class="upload-btn" data-card="4">Upload Image</button>
-          <input type="file" class="file-input" data-card="4" accept="image/*">
+      <div class="card card-4" data-card="4" data-details="تفصیلات برائے کارڈ 4: یہ کارڈ جدید ڈیزائن اور اسٹائل کے ساتھ ہے۔" data-img-pos="right">
+        <div class="card-content row">
+          <div class="text-area">
+            <h2 id="title4" contenteditable="true">Card 4 Title</h2>
+            <p id="desc4" contenteditable="true">Card 4 description goes here. (Keep title under 10 words and description under 50 words.)</p>
+          </div>
+          <div class="image-area">
+            <img id="img4" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 4">
+            <button class="upload-btn" data-card="4">Upload Image</button>
+            <input type="file" class="file-input" data-card="4" accept="image/*">
+          </div>
         </div>
         <button class="details-btn" data-card="4">View Details</button>
       </div>
@@ -263,6 +338,35 @@
   <span class="dot" data-index="2"></span>
   <span class="dot" data-index="3"></span>
 </div>
+
+<!-- Edit Form Section -->
+<form id="editForm">
+  <h3>Edit Card</h3>
+  <label for="cardSelect">Select Card:</label>
+  <select id="cardSelect">
+    <option value="1">Card 1</option>
+    <option value="2">Card 2</option>
+    <option value="3">Card 3</option>
+    <option value="4">Card 4</option>
+  </select>
+  
+  <label for="newTitle">Title (max 10 words):</label>
+  <input type="text" id="newTitle" placeholder="Enter new title" required>
+  
+  <label for="newDesc">Description (max 50 words):</label>
+  <textarea id="newDesc" rows="3" placeholder="Enter new description" required></textarea>
+  
+  <label for="newImage">Upload New Image (optional):</label>
+  <input type="file" id="newImage" accept="image/*">
+  
+  <label for="imgPosition">Image Position:</label>
+  <select id="imgPosition">
+    <option value="right" selected>Right</option>
+    <option value="left">Left</option>
+  </select>
+  
+  <button type="submit">Update Card</button>
+</form>
 
 <!-- Modal for Card Details -->
 <div class="modal" id="detailsModal">
@@ -293,12 +397,20 @@
     goToSlide(currentSlide + 1);
   }, 5000);
   
-  // Dots click functionality
+  // Pause auto slide for 30 seconds on user click
+  function pauseAutoSlide(duration = 30000) {
+    clearInterval(slideInterval);
+    setTimeout(() => {
+      slideInterval = setInterval(() => {
+        goToSlide(currentSlide + 1);
+      }, 5000);
+    }, duration);
+  }
+  
   dots.forEach(dot => {
     dot.addEventListener('click', function() {
-      clearInterval(slideInterval); // Reset auto slide timer on manual click
       goToSlide(parseInt(this.getAttribute('data-index')));
-      slideInterval = setInterval(() => { goToSlide(currentSlide + 1); }, 5000);
+      pauseAutoSlide();
     });
   });
   
@@ -333,7 +445,7 @@
     });
   });
   
-  // ---------- Image Upload within Carousel ----------
+  // ---------- Image Upload and Auto-Resize ----------
   function resizeImage(file, maxWidth, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -384,18 +496,16 @@
   const modalBody = document.getElementById('modalBody');
   const closeBtn = document.querySelector('.close-btn');
   
-  // Open modal when card or details button is clicked
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', function(e) {
-      // اگر کلک details button پر ہو تو دوبارہ modal نہ کھولیں
       if(e.target.classList.contains('upload-btn') || e.target.classList.contains('details-btn')) return;
       const detailsText = this.getAttribute('data-details') || "No details available.";
       modalBody.innerHTML = `<h3>Card ${this.getAttribute('data-card')} Details</h3><p>${detailsText}</p>`;
       modal.style.display = 'flex';
+      pauseAutoSlide();
     });
   });
   
-  // اگر صرف details button پر کلک ہو تو بھی modal کھلے
   document.querySelectorAll('.details-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -403,17 +513,65 @@
       const detailsText = card.getAttribute('data-details') || "No details available.";
       modalBody.innerHTML = `<h3>Card ${card.getAttribute('data-card')} Details</h3><p>${detailsText}</p>`;
       modal.style.display = 'flex';
+      pauseAutoSlide();
     });
   });
   
-  // Close modal
   closeBtn.addEventListener('click', function() {
     modal.style.display = 'none';
   });
+  
   window.addEventListener('click', function(e) {
-    if(e.target === modal) {
-      modal.style.display = 'none';
+    if(e.target === modal) modal.style.display = 'none';
+  });
+  
+  // ---------- Edit Form Functionality ----------
+  document.getElementById('editForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const cardNum = document.getElementById('cardSelect').value;
+    const newTitle = document.getElementById('newTitle').value.trim();
+    const newDesc = document.getElementById('newDesc').value.trim();
+    const imgPosition = document.getElementById('imgPosition').value; // "right" or "left"
+    const imageFile = document.getElementById('newImage').files[0];
+    
+    // Word limits check
+    if(newTitle.split(/\s+/).length > TITLE_LIMIT) {
+      alert("Title exceeds " + TITLE_LIMIT + " words.");
+      return;
     }
+    if(newDesc.split(/\s+/).length > DESC_LIMIT) {
+      alert("Description exceeds " + DESC_LIMIT + " words.");
+      return;
+    }
+    
+    // Update card title and description
+    document.getElementById('title' + cardNum).innerText = newTitle;
+    document.getElementById('desc' + cardNum).innerText = newDesc;
+    
+    // Update image position: set card-content flex-direction accordingly and update card's data attribute
+    const card = document.querySelector(`.card[data-card="${cardNum}"]`);
+    const cardContent = card.querySelector('.card-content');
+    if(imgPosition === "left") {
+      cardContent.classList.remove('row');
+      cardContent.classList.add('row-reverse');
+    } else {
+      cardContent.classList.remove('row-reverse');
+      cardContent.classList.add('row');
+    }
+    card.setAttribute('data-img-pos', imgPosition);
+    
+    // Update image if provided
+    if(imageFile) {
+      resizeImage(imageFile, 300, function(resizedDataUrl) {
+        const imageEl = document.getElementById('img' + cardNum);
+        imageEl.src = resizedDataUrl;
+        imageEl.style.border = 'none';
+      });
+    }
+    
+    alert("Card " + cardNum + " updated successfully!");
+    this.reset();
   });
 </script>
 
