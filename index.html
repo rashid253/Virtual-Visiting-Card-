@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Responsive Editable Carousel</title>
+  <title>Editable Carousel with Done Auto-Move</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,7 @@
       justify-content: center;
       align-items: center;
     }
-    /* Card Layout: two columns, text on left, image on right */
+    /* Card Layout: Two columns, text left and image right */
     .card {
       display: flex;
       flex-direction: row;
@@ -60,7 +60,7 @@
       background: #f9f9f9;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    /* Different card variations */
+    /* Card variations for visual variety */
     .card.card-1 { background: #fff0f5; }
     .card.card-2 { background: #f0ffff; }
     .card.card-3 { background: #f5fffa; }
@@ -72,7 +72,8 @@
       padding-right: 10px;
       overflow-wrap: break-word;
     }
-    .text-area h2, .text-area p {
+    .text-area h2,
+    .text-area p {
       margin-bottom: 8px;
     }
     .text-area h2 {
@@ -85,7 +86,7 @@
       color: #555;
       line-height: 1.5;
     }
-    /* Editable fields show dashed border */
+    /* When editing, show dashed border */
     .text-area [contenteditable="true"] {
       border: 1px dashed #ccc;
       padding: 4px;
@@ -123,19 +124,7 @@
     }
     input[type="file"] { display: none; }
     
-    /* Details Button */
-    .details-btn {
-      margin-top: 12px;
-      padding: 8px 16px;
-      background: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-    
-    /* Navigation Controls */
+    /* Navigation Controls (manual navigation) */
     .nav-controls {
       display: flex;
       justify-content: center;
@@ -167,7 +156,19 @@
     }
     .dot.active { background: #ff007f; }
     
-    /* Responsive adjustments */
+    /* Done Button */
+    #doneBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    
+    /* Responsive Adjustments */
     @media (max-width: 700px) {
       .card {
         flex-direction: column;
@@ -177,12 +178,8 @@
         margin-top: 12px;
         flex: none;
       }
-      .text-area {
-        padding-right: 0;
-      }
-      .image-area img {
-        max-width: 100%;
-      }
+      .text-area { padding-right: 0; }
+      .image-area img { max-width: 100%; }
     }
   </style>
 </head>
@@ -195,12 +192,10 @@
     <div class="slide">
       <div class="card card-1">
         <div class="text-area">
+          <!-- Default placeholder text so card isn't empty -->
           <h2 id="title1" contenteditable="true">Card 1 Title</h2>
-          <p id="desc1" contenteditable="true">
-            Card 1 description goes here. (Keep title under 10 words and description under 50 words.)
-          </p>
+          <p id="desc1" contenteditable="true">This is a sample description for card 1. Please edit as needed. (Max 10 words for title, 50 for description.)</p>
           <div id="error1" class="error"></div>
-          <button class="details-btn" data-card="1">Details</button>
         </div>
         <div class="image-area">
           <img id="img1" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 1">
@@ -214,11 +209,8 @@
       <div class="card card-2">
         <div class="text-area">
           <h2 id="title2" contenteditable="true">Card 2 Title</h2>
-          <p id="desc2" contenteditable="true">
-            Card 2 description goes here. (Keep title under 10 words and description under 50 words.)
-          </p>
+          <p id="desc2" contenteditable="true">This is a sample description for card 2. Edit to customize. (Max 10 words for title, 50 for description.)</p>
           <div id="error2" class="error"></div>
-          <button class="details-btn" data-card="2">Details</button>
         </div>
         <div class="image-area">
           <img id="img2" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 2">
@@ -232,11 +224,8 @@
       <div class="card card-3">
         <div class="text-area">
           <h2 id="title3" contenteditable="true">Card 3 Title</h2>
-          <p id="desc3" contenteditable="true">
-            Card 3 description goes here. (Keep title under 10 words and description under 50 words.)
-          </p>
+          <p id="desc3" contenteditable="true">This is a sample description for card 3. Edit as needed. (Max 10 words for title, 50 for description.)</p>
           <div id="error3" class="error"></div>
-          <button class="details-btn" data-card="3">Details</button>
         </div>
         <div class="image-area">
           <img id="img3" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 3">
@@ -250,11 +239,8 @@
       <div class="card card-4">
         <div class="text-area">
           <h2 id="title4" contenteditable="true">Card 4 Title</h2>
-          <p id="desc4" contenteditable="true">
-            Card 4 description goes here. (Keep title under 10 words and description under 50 words.)
-          </p>
+          <p id="desc4" contenteditable="true">This is a sample description for card 4. Edit as needed. (Max 10 words for title, 50 for description.)</p>
           <div id="error4" class="error"></div>
-          <button class="details-btn" data-card="4">Details</button>
         </div>
         <div class="image-area">
           <img id="img4" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 4">
@@ -266,17 +252,20 @@
   </div>
 </div>
 
-<!-- Navigation Controls -->
-<div class="nav-controls">
+<!-- Navigation Controls (visible during editing) -->
+<div class="nav-controls" id="navControls">
   <button id="prevBtn" class="nav-btn">Prev</button>
   <button id="nextBtn" class="nav-btn">Next</button>
 </div>
-<div class="dots">
+<div class="dots" id="dots">
   <span class="dot active" data-index="0"></span>
   <span class="dot" data-index="1"></span>
   <span class="dot" data-index="2"></span>
   <span class="dot" data-index="3"></span>
 </div>
+
+<!-- Global Done Button (to finalize editing and start auto-slide) -->
+<button id="doneBtn">Done</button>
 
 <script>
   // ---------- Manual Navigation ----------
@@ -306,13 +295,9 @@
   const TITLE_LIMIT = 10;
   const DESC_LIMIT = 50;
   
-  function countWords(text) {
-    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
-  }
-  
   function enforceLimit(el, limit) {
     let words = el.innerText.trim().split(/\s+/);
-    if (words.length > limit) {
+    if(words.length > limit) {
       el.innerText = words.slice(0, limit).join(" ");
       placeCaretAtEnd(el);
     }
@@ -332,7 +317,7 @@
   
   document.querySelectorAll('.text-area h2[contenteditable], .text-area p[contenteditable]').forEach(el => {
     el.addEventListener('input', function() {
-      if (el.tagName === "H2") enforceLimit(el, TITLE_LIMIT);
+      if(el.tagName === "H2") enforceLimit(el, TITLE_LIMIT);
       else enforceLimit(el, DESC_LIMIT);
     });
   });
@@ -344,9 +329,8 @@
       const img = new Image();
       img.onload = function() {
         const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        if (width > maxWidth) {
+        let width = img.width, height = img.height;
+        if(width > maxWidth) {
           height = height * (maxWidth / width);
           width = maxWidth;
         }
@@ -365,11 +349,11 @@
     input.addEventListener('change', function() {
       const cardNum = this.getAttribute('data-card');
       const file = this.files[0];
-      if (file) {
+      if(file) {
         resizeImage(file, 300, function(resizedDataUrl) {
-          document.getElementById('img' + cardNum).src = resizedDataUrl;
-          // Remove the dashed border after upload
-          document.getElementById('img' + cardNum).style.border = 'none';
+          const imageEl = document.getElementById('img' + cardNum);
+          imageEl.src = resizedDataUrl;
+          imageEl.style.border = 'none';
         });
       }
     });
@@ -382,13 +366,22 @@
     });
   });
   
-  // ---------- Details Button ----------
-  document.querySelectorAll('.details-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const cardNum = this.getAttribute('data-card');
-      alert("Details for Card " + cardNum + ":\n\nThis card features custom editable text (with word limits) on the left and an image upload (with auto-resize) on the right. Adjust as needed.");
-    });
+  // ---------- Done Button: Finalize Editing and Start Auto-Movement ----------
+  const doneBtn = document.getElementById('doneBtn');
+  let autoSlideInterval;
+  doneBtn.addEventListener('click', function() {
+    // Optional: validate that each card has nonempty text/image if needed.
+    // Hide manual navigation and done button.
+    document.getElementById('navControls').style.display = 'none';
+    document.getElementById('dots').style.display = 'none';
+    doneBtn.style.display = 'none';
+    
+    // Start auto slide every 4 seconds.
+    autoSlideInterval = setInterval(() => {
+      goToSlide(currentSlide + 1);
+    }, 4000);
   });
+  
 </script>
 
 </body>
