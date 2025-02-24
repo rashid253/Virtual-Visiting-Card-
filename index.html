@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Masterpiece Editable Carousel</title>
+  <title>Responsive Editable Carousel</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,7 @@
   <style>
     /* Reset */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #e6e9f0, #eef1f5);
@@ -19,54 +20,60 @@
       flex-direction: column;
       align-items: center;
       padding: 20px;
-      min-height: 100vh;
+      overflow-x: hidden;
     }
     /* Carousel Wrapper */
     .carousel-wrapper {
       position: relative;
       width: 100%;
-      max-width: 1000px;
+      max-width: 900px;
       overflow: hidden;
       margin-bottom: 20px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
     /* Slides Container */
     .slides {
       display: flex;
-      transition: transform 0.8s ease;
+      transition: transform 0.6s ease;
       width: 400%; /* 4 slides */
     }
-    /* Each Card/Slide */
+    /* Each Slide */
     .slide {
       flex: 1 0 100%;
       padding: 20px;
-    }
-    /* Each Card has a unique style */
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      overflow: hidden;
-      /* Default internal layout: text on top, image area below, details button */
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      justify-content: center;
+      align-items: center;
     }
-    /* Example different styles */
-    .card.card-1 { background: #fff0f5; width: 90%; margin: auto; }
-    .card.card-2 { background: #f0ffff; width: 95%; margin: auto; }
-    .card.card-3 { background: #f5fffa; width: 92%; margin: auto; }
-    .card.card-4 { background: #fffaf0; width: 88%; margin: auto; }
+    /* Card Layout: two columns, text on left, image on right */
+    .card {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 850px;
+      padding: 16px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    /* Different card variations */
+    .card.card-1 { background: #fff0f5; }
+    .card.card-2 { background: #f0ffff; }
+    .card.card-3 { background: #f5fffa; }
+    .card.card-4 { background: #fffaf0; }
     
-    /* Text Area */
+    /* Text Area (Left Side) */
     .text-area {
-      flex: none;
-    }
-    .text-area h2,
-    .text-area p {
-      margin: 0;
-      padding: 4px 0;
+      flex: 1;
+      padding-right: 10px;
       overflow-wrap: break-word;
+    }
+    .text-area h2, .text-area p {
+      margin-bottom: 8px;
     }
     .text-area h2 {
       font-size: 1.8rem;
@@ -78,20 +85,21 @@
       color: #555;
       line-height: 1.5;
     }
-    /* Editable borders when active */
+    /* Editable fields show dashed border */
     .text-area [contenteditable="true"] {
       border: 1px dashed #ccc;
       padding: 4px;
       border-radius: 4px;
     }
-    /* Error message for word limits */
     .error {
       color: red;
       font-size: 0.9rem;
       margin-top: -4px;
     }
-    /* Image Upload Section */
+    
+    /* Image Area (Right Side) */
     .image-area {
+      flex: 0 0 300px;
       text-align: center;
       position: relative;
     }
@@ -101,14 +109,11 @@
       height: auto;
       object-fit: cover;
       border-radius: 8px;
-      /* Initially show dashed border */
       border: 2px dashed #007bff;
-      margin: 0 auto;
-      display: block;
     }
     .upload-btn {
       margin-top: 8px;
-      padding: 8px 16px;
+      padding: 8px 14px;
       background: #007bff;
       color: #fff;
       border: none;
@@ -117,8 +122,10 @@
       font-size: 0.9rem;
     }
     input[type="file"] { display: none; }
+    
     /* Details Button */
     .details-btn {
+      margin-top: 12px;
       padding: 8px 16px;
       background: #28a745;
       color: #fff;
@@ -126,8 +133,8 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.9rem;
-      align-self: flex-start;
     }
+    
     /* Navigation Controls */
     .nav-controls {
       display: flex;
@@ -146,7 +153,7 @@
     }
     .dots {
       text-align: center;
-      margin-top: 12px;
+      margin-top: 10px;
     }
     .dot {
       display: inline-block;
@@ -161,10 +168,21 @@
     .dot.active { background: #ff007f; }
     
     /* Responsive adjustments */
-    @media (max-width: 600px) {
-      .text-area h2 { font-size: 1.6rem; }
-      .text-area p { font-size: 0.9rem; }
-      .upload-btn, .details-btn, .nav-btn { font-size: 0.8rem; }
+    @media (max-width: 700px) {
+      .card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .image-area {
+        margin-top: 12px;
+        flex: none;
+      }
+      .text-area {
+        padding-right: 0;
+      }
+      .image-area img {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -178,15 +196,17 @@
       <div class="card card-1">
         <div class="text-area">
           <h2 id="title1" contenteditable="true">Card 1 Title</h2>
-          <p id="desc1" contenteditable="true">Card 1 description goes here. (Keep title under 10 words and description under 50 words.)</p>
+          <p id="desc1" contenteditable="true">
+            Card 1 description goes here. (Keep title under 10 words and description under 50 words.)
+          </p>
           <div id="error1" class="error"></div>
+          <button class="details-btn" data-card="1">Details</button>
         </div>
         <div class="image-area">
           <img id="img1" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 1">
           <button class="upload-btn" data-card="1">Upload Image</button>
           <input type="file" class="file-input" data-card="1" accept="image/*">
         </div>
-        <button class="details-btn" data-card="1">Details</button>
       </div>
     </div>
     <!-- Slide 2 -->
@@ -194,15 +214,17 @@
       <div class="card card-2">
         <div class="text-area">
           <h2 id="title2" contenteditable="true">Card 2 Title</h2>
-          <p id="desc2" contenteditable="true">Card 2 description goes here. (Keep title under 10 words and description under 50 words.)</p>
+          <p id="desc2" contenteditable="true">
+            Card 2 description goes here. (Keep title under 10 words and description under 50 words.)
+          </p>
           <div id="error2" class="error"></div>
+          <button class="details-btn" data-card="2">Details</button>
         </div>
         <div class="image-area">
           <img id="img2" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 2">
           <button class="upload-btn" data-card="2">Upload Image</button>
           <input type="file" class="file-input" data-card="2" accept="image/*">
         </div>
-        <button class="details-btn" data-card="2">Details</button>
       </div>
     </div>
     <!-- Slide 3 -->
@@ -210,15 +232,17 @@
       <div class="card card-3">
         <div class="text-area">
           <h2 id="title3" contenteditable="true">Card 3 Title</h2>
-          <p id="desc3" contenteditable="true">Card 3 description goes here. (Keep title under 10 words and description under 50 words.)</p>
+          <p id="desc3" contenteditable="true">
+            Card 3 description goes here. (Keep title under 10 words and description under 50 words.)
+          </p>
           <div id="error3" class="error"></div>
+          <button class="details-btn" data-card="3">Details</button>
         </div>
         <div class="image-area">
           <img id="img3" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 3">
           <button class="upload-btn" data-card="3">Upload Image</button>
           <input type="file" class="file-input" data-card="3" accept="image/*">
         </div>
-        <button class="details-btn" data-card="3">Details</button>
       </div>
     </div>
     <!-- Slide 4 -->
@@ -226,15 +250,17 @@
       <div class="card card-4">
         <div class="text-area">
           <h2 id="title4" contenteditable="true">Card 4 Title</h2>
-          <p id="desc4" contenteditable="true">Card 4 description goes here. (Keep title under 10 words and description under 50 words.)</p>
+          <p id="desc4" contenteditable="true">
+            Card 4 description goes here. (Keep title under 10 words and description under 50 words.)
+          </p>
           <div id="error4" class="error"></div>
+          <button class="details-btn" data-card="4">Details</button>
         </div>
         <div class="image-area">
           <img id="img4" src="https://via.placeholder.com/300x200.png?text=Upload+Image" alt="Image 4">
           <button class="upload-btn" data-card="4">Upload Image</button>
           <input type="file" class="file-input" data-card="4" accept="image/*">
         </div>
-        <button class="details-btn" data-card="4">Details</button>
       </div>
     </div>
   </div>
@@ -253,14 +279,14 @@
 </div>
 
 <script>
-  // Manual navigation variables
+  // ---------- Manual Navigation ----------
   const slidesContainer = document.querySelector('.slides');
   const dots = document.querySelectorAll('.dot');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
   let currentSlide = 0;
   const totalSlides = dots.length;
-
+  
   function goToSlide(n) {
     currentSlide = (n + totalSlides) % totalSlides;
     slidesContainer.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
@@ -286,7 +312,7 @@
   
   function enforceLimit(el, limit) {
     let words = el.innerText.trim().split(/\s+/);
-    if(words.length > limit) {
+    if (words.length > limit) {
       el.innerText = words.slice(0, limit).join(" ");
       placeCaretAtEnd(el);
     }
@@ -306,13 +332,12 @@
   
   document.querySelectorAll('.text-area h2[contenteditable], .text-area p[contenteditable]').forEach(el => {
     el.addEventListener('input', function() {
-      if(el.tagName === "H2") enforceLimit(el, TITLE_LIMIT);
+      if (el.tagName === "H2") enforceLimit(el, TITLE_LIMIT);
       else enforceLimit(el, DESC_LIMIT);
     });
   });
   
   // ---------- Image Upload with Auto-Resize ----------
-  // Resize the image using a canvas (max width: 300px, maintain aspect ratio)
   function resizeImage(file, maxWidth, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -329,7 +354,7 @@
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL('image/jpeg', 0.8)); // quality 80%
+        callback(canvas.toDataURL('image/jpeg', 0.8));
       }
       img.src = e.target.result;
     }
@@ -340,18 +365,16 @@
     input.addEventListener('change', function() {
       const cardNum = this.getAttribute('data-card');
       const file = this.files[0];
-      if(file) {
+      if (file) {
         resizeImage(file, 300, function(resizedDataUrl) {
-          const imageEl = document.getElementById('img' + cardNum);
-          imageEl.src = resizedDataUrl;
-          // Remove dashed border after upload
-          imageEl.style.border = 'none';
+          document.getElementById('img' + cardNum).src = resizedDataUrl;
+          // Remove the dashed border after upload
+          document.getElementById('img' + cardNum).style.border = 'none';
         });
       }
     });
   });
   
-  // Bind upload buttons to corresponding file inputs
   document.querySelectorAll('.upload-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const cardNum = this.getAttribute('data-card');
@@ -359,11 +382,11 @@
     });
   });
   
-  // ---------- Details Button (Clickable for more info) ----------
+  // ---------- Details Button ----------
   document.querySelectorAll('.details-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const cardNum = this.getAttribute('data-card');
-      alert("Details for Card " + cardNum + ":\n\nThis is a masterpiece card with custom styling. Edit text with word limits and upload an image that auto-resizes for optimal bandwidth usage.");
+      alert("Details for Card " + cardNum + ":\n\nThis card features custom editable text (with word limits) on the left and an image upload (with auto-resize) on the right. Adjust as needed.");
     });
   });
 </script>
