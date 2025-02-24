@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Beautiful Editable Template</title>
+  <title>Modern Responsive Editable Template</title>
   <!-- Google Fonts for modern typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,53 +14,59 @@
     body {
       margin: 0;
       padding: 20px;
-      background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+      background: linear-gradient(135deg, #e6e9f0, #eef1f5);
       font-family: 'Poppins', sans-serif;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       min-height: 100vh;
     }
     .template-container {
-      width: 800px;
-      max-width: 90%;
+      width: 90%;
+      max-width: 800px;
       background: #fff;
       border-radius: 16px;
-      overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
       display: flex;
+      flex-direction: row;
       transition: transform 0.3s ease;
     }
     .template-container:hover {
       transform: scale(1.02);
     }
-    /* Left Side: Text Content */
-    .content {
+    /* Text & Image section in one card */
+    .content-section {
       flex: 1;
-      padding: 30px 40px;
-      background: linear-gradient(180deg, #ffffff, #f7f7f7);
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      padding: 20px;
+    }
+    /* Editable text area */
+    .text-content {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      position: relative;
     }
-    .content h2,
-    .content p {
-      margin-bottom: 20px;
+    .text-content h2,
+    .text-content p {
+      margin-bottom: 16px;
       transition: border 0.3s ease;
     }
-    .content h2[contenteditable="true"],
-    .content p[contenteditable="true"] {
+    .text-content h2[contenteditable="true"],
+    .text-content p[contenteditable="true"] {
       border: 2px dashed #ccc;
       padding: 8px;
       border-radius: 8px;
     }
-    .content h2 {
-      font-size: 2rem;
+    .text-content h2 {
+      font-size: 1.8rem;
       color: #ff007f;
       font-weight: 600;
     }
-    .content p {
+    .text-content p {
       font-size: 1rem;
       color: #555;
       line-height: 1.5;
@@ -68,12 +74,12 @@
     .error {
       color: red;
       font-size: 0.9rem;
-      margin-top: -10px;
-      margin-bottom: 10px;
+      margin-top: -8px;
+      margin-bottom: 8px;
     }
     .edit-btn {
-      align-self: center;
-      padding: 12px 30px;
+      align-self: flex-start;
+      padding: 10px 24px;
       background: #ff007f;
       color: #fff;
       border: none;
@@ -82,35 +88,36 @@
       font-size: 1rem;
       font-weight: 600;
       transition: background 0.3s ease;
+      margin-top: 8px;
     }
     .edit-btn:hover {
       background: #e60073;
     }
-    /* Right Side: Image Upload */
-    .image-section {
-      flex: 1;
-      padding: 30px;
-      background: linear-gradient(180deg, #ffffff, #f9f9f9);
+    /* Image section */
+    .image-content {
+      flex: 0 0 280px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      border-left: 1px solid #f0f0f0;
+      padding-left: 20px;
     }
-    .image-section img {
+    .image-content img {
       width: 100%;
-      max-width: 300px;
-      height: 220px;
+      max-width: 260px;
+      height: auto;
       object-fit: cover;
       border-radius: 12px;
       border: 3px solid #ff007f;
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-    .image-section img:hover {
+    .image-content img:hover {
       transform: scale(1.05);
     }
     .img-upload-btn {
-      margin-top: 15px;
+      margin-top: 12px;
       padding: 10px 20px;
       background: #007bff;
       color: #fff;
@@ -126,25 +133,41 @@
     input[type="file"] {
       display: none;
     }
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      .template-container {
+        flex-direction: column;
+      }
+      .content-section {
+        flex-direction: column;
+      }
+      .image-content {
+        border-left: none;
+        padding-left: 0;
+        margin-top: 20px;
+      }
+    }
   </style>
 </head>
 <body>
 
 <div class="template-container">
-  <!-- Left Side: Editable Text -->
-  <div class="content">
-    <h2 id="templateTitle" contenteditable="false">Your Beautiful Title</h2>
-    <p id="templateDescription" contenteditable="false">
-      This is your custom description. Click "Edit Template" to modify the text. Please keep the title under 10 words and description under 50 words.
-    </p>
-    <div id="textError" class="error"></div>
-    <button id="toggleEdit" class="edit-btn">Edit Template</button>
-  </div>
-  <!-- Right Side: Image Upload -->
-  <div class="image-section">
-    <img id="templateImage" src="https://via.placeholder.com/300x220.png?text=Upload+Your+Image" alt="Template Image">
-    <button id="uploadImageBtn" class="img-upload-btn">Upload Image</button>
-    <input type="file" id="imageInput" accept="image/*">
+  <div class="content-section">
+    <!-- Editable text area -->
+    <div class="text-content">
+      <h2 id="templateTitle" contenteditable="false">Your Beautiful Title</h2>
+      <p id="templateDescription" contenteditable="false">
+        This is your custom description. Click "Edit Template" to modify the text. Please keep the title under 10 words and description under 50 words.
+      </p>
+      <div id="textError" class="error"></div>
+      <button id="toggleEdit" class="edit-btn">Edit Template</button>
+    </div>
+    <!-- Image upload area -->
+    <div class="image-content">
+      <img id="templateImage" src="https://via.placeholder.com/260x180.png?text=Upload+Your+Image" alt="Template Image">
+      <button id="uploadImageBtn" class="img-upload-btn">Upload Image</button>
+      <input type="file" id="imageInput" accept="image/*">
+    </div>
   </div>
 </div>
 
@@ -158,7 +181,7 @@
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   }
   
-  // Enforce word limit by truncating extra words (called on input)
+  // Enforce word limit by truncating extra words on input
   function enforceWordLimit(el, limit) {
     let words = el.innerText.trim().split(/\s+/);
     if (words.length > limit) {
@@ -170,8 +193,8 @@
   // Place caret at end of contenteditable element
   function placeCaretAtEnd(el) {
     el.focus();
-    if (typeof window.getSelection != "undefined"
-        && typeof document.createRange != "undefined") {
+    if (typeof window.getSelection !== "undefined"
+        && typeof document.createRange !== "undefined") {
       let range = document.createRange();
       range.selectNodeContents(el);
       range.collapse(false);
