@@ -208,6 +208,13 @@
       cursor: pointer;
       font-size: 1rem;
     }
+    /* Details Countdown */
+    #detailsCounter {
+      text-align: right;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: #555;
+    }
     
     /* Modal for Card Details */
     .modal {
@@ -259,7 +266,7 @@
   <div class="slides">
     <!-- Slide 1 -->
     <div class="slide">
-      <div class="card card-1" data-card="1" data-details="تفصیلات برائے کارڈ 1: یہ ایک منفرد کارڈ ہے جس میں آپ مواد ایڈٹ کر سکتے ہیں۔" data-img-pos="right">
+      <div class="card card-1" data-card="1" data-details="" data-img-pos="right">
         <div class="card-content row">
           <div class="text-area">
             <h2 id="title1" contenteditable="true">Card 1 Title</h2>
@@ -277,7 +284,7 @@
     
     <!-- Slide 2 -->
     <div class="slide">
-      <div class="card card-2" data-card="2" data-details="تفصیلات برائے کارڈ 2: یہ کارڈ منفرد رنگ اور اسٹائل کے ساتھ آتا ہے۔" data-img-pos="right">
+      <div class="card card-2" data-card="2" data-details="" data-img-pos="right">
         <div class="card-content row">
           <div class="text-area">
             <h2 id="title2" contenteditable="true">Card 2 Title</h2>
@@ -295,7 +302,7 @@
     
     <!-- Slide 3 -->
     <div class="slide">
-      <div class="card card-3" data-card="3" data-details="تفصیلات برائے کارڈ 3: یہاں آپ کو مزید معلومات اور تخصیصات ملیں گی۔" data-img-pos="right">
+      <div class="card card-3" data-card="3" data-details="" data-img-pos="right">
         <div class="card-content row">
           <div class="text-area">
             <h2 id="title3" contenteditable="true">Card 3 Title</h2>
@@ -313,7 +320,7 @@
     
     <!-- Slide 4 -->
     <div class="slide">
-      <div class="card card-4" data-card="4" data-details="تفصیلات برائے کارڈ 4: یہ کارڈ جدید ڈیزائن اور اسٹائل کے ساتھ ہے۔" data-img-pos="right">
+      <div class="card card-4" data-card="4" data-details="" data-img-pos="right">
         <div class="card-content row">
           <div class="text-area">
             <h2 id="title4" contenteditable="true">Card 4 Title</h2>
@@ -343,6 +350,7 @@
 <!-- Edit Form Section -->
 <form id="editForm">
   <h3>Edit Card</h3>
+  
   <label for="cardSelect">Select Card:</label>
   <select id="cardSelect">
     <option value="1">Card 1</option>
@@ -356,6 +364,11 @@
   
   <label for="newDesc">Description (max 50 words):</label>
   <textarea id="newDesc" rows="3" placeholder="Enter new description" required></textarea>
+  
+  <!-- New Details Field with Countdown -->
+  <label for="newDetails">Details (max 100 words):</label>
+  <textarea id="newDetails" rows="3" placeholder="Enter card details" required></textarea>
+  <div id="detailsCounter">100 words remaining</div>
   
   <label for="newImage">Upload New Image (optional):</label>
   <input type="file" id="newImage" accept="image/*">
@@ -422,7 +435,6 @@
   function enforceLimit(el, limit) {
     // Use textContent to avoid unexpected formatting issues
     let words = el.textContent.trim().split(/\s+/);
-    console.log(`Word count: ${words.length}`);
     if (words.length > limit) {
       el.textContent = words.slice(0, limit).join(" ");
       placeCaretAtEnd(el);
@@ -448,25 +460,26 @@
     });
   });
   
-  // ---------- Image Upload and Auto-Resize ----------
-  function resizeImage(file, maxWidth, callback) {
+  // ---------- Image Upload and Auto-Resize with Card Background Fill ----------
+  // Updated resizeImage now accepts a fillColor parameter.
+  function resizeImage(file, maxWidth, fillColor, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
       const img = new Image();
       img.onload = function() {
-        const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
         if (width > maxWidth) {
           height = height * (maxWidth / width);
           width = maxWidth;
         }
+        const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         
-        // Fill canvas with white background to avoid black areas
-        ctx.fillStyle = "#fff";
+        // Fill canvas with the given fillColor (card's background color)
+        ctx.fillStyle = fillColor;
         ctx.fillRect(0, 0, width, height);
         
         // Draw the image on the canvas
@@ -478,12 +491,16 @@
     reader.readAsDataURL(file);
   }
   
+  // For individual card image uploads
   document.querySelectorAll('.file-input').forEach(input => {
     input.addEventListener('change', function() {
       const cardNum = this.getAttribute('data-card');
       const file = this.files[0];
       if(file) {
-        resizeImage(file, 300, function(resizedDataUrl) {
+        const card = document.querySelector('.card[data-card="' + cardNum + '"]');
+        // Get the card's background color
+        const fillColor = window.getComputedStyle(card).backgroundColor;
+        resizeImage(file, 300, fillColor, function(resizedDataUrl) {
           const imageEl = document.getElementById('img' + cardNum);
           imageEl.src = resizedDataUrl;
           imageEl.style.border = 'none';
@@ -492,6 +509,7 @@
     });
   });
   
+  // For upload button click on card
   document.querySelectorAll('.upload-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -507,6 +525,7 @@
   
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', function(e) {
+      // Ignore clicks on upload or details buttons
       if(e.target.classList.contains('upload-btn') || e.target.classList.contains('details-btn')) return;
       const detailsText = this.getAttribute('data-details') || "No details available.";
       modalBody.innerHTML = `<h3>Card ${this.getAttribute('data-card')} Details</h3><p>${detailsText}</p>`;
@@ -534,6 +553,23 @@
     if(e.target === modal) modal.style.display = 'none';
   });
   
+  // ---------- Details Field Countdown ----------
+  const DETAILS_LIMIT = 100;
+  const detailsTextarea = document.getElementById('newDetails');
+  const detailsCounter = document.getElementById('detailsCounter');
+  
+  detailsTextarea.addEventListener('input', function() {
+    let words = this.value.trim().split(/\s+/).filter(word => word.length > 0);
+    let count = words.length;
+    let remaining = DETAILS_LIMIT - count;
+    detailsCounter.textContent = remaining + " words remaining";
+    if(remaining < 0){
+      detailsCounter.style.color = "red";
+    } else {
+      detailsCounter.style.color = "";
+    }
+  });
+  
   // ---------- Edit Form Functionality ----------
   document.getElementById('editForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -541,6 +577,7 @@
     const cardNum = document.getElementById('cardSelect').value;
     const newTitle = document.getElementById('newTitle').value.trim();
     const newDesc = document.getElementById('newDesc').value.trim();
+    const newDetails = document.getElementById('newDetails').value.trim();
     const imgPosition = document.getElementById('imgPosition').value; // "right" or "left"
     const imageFile = document.getElementById('newImage').files[0];
     
@@ -553,13 +590,20 @@
       alert("Description exceeds " + DESC_LIMIT + " words.");
       return;
     }
+    if(newDetails.split(/\s+/).filter(word => word.length > 0).length > DETAILS_LIMIT) {
+      alert("Details exceed " + DETAILS_LIMIT + " words.");
+      return;
+    }
     
     // Update card title and description
     document.getElementById('title' + cardNum).textContent = newTitle;
     document.getElementById('desc' + cardNum).textContent = newDesc;
     
-    // Update image position: update card-content flex-direction and card's data attribute
+    // Update card details from the form field
     const card = document.querySelector(`.card[data-card="${cardNum}"]`);
+    card.setAttribute('data-details', newDetails);
+    
+    // Update image position: update card-content flex-direction and card's data attribute
     const cardContent = card.querySelector('.card-content');
     if(imgPosition === "left") {
       cardContent.classList.remove('row');
@@ -572,7 +616,9 @@
     
     // Update image if provided
     if(imageFile) {
-      resizeImage(imageFile, 300, function(resizedDataUrl) {
+      // Get the card's background color for filling
+      const fillColor = window.getComputedStyle(card).backgroundColor;
+      resizeImage(imageFile, 300, fillColor, function(resizedDataUrl) {
         const imageEl = document.getElementById('img' + cardNum);
         imageEl.src = resizedDataUrl;
         imageEl.style.border = 'none';
@@ -581,6 +627,7 @@
     
     alert("Card " + cardNum + " updated successfully!");
     this.reset();
+    detailsCounter.textContent = DETAILS_LIMIT + " words remaining";
   });
 </script>
 
