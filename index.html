@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Masterpiece Editable Carousel with Edit Form</title>
+  <title>Auto Sliding Editable Carousel with Details Modal</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +20,7 @@
       align-items: center;
       padding: 20px;
       min-height: 100vh;
+      position: relative;
     }
     /* Carousel Wrapper */
     .carousel-wrapper {
@@ -40,9 +41,8 @@
       flex: 1 0 100%;
       padding: 20px;
     }
-    /* Each Card has a unique style */
+    /* Card Styles with Different Background Colors */
     .card {
-      background: #fff;
       border-radius: 12px;
       padding: 16px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
@@ -50,11 +50,14 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      cursor: pointer;
+      transition: transform 0.3s;
     }
-    .card.card-1 { background: #fff0f5; width: 90%; margin: auto; }
-    .card.card-2 { background: #f0ffff; width: 95%; margin: auto; }
-    .card.card-3 { background: #f5fffa; width: 92%; margin: auto; }
-    .card.card-4 { background: #fffaf0; width: 88%; margin: auto; }
+    .card:hover { transform: scale(1.02); }
+    .card.card-1 { background: #fde2e2; width: 90%; margin: auto; }
+    .card.card-2 { background: #e2f0cb; width: 95%; margin: auto; }
+    .card.card-3 { background: #d0e6a5; width: 92%; margin: auto; }
+    .card.card-4 { background: #a8dadc; width: 88%; margin: auto; }
     
     /* Text Area */
     .text-area {
@@ -68,7 +71,7 @@
     }
     .text-area h2 {
       font-size: 1.8rem;
-      color: #ff007f;
+      color: #333;
       font-weight: 600;
     }
     .text-area p {
@@ -111,7 +114,7 @@
       font-size: 0.9rem;
     }
     input[type="file"] { display: none; }
-    /* Details Button */
+    /* Details Option Button on Card */
     .details-btn {
       padding: 8px 16px;
       background: #28a745;
@@ -121,23 +124,9 @@
       cursor: pointer;
       font-size: 0.9rem;
       align-self: flex-start;
+      margin-top: auto;
     }
-    /* Navigation Controls */
-    .nav-controls {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 10px;
-    }
-    .nav-btn {
-      padding: 8px 16px;
-      background: #ff007f;
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
+    /* Centered Dots Navigation */
     .dots {
       text-align: center;
       margin-top: 12px;
@@ -153,39 +142,37 @@
       transition: background 0.3s;
     }
     .dot.active { background: #ff007f; }
-    /* Form Styles */
-    form#editForm {
+    
+    /* Modal for Card Details */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-content {
       background: #fff;
-      padding: 16px;
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       max-width: 500px;
       width: 100%;
-      margin-top: 30px;
+      position: relative;
     }
-    form#editForm h3 { margin-bottom: 12px; color: #333; }
-    form#editForm label {
-      display: block;
-      margin: 8px 0 4px;
-      font-weight: 600;
-    }
-    form#editForm input[type="text"],
-    form#editForm textarea,
-    form#editForm select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-    form#editForm textarea { resize: vertical; }
-    form#editForm button {
-      margin-top: 12px;
-      padding: 10px 20px;
-      background: #007bff;
+    .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: #ff007f;
       color: #fff;
       border: none;
-      border-radius: 4px;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
       cursor: pointer;
       font-size: 1rem;
     }
@@ -193,7 +180,7 @@
     @media (max-width: 600px) {
       .text-area h2 { font-size: 1.6rem; }
       .text-area p { font-size: 0.9rem; }
-      .upload-btn, .details-btn, .nav-btn { font-size: 0.8rem; }
+      .upload-btn, .details-btn, .dot { font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -204,7 +191,7 @@
   <div class="slides">
     <!-- Slide 1 -->
     <div class="slide">
-      <div class="card card-1">
+      <div class="card card-1" data-card="1" data-details="تفصیلات برائے کارڈ 1: یہ ایک منفرد کارڈ ہے جس میں آپ مواد ایڈٹ کر سکتے ہیں۔">
         <div class="text-area">
           <h2 id="title1" contenteditable="true">Card 1 Title</h2>
           <p id="desc1" contenteditable="true">Card 1 description goes here. (Keep title under 10 words and description under 50 words.)</p>
@@ -215,12 +202,12 @@
           <button class="upload-btn" data-card="1">Upload Image</button>
           <input type="file" class="file-input" data-card="1" accept="image/*">
         </div>
-        <button class="details-btn" data-card="1">Details</button>
+        <button class="details-btn" data-card="1">View Details</button>
       </div>
     </div>
     <!-- Slide 2 -->
     <div class="slide">
-      <div class="card card-2">
+      <div class="card card-2" data-card="2" data-details="تفصیلات برائے کارڈ 2: یہ کارڈ منفرد رنگ اور اسٹائل کے ساتھ آتا ہے۔">
         <div class="text-area">
           <h2 id="title2" contenteditable="true">Card 2 Title</h2>
           <p id="desc2" contenteditable="true">Card 2 description goes here. (Keep title under 10 words and description under 50 words.)</p>
@@ -231,12 +218,12 @@
           <button class="upload-btn" data-card="2">Upload Image</button>
           <input type="file" class="file-input" data-card="2" accept="image/*">
         </div>
-        <button class="details-btn" data-card="2">Details</button>
+        <button class="details-btn" data-card="2">View Details</button>
       </div>
     </div>
     <!-- Slide 3 -->
     <div class="slide">
-      <div class="card card-3">
+      <div class="card card-3" data-card="3" data-details="تفصیلات برائے کارڈ 3: یہاں آپ کو مزید معلومات اور تخصیصات ملیں گی۔">
         <div class="text-area">
           <h2 id="title3" contenteditable="true">Card 3 Title</h2>
           <p id="desc3" contenteditable="true">Card 3 description goes here. (Keep title under 10 words and description under 50 words.)</p>
@@ -247,12 +234,12 @@
           <button class="upload-btn" data-card="3">Upload Image</button>
           <input type="file" class="file-input" data-card="3" accept="image/*">
         </div>
-        <button class="details-btn" data-card="3">Details</button>
+        <button class="details-btn" data-card="3">View Details</button>
       </div>
     </div>
     <!-- Slide 4 -->
     <div class="slide">
-      <div class="card card-4">
+      <div class="card card-4" data-card="4" data-details="تفصیلات برائے کارڈ 4: یہ کارڈ جدید ڈیزائن اور اسٹائل کے ساتھ ہے۔">
         <div class="text-area">
           <h2 id="title4" contenteditable="true">Card 4 Title</h2>
           <p id="desc4" contenteditable="true">Card 4 description goes here. (Keep title under 10 words and description under 50 words.)</p>
@@ -263,17 +250,13 @@
           <button class="upload-btn" data-card="4">Upload Image</button>
           <input type="file" class="file-input" data-card="4" accept="image/*">
         </div>
-        <button class="details-btn" data-card="4">Details</button>
+        <button class="details-btn" data-card="4">View Details</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Navigation Controls -->
-<div class="nav-controls">
-  <button id="prevBtn" class="nav-btn">Prev</button>
-  <button id="nextBtn" class="nav-btn">Next</button>
-</div>
+<!-- Centered Dots Navigation -->
 <div class="dots">
   <span class="dot active" data-index="0"></span>
   <span class="dot" data-index="1"></span>
@@ -281,38 +264,23 @@
   <span class="dot" data-index="3"></span>
 </div>
 
-<!-- Edit Form Section -->
-<form id="editForm">
-  <h3>Edit Card</h3>
-  <label for="cardSelect">Select Card:</label>
-  <select id="cardSelect">
-    <option value="1">Card 1</option>
-    <option value="2">Card 2</option>
-    <option value="3">Card 3</option>
-    <option value="4">Card 4</option>
-  </select>
-  
-  <label for="newTitle">Title (max 10 words):</label>
-  <input type="text" id="newTitle" placeholder="Enter new title" required>
-  
-  <label for="newDesc">Description (max 50 words):</label>
-  <textarea id="newDesc" rows="3" placeholder="Enter new description" required></textarea>
-  
-  <label for="newImage">Upload New Image (optional):</label>
-  <input type="file" id="newImage" accept="image/*">
-  
-  <button type="submit">Update Card</button>
-</form>
+<!-- Modal for Card Details -->
+<div class="modal" id="detailsModal">
+  <div class="modal-content">
+    <button class="close-btn">&times;</button>
+    <div id="modalBody">
+      <!-- Details will be injected here -->
+    </div>
+  </div>
+</div>
 
 <script>
-  // ---------- Carousel Navigation ----------
+  // ---------- Carousel Auto Slide & Dots Navigation ----------
   const slidesContainer = document.querySelector('.slides');
   const dots = document.querySelectorAll('.dot');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
   let currentSlide = 0;
   const totalSlides = dots.length;
-
+  
   function goToSlide(n) {
     currentSlide = (n + totalSlides) % totalSlides;
     slidesContainer.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
@@ -320,11 +288,17 @@
     dots[currentSlide].classList.add('active');
   }
   
-  prevBtn.addEventListener('click', () => { goToSlide(currentSlide - 1); });
-  nextBtn.addEventListener('click', () => { goToSlide(currentSlide + 1); });
+  // Auto movement (ہر 5 سیکنڈ بعد سلائیڈ تبدیل ہو)
+  let slideInterval = setInterval(() => {
+    goToSlide(currentSlide + 1);
+  }, 5000);
+  
+  // Dots click functionality
   dots.forEach(dot => {
     dot.addEventListener('click', function() {
+      clearInterval(slideInterval); // Reset auto slide timer on manual click
       goToSlide(parseInt(this.getAttribute('data-index')));
+      slideInterval = setInterval(() => { goToSlide(currentSlide + 1); }, 5000);
     });
   });
   
@@ -398,56 +372,49 @@
   });
   
   document.querySelectorAll('.upload-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
       const cardNum = this.getAttribute('data-card');
       document.querySelector('.file-input[data-card="' + cardNum + '"]').click();
     });
   });
   
-  document.querySelectorAll('.details-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const cardNum = this.getAttribute('data-card');
-      alert("Details for Card " + cardNum + ":\n\nThis is a masterpiece card with custom styling. You can edit the text directly on the card or use the form below.");
+  // ---------- Details Modal Functionality ----------
+  const modal = document.getElementById('detailsModal');
+  const modalBody = document.getElementById('modalBody');
+  const closeBtn = document.querySelector('.close-btn');
+  
+  // Open modal when card or details button is clicked
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      // اگر کلک details button پر ہو تو دوبارہ modal نہ کھولیں
+      if(e.target.classList.contains('upload-btn') || e.target.classList.contains('details-btn')) return;
+      const detailsText = this.getAttribute('data-details') || "No details available.";
+      modalBody.innerHTML = `<h3>Card ${this.getAttribute('data-card')} Details</h3><p>${detailsText}</p>`;
+      modal.style.display = 'flex';
     });
   });
   
-  // ---------- Edit Form Functionality ----------
-  document.getElementById('editForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const cardNum = document.getElementById('cardSelect').value;
-    const newTitle = document.getElementById('newTitle').value.trim();
-    const newDesc = document.getElementById('newDesc').value.trim();
-    const imageFile = document.getElementById('newImage').files[0];
-    
-    // Check word limits
-    if(newTitle.split(/\s+/).length > TITLE_LIMIT) {
-      alert("Title exceeds " + TITLE_LIMIT + " words.");
-      return;
-    }
-    if(newDesc.split(/\s+/).length > DESC_LIMIT) {
-      alert("Description exceeds " + DESC_LIMIT + " words.");
-      return;
-    }
-    
-    // Update card title and description
-    document.getElementById('title' + cardNum).innerText = newTitle;
-    document.getElementById('desc' + cardNum).innerText = newDesc;
-    
-    // Update image if a new file is provided
-    if(imageFile) {
-      resizeImage(imageFile, 300, function(resizedDataUrl) {
-        const imageEl = document.getElementById('img' + cardNum);
-        imageEl.src = resizedDataUrl;
-        imageEl.style.border = 'none';
-      });
-    }
-    
-    alert("Card " + cardNum + " updated successfully!");
-    // Optionally, reset the form fields
-    this.reset();
+  // اگر صرف details button پر کلک ہو تو بھی modal کھلے
+  document.querySelectorAll('.details-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const card = this.closest('.card');
+      const detailsText = card.getAttribute('data-details') || "No details available.";
+      modalBody.innerHTML = `<h3>Card ${card.getAttribute('data-card')} Details</h3><p>${detailsText}</p>`;
+      modal.style.display = 'flex';
+    });
   });
   
+  // Close modal
+  closeBtn.addEventListener('click', function() {
+    modal.style.display = 'none';
+  });
+  window.addEventListener('click', function(e) {
+    if(e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
 </script>
 
 </body>
