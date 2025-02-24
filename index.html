@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Editable Carousel with Done Auto-Move</title>
+  <title>Pre-Populated Editable Carousel</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,7 @@
       overflow: hidden;
       margin-bottom: 20px;
       border-radius: 12px;
-      background: #fff;
+      background: #f0f0f0; /* subtle gray background */
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
     /* Slides Container */
@@ -38,6 +38,7 @@
       display: flex;
       transition: transform 0.6s ease;
       width: 400%; /* 4 slides */
+      background: #f0f0f0;
     }
     /* Each Slide */
     .slide {
@@ -47,7 +48,7 @@
       justify-content: center;
       align-items: center;
     }
-    /* Card Layout: Two columns, text left and image right */
+    /* Card Layout: Two columns, text on left and image on right */
     .card {
       display: flex;
       flex-direction: row;
@@ -57,14 +58,15 @@
       max-width: 850px;
       padding: 16px;
       border-radius: 8px;
-      background: #f9f9f9;
+      /* Set distinct backgrounds for each card */
+      background: #fff;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     /* Card variations for visual variety */
-    .card.card-1 { background: #fff0f5; }
-    .card.card-2 { background: #f0ffff; }
-    .card.card-3 { background: #f5fffa; }
-    .card.card-4 { background: #fffaf0; }
+    .card.card-1 { background: #ffe6f0; }
+    .card.card-2 { background: #e6f9ff; }
+    .card.card-3 { background: #e6ffe6; }
+    .card.card-4 { background: #fff5e6; }
     
     /* Text Area (Left Side) */
     .text-area {
@@ -86,11 +88,12 @@
       color: #555;
       line-height: 1.5;
     }
-    /* When editing, show dashed border */
+    /* Pre-populated fields are visible and have a light background */
     .text-area [contenteditable="true"] {
       border: 1px dashed #ccc;
       padding: 4px;
       border-radius: 4px;
+      background: #fff;
     }
     .error {
       color: red;
@@ -124,7 +127,7 @@
     }
     input[type="file"] { display: none; }
     
-    /* Navigation Controls (manual navigation) */
+    /* Navigation Controls */
     .nav-controls {
       display: flex;
       justify-content: center;
@@ -156,7 +159,7 @@
     }
     .dot.active { background: #ff007f; }
     
-    /* Done Button */
+    /* Global Done Button */
     #doneBtn {
       margin-top: 20px;
       padding: 10px 20px;
@@ -192,9 +195,10 @@
     <div class="slide">
       <div class="card card-1">
         <div class="text-area">
-          <!-- Default placeholder text so card isn't empty -->
           <h2 id="title1" contenteditable="true">Card 1 Title</h2>
-          <p id="desc1" contenteditable="true">This is a sample description for card 1. Please edit as needed. (Max 10 words for title, 50 for description.)</p>
+          <p id="desc1" contenteditable="true">
+            This is a sample description for card 1. Edit me with your content. (Max 10 words for title, 50 for description.)
+          </p>
           <div id="error1" class="error"></div>
         </div>
         <div class="image-area">
@@ -209,7 +213,9 @@
       <div class="card card-2">
         <div class="text-area">
           <h2 id="title2" contenteditable="true">Card 2 Title</h2>
-          <p id="desc2" contenteditable="true">This is a sample description for card 2. Edit to customize. (Max 10 words for title, 50 for description.)</p>
+          <p id="desc2" contenteditable="true">
+            This is a sample description for card 2. Edit me with your content. (Max 10 words for title, 50 for description.)
+          </p>
           <div id="error2" class="error"></div>
         </div>
         <div class="image-area">
@@ -224,7 +230,9 @@
       <div class="card card-3">
         <div class="text-area">
           <h2 id="title3" contenteditable="true">Card 3 Title</h2>
-          <p id="desc3" contenteditable="true">This is a sample description for card 3. Edit as needed. (Max 10 words for title, 50 for description.)</p>
+          <p id="desc3" contenteditable="true">
+            This is a sample description for card 3. Edit me with your content. (Max 10 words for title, 50 for description.)
+          </p>
           <div id="error3" class="error"></div>
         </div>
         <div class="image-area">
@@ -239,7 +247,9 @@
       <div class="card card-4">
         <div class="text-area">
           <h2 id="title4" contenteditable="true">Card 4 Title</h2>
-          <p id="desc4" contenteditable="true">This is a sample description for card 4. Edit as needed. (Max 10 words for title, 50 for description.)</p>
+          <p id="desc4" contenteditable="true">
+            This is a sample description for card 4. Edit me with your content. (Max 10 words for title, 50 for description.)
+          </p>
           <div id="error4" class="error"></div>
         </div>
         <div class="image-area">
@@ -264,7 +274,7 @@
   <span class="dot" data-index="3"></span>
 </div>
 
-<!-- Global Done Button (to finalize editing and start auto-slide) -->
+<!-- Global Done Button -->
 <button id="doneBtn">Done</button>
 
 <script>
@@ -366,11 +376,10 @@
     });
   });
   
-  // ---------- Done Button: Finalize Editing and Start Auto-Movement ----------
+  // ---------- Done Button: Finalize Editing and Start Auto-Move ----------
   const doneBtn = document.getElementById('doneBtn');
   let autoSlideInterval;
   doneBtn.addEventListener('click', function() {
-    // Optional: validate that each card has nonempty text/image if needed.
     // Hide manual navigation and done button.
     document.getElementById('navControls').style.display = 'none';
     document.getElementById('dots').style.display = 'none';
