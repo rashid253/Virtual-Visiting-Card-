@@ -28,6 +28,7 @@
       position: relative;
       width: 100%;
       max-width: 1000px;
+      margin: auto;
       overflow: hidden;
       margin-bottom: 20px;
     }
@@ -36,14 +37,14 @@
     .slides {
       display: flex;
       transition: transform 0.8s ease;
-      width: 400%; /* 4 slides */
+      /* حذف کیا گیا: width: 400%; */
     }
     
-    /* Each Slide */
+    /* Each Slide: ہر سلائیڈ اپنی مکمل چوڑائی لیتا ہے */
     .slide {
-      flex: 1 0 100%;
+      min-width: 100%;
       display: flex;
-      justify-content: center; /* Center the card horizontally */
+      justify-content: center; /* کارڈ کو مرکز میں رکھنے کے لیے */
       padding: 20px;
     }
     
@@ -549,7 +550,7 @@
     document.getElementById('title' + cardNum).innerText = newTitle;
     document.getElementById('desc' + cardNum).innerText = newDesc;
     
-    // Update image position: set card-content flex-direction accordingly and update card's data attribute
+    // Update image position: update card-content flex-direction and card's data attribute
     const card = document.querySelector(`.card[data-card="${cardNum}"]`);
     const cardContent = card.querySelector('.card-content');
     if(imgPosition === "left") {
