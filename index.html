@@ -1,32 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Test Add to Cart</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modern One-Page Shopping App</title>
+  <meta name="theme-color" content="#1E88E5" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Modern CSS Styling -->
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    button { padding: 10px 15px; font-size: 1rem; }
+    :root {
+      --primary-color: #1E88E5;
+      --secondary-color: #1565C0;
+      --light-bg: #f0f2f5;
+      --text-color: #333;
+      --card-bg: #fff;
+      --border-radius: 8px;
+      --transition-speed: 0.3s;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--light-bg);
+      color: var(--text-color);
+      scroll-behavior: smooth;
+      line-height: 1.6;
+      padding-top: 60px; /* space for fixed header */
+    }
+    a { text-decoration: none; color: inherit; }
+    header {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      background: var(--primary-color);
+      padding: 10px;
+      z-index: 1000;
+      text-align: center;
+    }
+    header a {
+      color: #fff;
+      margin: 0 8px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background var(--transition-speed);
+    }
+    header a:hover, header a.active { background: var(--secondary-color); }
+    section { padding: 40px 20px; max-width: 1200px; margin: auto; }
+    section h2 { text-align: center; margin-bottom: 20px; color: var(--primary-color); }
+    .card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .card { background: var(--card-bg); padding: 15px; border-radius: var(--border-radius); box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform var(--transition-speed); }
+    .card:hover { transform: translateY(-4px); }
+    .card img { width: 100%; max-height: 200px; object-fit: cover; border-radius: var(--border-radius); }
+    .card h3 { margin-bottom: 5px; color: var(--primary-color); }
+    .card p { font-size: 0.95rem; }
+    .card button { padding: 10px; border: none; border-radius: 4px; background: var(--primary-color); color: #fff; cursor: pointer; transition: background var(--transition-speed); }
+    .card button:hover { background: var(--secondary-color); }
+    form { max-width: 500px; margin: auto; display: flex; flex-direction: column; gap: 12px; }
+    form input, form textarea, form select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; }
+    form button { padding: 12px; background: var(--primary-color); border: none; border-radius: 4px; color: #fff; cursor: pointer; transition: background var(--transition-speed); }
+    form button:hover { background: var(--secondary-color); }
+    footer { text-align: center; padding: 15px; background: var(--primary-color); color: #fff; margin-top: 40px; }
   </style>
 </head>
 <body>
-  <h1>Test Add to Cart</h1>
-  <button onclick="addToCart('Test Product', 10)">Add to Cart</button>
-  <div id="cartItems"></div>
+
+  <!-- Navigation -->
+  <header>
+    <a href="#home" class="nav-link active">Home</a>
+    <a href="#catalog" class="nav-link">Products</a>
+    <a href="#cart" class="nav-link">Cart</a>
+    <!-- Other links... -->
+  </header>
+
+  <!-- Home Section -->
+  <section id="home">
+    <h2>Welcome</h2>
+    <p style="text-align: center;">Our platform connects clients with high-quality products, competitive prices, and fast-loading images—all in a modern, stylish design.</p>
+  </section>
+
+  <!-- Product Catalog Section -->
+  <section id="catalog">
+    <h2>Our Products</h2>
+    <div class="card-container">
+      <div class="card">
+        <img src="https://via.placeholder.com/400x300" alt="Product 1" loading="lazy">
+        <h3>Product 1</h3>
+        <p>Price: $20</p>
+        <button onclick="addToCart('Product 1',20)">Add to Cart</button>
+      </div>
+      <div class="card">
+        <img src="https://via.placeholder.com/400x300" alt="Product 2" loading="lazy">
+        <h3>Product 2</h3>
+        <p>Price: $35</p>
+        <button onclick="addToCart('Product 2',35)">Add to Cart</button>
+      </div>
+      <!-- More products... -->
+    </div>
+  </section>
+
+  <!-- Cart Section -->
+  <section id="cart">
+    <h2>Your Cart</h2>
+    <div id="cartItems" style="text-align: center;">
+      <p>Your cart is empty.</p>
+    </div>
+    <p style="text-align: center;">Total: $<span id="totalPrice">0</span></p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Modern Shopping App</p>
+  </footer>
+
+  <!-- Firebase & Application Scripts -->
+  <!-- Make sure you include these only once -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
   <script>
-    // Minimal addToCart function for testing
-    let cart = [];
+    /*********************************************
+     * Firebase Initialization – UPDATE with your config
+     *********************************************/
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    /*********************************************
+     * Shopping Cart Functions
+     *********************************************/
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
     function addToCart(name, price) {
       cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
       alert(name + " added to cart.");
       updateCartDisplay();
     }
     function updateCartDisplay() {
       const cartDiv = document.getElementById('cartItems');
-      cartDiv.innerHTML = '';
-      cart.forEach(item => {
-        cartDiv.innerHTML += `<p>${item.name} - $${item.price}</p>`;
-      });
+      if (cartDiv) {
+        cartDiv.innerHTML = "";
+        let total = 0;
+        cart.forEach((item, i) => {
+          total += item.price;
+          cartDiv.innerHTML += `<p>${item.name} - $${item.price} <button onclick="removeFromCart(${i})">Remove</button></p>`;
+        });
+        document.getElementById('totalPrice').innerText = total;
+      }
+    }
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+    }
+    document.addEventListener('DOMContentLoaded', updateCartDisplay);
+
+    /*********************************************
+     * (Other functions such as Order, Feedback, etc. go here)
+     * For testing, start with these basic functions.
+     *********************************************/
+    
+    /*********************************************
+     * Voice Search Functionality (simplified)
+     *********************************************/
+    function startVoiceSearch() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Voice search not supported.");
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.start();
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        alert("You said: " + transcript);
+      };
+      recognition.onerror = function(event) {
+        console.error("Voice Error:", event.error);
+      };
     }
   </script>
 </body>
