@@ -1,316 +1,408 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Business Info Customizer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business App</title>
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    .container { display: flex; width: 100%; }
-    .form-container {
-      width: 40%;
-      padding: 20px;
-      background: #f5f5f5;
-      overflow-y: auto;
-      height: 100vh;
-      border-right: 1px solid #ccc;
+    /* CSS Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .preview-container {
-      width: 60%;
-      padding: 20px;
-      overflow-y: auto;
-      height: 100vh;
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      padding-bottom: 70px; /* space for footer */
     }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-    .form-group input,
-    .form-group textarea { width: 100%; padding: 8px; }
-    button { padding: 10px 15px; background: #2c3e50; color: #fff; border: none; cursor: pointer; }
-    .section-title {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 10px;
-      padding-bottom: 5px;
-    }
-    /* Preview styles similar to the website design */
+    /* App Bar */
     .app-bar {
-      background: #2c3e50;
-      color: #ecf0f1;
-      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      padding: 10px 20px;
     }
+    .app-bar .menu-icon,
+    .app-bar .cart-icon {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .app-bar .app-logo h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+    /* Profile Section */
     .profile-section {
-      background: #ecf0f1;
+      background-color: #ecf0f1;
       padding: 20px;
       display: flex;
       align-items: center;
+      border-bottom: 1px solid #bdc3c7;
     }
-    .profile-section img {
+    .profile-section .profile-pic {
       width: 80px;
       height: 80px;
       border-radius: 50%;
       margin-right: 20px;
-    }
-    .business-info, .exclusive-offers {
-      background: #fff;
-      padding: 20px;
-      margin: 10px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .offers-container { display: flex; gap: 15px; flex-wrap: wrap; }
-    .offer-card {
-      background: #f8f9fa;
-      padding: 10px;
-      text-align: center;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      flex: 1 1 30%;
-      margin-bottom: 10px;
-    }
-    .offer-card img {
-      width: 100%;
-      height: 120px;
-      border-radius: 8px;
-      margin-bottom: 10px;
       object-fit: cover;
     }
-    .contact-icons a {
+    .profile-section .profile-info h2 {
+      margin-bottom: 5px;
+    }
+    .profile-section .contact-icons a {
       margin-right: 10px;
       color: #2c3e50;
       font-size: 18px;
       text-decoration: none;
     }
+    /* Business Info */
+    .business-info {
+      padding: 20px;
+      background-color: #fff;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .business-info h3 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    .business-info p,
+    .business-info ul {
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+    /* Exclusive Offers */
+    .exclusive-offers {
+      padding: 20px;
+      background-color: #fff;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .exclusive-offers h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+    .offers-container {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+    .offer-card {
+      min-width: 200px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .offer-card img {
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .offer-card button {
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    /* Special Buttons */
+    .special-buttons {
+      padding: 20px;
+      background-color: #fff;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .special-buttons h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .buttons-grid button {
+      padding: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    /* Footer Navigation */
+    .footer-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #2c3e50;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      color: #ecf0f1;
+    }
+    .footer-nav a {
+      text-decoration: none;
+      color: #ecf0f1;
+      text-align: center;
+      font-size: 14px;
+    }
+    .footer-nav a i {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 3px;
+    }
+    /* Live Chat */
+    #live-chat {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .chat-toggle {
+      background-color: #27ae60;
+      border: none;
+      color: #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    .chat-window {
+      width: 300px;
+      height: 400px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .chat-window.hidden {
+      display: none;
+    }
+    .chat-header {
+      background-color: #27ae60;
+      color: #fff;
+      padding: 10px;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    .chat-message {
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      max-width: 80%;
+    }
+    .chat-message.bot {
+      background-color: #ecf0f1;
+      align-self: flex-start;
+    }
+    .chat-message.user {
+      background-color: #3498db;
+      color: #fff;
+      align-self: flex-end;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+    .chat-input button {
+      background-color: #27ae60;
+      border: none;
+      padding: 10px;
+      color: #fff;
+      cursor: pointer;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .profile-section {
+        flex-direction: column;
+        text-align: center;
+      }
+      .profile-section .profile-pic {
+        margin-bottom: 10px;
+      }
+      .buttons-grid {
+        grid-template-columns: 1fr;
+      }
+      .chat-window {
+        width: 90%;
+        height: 300px;
+      }
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <!-- Left: Input Form -->
-  <div class="form-container">
-    <h2>Input Business Information</h2>
-    <form id="infoForm">
-      <div class="section-title">Profile Information</div>
-      <div class="form-group">
-        <label for="ownerName">Owner / Business Name:</label>
-        <input type="text" id="ownerName" name="ownerName" placeholder="John Doe / MyBusiness" required>
-      </div>
-      <div class="form-group">
-        <label for="designation">Designation / Role:</label>
-        <input type="text" id="designation" name="designation" placeholder="Business Owner, Manager, etc.">
-      </div>
-      <div class="form-group">
-        <label for="profilePic">Profile Picture URL:</label>
-        <input type="url" id="profilePic" name="profilePic" placeholder="https://example.com/image.jpg">
-      </div>
-      <div class="form-group">
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone" placeholder="+1234567890">
-      </div>
-      <div class="form-group">
-        <label for="whatsApp">WhatsApp Number:</label>
-        <input type="tel" id="whatsApp" name="whatsApp" placeholder="+1234567890">
-      </div>
-      <div class="form-group">
-        <label for="email">Email Address:</label>
-        <input type="email" id="email" name="email" placeholder="email@example.com">
-      </div>
-      <div class="form-group">
-        <label for="address">Address / Map URL:</label>
-        <input type="url" id="address" name="address" placeholder="https://maps.google.com/?q=Business+Address">
-      </div>
-      
-      <div class="section-title">Business Information</div>
-      <div class="form-group">
-        <label for="aboutUs">About Us:</label>
-        <textarea id="aboutUs" name="aboutUs" rows="4" placeholder="Enter a brief description about the business."></textarea>
-      </div>
-      <div class="form-group">
-        <label for="services">Services (comma separated):</label>
-        <input type="text" id="services" name="services" placeholder="Service1, Service2, Service3">
-      </div>
-      <div class="form-group">
-        <label for="businessHours">Business Hours:</label>
-        <input type="text" id="businessHours" name="businessHours" placeholder="Mon-Fri: 9 AM - 6 PM">
-      </div>
-      
-      <div class="section-title">Exclusive Offers</div>
-      <!-- Offer 1 -->
-      <div class="form-group">
-        <label for="offer1Image">Offer 1 Image URL:</label>
-        <input type="url" id="offer1Image" name="offer1Image" placeholder="https://example.com/offer1.jpg">
-      </div>
-      <div class="form-group">
-        <label for="offer1Title">Offer 1 Title:</label>
-        <input type="text" id="offer1Title" name="offer1Title" placeholder="Offer Title 1">
-      </div>
-      <div class="form-group">
-        <label for="offer1Desc">Offer 1 Description:</label>
-        <textarea id="offer1Desc" name="offer1Desc" rows="2" placeholder="Short description of offer 1."></textarea>
-      </div>
-      
-      <!-- Offer 2 -->
-      <div class="form-group">
-        <label for="offer2Image">Offer 2 Image URL:</label>
-        <input type="url" id="offer2Image" name="offer2Image" placeholder="https://example.com/offer2.jpg">
-      </div>
-      <div class="form-group">
-        <label for="offer2Title">Offer 2 Title:</label>
-        <input type="text" id="offer2Title" name="offer2Title" placeholder="Offer Title 2">
-      </div>
-      <div class="form-group">
-        <label for="offer2Desc">Offer 2 Description:</label>
-        <textarea id="offer2Desc" name="offer2Desc" rows="2" placeholder="Short description of offer 2."></textarea>
-      </div>
-      
-      <!-- Offer 3 -->
-      <div class="form-group">
-        <label for="offer3Image">Offer 3 Image URL:</label>
-        <input type="url" id="offer3Image" name="offer3Image" placeholder="https://example.com/offer3.jpg">
-      </div>
-      <div class="form-group">
-        <label for="offer3Title">Offer 3 Title:</label>
-        <input type="text" id="offer3Title" name="offer3Title" placeholder="Offer Title 3">
-      </div>
-      <div class="form-group">
-        <label for="offer3Desc">Offer 3 Description:</label>
-        <textarea id="offer3Desc" name="offer3Desc" rows="2" placeholder="Short description of offer 3."></textarea>
-      </div>
-      
-      <div class="form-group">
-        <button type="submit">Update Preview</button>
-      </div>
-    </form>
-  </div>
-  
-  <!-- Right: Preview Area -->
-  <div class="preview-container">
-    <h2>Website Preview</h2>
-    <!-- App Bar -->
-    <div class="app-bar">
-      <div class="menu-icon"><i class="fas fa-bars"></i></div>
-      <div class="app-logo"><h1 id="previewOwnerName">MyBusiness</h1></div>
-      <div class="cart-icon"><i class="fas fa-shopping-cart"></i></div>
-    </div>
-    
-    <!-- Profile Section -->
-    <section class="profile-section">
-      <img src="https://via.placeholder.com/80" alt="Profile Picture" id="previewProfilePic">
-      <div class="profile-info">
-        <h2 id="previewOwnerName2">John Doe</h2>
-        <p id="previewDesignation">Business Owner</p>
-        <div class="contact-icons">
-          <a href="#" id="previewPhone"><i class="fas fa-phone"></i></a>
-          <a href="#" id="previewWhatsApp"><i class="fab fa-whatsapp"></i></a>
-          <a href="#" id="previewEmail"><i class="fas fa-envelope"></i></a>
-          <a href="#" id="previewAddress"><i class="fas fa-map-marker-alt"></i></a>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Business Info -->
-    <section class="business-info">
-      <h3>About Us</h3>
-      <p id="previewAboutUs">Enter business description here.</p>
-      <h3>Services</h3>
-      <p id="previewServices">Service1, Service2, Service3</p>
-      <h3>Business Hours</h3>
-      <p id="previewBusinessHours">Mon-Fri: 9 AM - 6 PM</p>
-    </section>
-    
-    <!-- Exclusive Offers -->
-    <section class="exclusive-offers">
-      <h3>Exclusive Offers</h3>
-      <div class="offers-container">
-        <div class="offer-card">
-          <img src="https://via.placeholder.com/200x120" alt="Offer 1" id="previewOffer1Image">
-          <h4 id="previewOffer1Title">Offer Title 1</h4>
-          <p id="previewOffer1Desc">Offer description 1.</p>
-          <button>Buy Now</button>
-        </div>
-        <div class="offer-card">
-          <img src="https://via.placeholder.com/200x120" alt="Offer 2" id="previewOffer2Image">
-          <h4 id="previewOffer2Title">Offer Title 2</h4>
-          <p id="previewOffer2Desc">Offer description 2.</p>
-          <button>Buy Now</button>
-        </div>
-        <div class="offer-card">
-          <img src="https://via.placeholder.com/200x120" alt="Offer 3" id="previewOffer3Image">
-          <h4 id="previewOffer3Title">Offer Title 3</h4>
-          <p id="previewOffer3Desc">Offer description 3.</p>
-          <button>Buy Now</button>
-        </div>
-      </div>
-    </section>
-  </div>
-</div>
+  <!-- App Bar -->
+  <header class="app-bar">
+    <div class="menu-icon"><i class="fas fa-bars"></i></div>
+    <div class="app-logo"><h1>MyBusiness</h1></div>
+    <div class="cart-icon"><i class="fas fa-shopping-cart"></i></div>
+  </header>
 
-<script>
-  document.getElementById('infoForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Profile Section
-    const ownerName = document.getElementById('ownerName').value;
-    const designation = document.getElementById('designation').value;
-    const profilePic = document.getElementById('profilePic').value;
-    const phone = document.getElementById('phone').value;
-    const whatsApp = document.getElementById('whatsApp').value;
-    const email = document.getElementById('email').value;
-    const address = document.getElementById('address').value;
-    
-    // Business Info
-    const aboutUs = document.getElementById('aboutUs').value;
-    const services = document.getElementById('services').value;
-    const businessHours = document.getElementById('businessHours').value;
-    
-    // Offers
-    const offer1Image = document.getElementById('offer1Image').value;
-    const offer1Title = document.getElementById('offer1Title').value;
-    const offer1Desc = document.getElementById('offer1Desc').value;
-    
-    const offer2Image = document.getElementById('offer2Image').value;
-    const offer2Title = document.getElementById('offer2Title').value;
-    const offer2Desc = document.getElementById('offer2Desc').value;
-    
-    const offer3Image = document.getElementById('offer3Image').value;
-    const offer3Title = document.getElementById('offer3Title').value;
-    const offer3Desc = document.getElementById('offer3Desc').value;
-    
-    // Update Preview
-    document.getElementById('previewOwnerName').textContent = ownerName || "MyBusiness";
-    document.getElementById('previewOwnerName2').textContent = ownerName || "John Doe";
-    document.getElementById('previewDesignation').textContent = designation || "Business Owner";
-    document.getElementById('previewProfilePic').src = profilePic || "https://via.placeholder.com/80";
-    
-    // Update Contact Links
-    document.getElementById('previewPhone').href = phone ? "tel:" + phone : "#";
-    document.getElementById('previewWhatsApp').href = phone ? "https://wa.me/" + phone : "#";
-    document.getElementById('previewEmail').href = email ? "mailto:" + email : "#";
-    document.getElementById('previewAddress').href = address || "#";
-    
-    // Business Info
-    document.getElementById('previewAboutUs').textContent = aboutUs || "Enter business description here.";
-    document.getElementById('previewServices').textContent = services || "Service1, Service2, Service3";
-    document.getElementById('previewBusinessHours').textContent = businessHours || "Mon-Fri: 9 AM - 6 PM";
-    
-    // Offers
-    document.getElementById('previewOffer1Image').src = offer1Image || "https://via.placeholder.com/200x120";
-    document.getElementById('previewOffer1Title').textContent = offer1Title || "Offer Title 1";
-    document.getElementById('previewOffer1Desc').textContent = offer1Desc || "Offer description 1.";
-    
-    document.getElementById('previewOffer2Image').src = offer2Image || "https://via.placeholder.com/200x120";
-    document.getElementById('previewOffer2Title').textContent = offer2Title || "Offer Title 2";
-    document.getElementById('previewOffer2Desc').textContent = offer2Desc || "Offer description 2.";
-    
-    document.getElementById('previewOffer3Image').src = offer3Image || "https://via.placeholder.com/200x120";
-    document.getElementById('previewOffer3Title').textContent = offer3Title || "Offer Title 3";
-    document.getElementById('previewOffer3Desc').textContent = offer3Desc || "Offer description 3.";
-  });
-</script>
+  <!-- Profile Section -->
+  <section class="profile-section">
+    <img src="https://via.placeholder.com/80" alt="Profile Picture" class="profile-pic" />
+    <div class="profile-info">
+      <h2>John Doe</h2>
+      <p>Business Owner</p>
+      <div class="contact-icons">
+        <a href="tel:+1234567890" title="Call"><i class="fas fa-phone"></i></a>
+        <a href="https://wa.me/1234567890" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="mailto:email@example.com" title="Email"><i class="fas fa-envelope"></i></a>
+        <a href="https://maps.google.com/?q=Business+Address" target="_blank" title="Map"><i class="fas fa-map-marker-alt"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Business Info -->
+  <section class="business-info">
+    <h3>About Us</h3>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris luctus, ipsum nec feugiat finibus, nunc erat cursus tortor, eget congue lectus lorem at nunc. Sed vel ligula ut magna vestibulum porta.
+    </p>
+    <h3>Services</h3>
+    <ul>
+      <li>Service 1: Quality Products</li>
+      <li>Service 2: Excellent Support</li>
+      <li>Service 3: Fast Delivery</li>
+    </ul>
+    <h3>Business Hours</h3>
+    <p>Mon-Fri: 9 AM - 6 PM</p>
+  </section>
+
+  <!-- Exclusive Offers -->
+  <section class="exclusive-offers">
+    <h3>Exclusive Offers</h3>
+    <div class="offers-container">
+      <div class="offer-card">
+        <img src="https://via.placeholder.com/200x120" alt="Offer 1" />
+        <h4>Offer Title 1</h4>
+        <p>Short description of offer 1.</p>
+        <button onclick="alert('Offer 1 clicked')">Buy Now</button>
+      </div>
+      <div class="offer-card">
+        <img src="https://via.placeholder.com/200x120" alt="Offer 2" />
+        <h4>Offer Title 2</h4>
+        <p>Short description of offer 2.</p>
+        <button onclick="alert('Offer 2 clicked')">Buy Now</button>
+      </div>
+      <div class="offer-card">
+        <img src="https://via.placeholder.com/200x120" alt="Offer 3" />
+        <h4>Offer Title 3</h4>
+        <p>Short description of offer 3.</p>
+        <button onclick="alert('Offer 3 clicked')">Buy Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Special Buttons -->
+  <section class="special-buttons">
+    <h3>Quick Actions</h3>
+    <div class="buttons-grid">
+      <button onclick="createInvoice()">Create Invoice</button>
+      <button onclick="manageInventory()">Inventory Management</button>
+      <button onclick="processPayment()">Payment/Billing</button>
+      <button onclick="openCalendar()">Calendar/Appointments</button>
+    </div>
+  </section>
+
+  <!-- Live Chat -->
+  <div id="live-chat">
+    <div id="chat-window" class="chat-window hidden">
+      <div class="chat-header">
+        <span>Live Chat</span>
+        <span id="close-chat" style="cursor: pointer;">&times;</span>
+      </div>
+      <div class="chat-body" id="chat-body">
+        <div class="chat-message bot">Hello! How can we help you today?</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chat-input-field" placeholder="Type a message..." />
+        <button id="send-chat"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+    <button id="open-chat" class="chat-toggle"><i class="fas fa-comments"></i></button>
+  </div>
+
+  <!-- Footer / Navigation Bar -->
+  <footer class="footer-nav">
+    <a href="#"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="#"><i class="fas fa-tags"></i><span>Offers</span></a>
+    <a href="#"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+    <a href="#"><i class="fas fa-ellipsis-h"></i><span>More</span></a>
+  </footer>
+
+  <script>
+    // Toggle Chat Window
+    document.getElementById('open-chat').addEventListener('click', function () {
+      document.getElementById('chat-window').classList.toggle('hidden');
+    });
+    document.getElementById('close-chat').addEventListener('click', function () {
+      document.getElementById('chat-window').classList.add('hidden');
+    });
+    document.getElementById('send-chat').addEventListener('click', function () {
+      const inputField = document.getElementById('chat-input-field');
+      const message = inputField.value.trim();
+      if (message !== '') {
+        const chatBody = document.getElementById('chat-body');
+        const userMsg = document.createElement('div');
+        userMsg.classList.add('chat-message', 'user');
+        userMsg.textContent = message;
+        chatBody.appendChild(userMsg);
+        inputField.value = '';
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+    });
+
+    // Dummy functions for Quick Actions
+    function createInvoice() {
+      alert('Create Invoice clicked!');
+    }
+    function manageInventory() {
+      alert('Inventory Management clicked!');
+    }
+    function processPayment() {
+      alert('Payment/Billing clicked!');
+    }
+    function openCalendar() {
+      alert('Calendar/Appointments clicked!');
+    }
+  </script>
 </body>
 </html>
