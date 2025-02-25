@@ -2,448 +2,260 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Viewport & Mobile Web App Meta Tags -->
+  <!-- Mobile-optimized meta tags -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>MyBusiness App</title>
+  <title>Modern E-Commerce Demo</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
-    /* Global Reset and Base */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* Global Reset & Base Styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       height: 100%;
-      width: 100%;
-      font-family: 'Arial', sans-serif;
+      font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       color: #333;
-      overflow-x: hidden;
     }
-    /* Prevent text scaling and pinch zoom if desired */
-    body {
-      -webkit-text-size-adjust: 100%;
-    }
-    /* Fixed App Bar (Header) */
-    .app-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 50px;
+    /* Navbar (Fixed Header) */
+    .navbar {
       background-color: #2c3e50;
-      color: #ecf0f1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      z-index: 1100;
     }
-    .app-bar .menu-icon,
-    .app-bar .cart-icon {
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .app-bar .app-logo h1 {
-      font-size: 20px;
-      margin: 0;
-    }
-    /* Main Content Area */
-    .content {
-      padding-top: 60px; /* space for fixed header */
-      padding-bottom: 60px; /* space for fixed footer */
-      overflow-y: auto;
-      height: calc(100% - 110px);
-    }
-    /* Profile Section */
-    .profile-section {
-      background-color: #ecf0f1;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #bdc3c7;
-    }
-    .profile-section .profile-pic {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-right: 20px;
-      object-fit: cover;
-    }
-    .profile-section .profile-info h2 {
-      margin-bottom: 5px;
-      font-size: 18px;
-    }
-    .profile-section .contact-icons a {
-      margin-right: 10px;
-      color: #2c3e50;
-      font-size: 18px;
-      text-decoration: none;
-    }
-    /* Business Info Section */
-    .business-info {
-      padding: 20px;
-      background-color: #fff;
-      margin: 10px 10px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      max-height: 250px;
-      overflow-y: auto;
-    }
-    .business-info h3 {
-      margin-bottom: 10px;
-      color: #2c3e50;
-      font-size: 16px;
-    }
-    .business-info p,
-    .business-info ul {
-      margin-bottom: 15px;
-      line-height: 1.6;
-      font-size: 14px;
-    }
-    /* Exclusive Offers Section */
-    .exclusive-offers {
-      padding: 20px;
-      background-color: #fff;
-      margin: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .exclusive-offers h3 {
-      margin-bottom: 15px;
-      color: #2c3e50;
-      font-size: 16px;
-    }
-    .offers-container {
-      display: flex;
-      gap: 15px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
-    .offer-card {
-      min-width: 150px;
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 10px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .offer-card img {
-      width: 100%;
-      height: 90px;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
-    .offer-card button {
-      background-color: #e74c3c;
-      color: #fff;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    /* Special Buttons Section */
-    .special-buttons {
-      padding: 20px;
-      background-color: #fff;
-      margin: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .special-buttons h3 {
-      margin-bottom: 15px;
-      color: #2c3e50;
-      font-size: 16px;
-    }
-    .buttons-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    .buttons-grid button {
-      padding: 10px;
-      background-color: #3498db;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    /* Footer Navigation Bar */
-    .footer-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 50px;
-      background-color: #2c3e50;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 0 10px;
-      color: #ecf0f1;
-      z-index: 1100;
-    }
-    .footer-nav a {
-      text-decoration: none;
-      color: #ecf0f1;
-      text-align: center;
-      font-size: 12px;
-    }
-    .footer-nav a i {
-      font-size: 18px;
-      display: block;
-      margin-bottom: 2px;
-    }
-    /* Live Chat (Floating) */
-    #live-chat {
-      position: fixed;
-      bottom: 60px;
-      right: 20px;
-      z-index: 1200;
-    }
-    .chat-toggle {
-      background-color: #27ae60;
-      border: none;
-      color: #fff;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-    .chat-window {
-      width: 300px;
-      height: 400px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: absolute;
-      bottom: 70px;
-      right: 0;
-    }
-    .chat-window.hidden {
-      display: none;
-    }
-    .chat-header {
-      background-color: #27ae60;
-      color: #fff;
-      padding: 10px;
-      font-size: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .chat-body {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-      font-size: 14px;
-    }
-    .chat-message {
-      margin-bottom: 10px;
-      padding: 8px;
-      border-radius: 4px;
-      max-width: 80%;
-    }
-    .chat-message.bot {
-      background-color: #ecf0f1;
-      align-self: flex-start;
-    }
-    .chat-message.user {
-      background-color: #3498db;
-      color: #fff;
-      align-self: flex-end;
-    }
-    .chat-input {
-      display: flex;
-      border-top: 1px solid #ccc;
-    }
-    .chat-input input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      outline: none;
-      font-size: 14px;
-    }
-    .chat-input button {
-      background-color: #27ae60;
-      border: none;
-      padding: 10px;
-      color: #fff;
-      cursor: pointer;
-    }
-    /* Responsive Adjustments */
-    @media (max-width: 600px) {
-      .profile-section {
-        flex-direction: column;
-        text-align: center;
-      }
-      .profile-section .profile-pic {
-        margin-bottom: 10px;
-      }
-      .buttons-grid {
-        grid-template-columns: 1fr;
-      }
-      .chat-window {
-        width: 90%;
-        height: 300px;
-        right: 5%;
-      }
-    }
+    .navbar-brand { font-weight: bold; color: #ecf0f1 !important; }
+    .nav-link { color: #ecf0f1 !important; }
+    /* Hero Carousel */
+    .carousel-item { height: 300px; }
+    .carousel-item img { object-fit: cover; height: 100%; width: 100%; }
+    /* Categories */
+    .category-card { border: none; }
+    .category-card .card-body { text-align: center; }
+    /* Product Cards */
+    .product-card img { height: 200px; object-fit: cover; }
+    /* Offcanvas Cart Customizations */
+    .offcanvas { width: 320px; }
+    /* Footer */
+    footer { background-color: #2c3e50; color: #ecf0f1; text-align: center; padding: 10px; }
   </style>
 </head>
 <body>
-  <!-- Fixed App Bar -->
-  <header class="app-bar">
-    <div class="menu-icon"><i class="fas fa-bars"></i></div>
-    <div class="app-logo"><h1>MyBusiness</h1></div>
-    <div class="cart-icon"><i class="fas fa-shopping-cart"></i></div>
-  </header>
-
-  <!-- Main Content Area -->
-  <div class="content">
-    <!-- Profile Section -->
-    <section class="profile-section">
-      <img src="https://via.placeholder.com/80" alt="Profile Picture" class="profile-pic" />
-      <div class="profile-info">
-        <h2>John Doe</h2>
-        <p>Business Owner</p>
-        <div class="contact-icons">
-          <a href="tel:+1234567890" title="Call"><i class="fas fa-phone"></i></a>
-          <a href="https://wa.me/1234567890" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-          <a href="mailto:email@example.com" title="Email"><i class="fas fa-envelope"></i></a>
-          <a href="https://maps.google.com/?q=Business+Address" target="_blank" title="Map"><i class="fas fa-map-marker-alt"></i></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Business Info Section -->
-    <section class="business-info">
-      <h3>About Us</h3>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris luctus, ipsum nec feugiat finibus, nunc erat cursus tortor, eget congue lectus lorem at nunc. Sed vel ligula ut magna vestibulum porta.
-      </p>
-      <h3>Services</h3>
-      <ul>
-        <li>Quality Products</li>
-        <li>Excellent Support</li>
-        <li>Fast Delivery</li>
-      </ul>
-      <h3>Business Hours</h3>
-      <p>Mon-Fri: 9 AM - 6 PM</p>
-    </section>
-
-    <!-- Exclusive Offers Section -->
-    <section class="exclusive-offers">
-      <h3>Exclusive Offers</h3>
-      <div class="offers-container">
-        <div class="offer-card">
-          <img src="https://via.placeholder.com/200x120" alt="Offer 1" />
-          <h4>Offer Title 1</h4>
-          <p>Short description.</p>
-          <button onclick="alert('Offer 1 clicked')">Buy Now</button>
-        </div>
-        <div class="offer-card">
-          <img src="https://via.placeholder.com/200x120" alt="Offer 2" />
-          <h4>Offer Title 2</h4>
-          <p>Short description.</p>
-          <button onclick="alert('Offer 2 clicked')">Buy Now</button>
-        </div>
-        <div class="offer-card">
-          <img src="https://via.placeholder.com/200x120" alt="Offer 3" />
-          <h4>Offer Title 3</h4>
-          <p>Short description.</p>
-          <button onclick="alert('Offer 3 clicked')">Buy Now</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Special Buttons (Quick Actions) -->
-    <section class="special-buttons">
-      <h3>Quick Actions</h3>
-      <div class="buttons-grid">
-        <button onclick="createInvoice()">Create Invoice</button>
-        <button onclick="manageInventory()">Inventory Management</button>
-        <button onclick="processPayment()">Payment/Billing</button>
-        <button onclick="openCalendar()">Calendar/Appointments</button>
-      </div>
-    </section>
-  </div>
-
-  <!-- Live Chat (Floating Button and Window) -->
-  <div id="live-chat">
-    <div id="chat-window" class="chat-window hidden">
-      <div class="chat-header">
-        <span>Live Chat</span>
-        <span id="close-chat" style="cursor: pointer;">&times;</span>
-      </div>
-      <div class="chat-body" id="chat-body">
-        <div class="chat-message bot">Hello! How can we help you today?</div>
-      </div>
-      <div class="chat-input">
-        <input type="text" id="chat-input-field" placeholder="Type a message..." />
-        <button id="send-chat"><i class="fas fa-paper-plane"></i></button>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">MyShop</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" 
+              aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#products">Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="badge bg-danger" id="cartCount">0</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
-    <button id="open-chat" class="chat-toggle"><i class="fas fa-comments"></i></button>
+  </nav>
+
+  <!-- Hero Carousel -->
+  <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <!-- Slide 1 -->
+      <div class="carousel-item active">
+        <img src="https://via.placeholder.com/1200x300?text=Big+Sale" class="d-block w-100" alt="Big Sale" />
+      </div>
+      <!-- Slide 2 -->
+      <div class="carousel-item">
+        <img src="https://via.placeholder.com/1200x300?text=New+Arrivals" class="d-block w-100" alt="New Arrivals" />
+      </div>
+      <!-- Slide 3 -->
+      <div class="carousel-item">
+        <img src="https://via.placeholder.com/1200x300?text=Exclusive+Deals" class="d-block w-100" alt="Exclusive Deals" />
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
 
-  <!-- Fixed Footer Navigation -->
-  <footer class="footer-nav">
-    <a href="#"><i class="fas fa-home"></i><span>Home</span></a>
-    <a href="#"><i class="fas fa-tags"></i><span>Offers</span></a>
-    <a href="#"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
-    <a href="#"><i class="fas fa-ellipsis-h"></i><span>More</span></a>
+  <!-- Featured Product Categories -->
+  <div class="container my-4">
+    <h2 class="mb-3">Shop by Category</h2>
+    <div class="row">
+      <div class="col-6 col-md-3">
+        <div class="card category-card">
+          <div class="card-body">
+            <i class="fas fa-tshirt fa-2x mb-2"></i>
+            <h6>Fashion</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card category-card">
+          <div class="card-body">
+            <i class="fas fa-laptop fa-2x mb-2"></i>
+            <h6>Electronics</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card category-card">
+          <div class="card-body">
+            <i class="fas fa-home fa-2x mb-2"></i>
+            <h6>Home</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card category-card">
+          <div class="card-body">
+            <i class="fas fa-baby fa-2x mb-2"></i>
+            <h6>Baby</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Listing -->
+  <div class="container my-4" id="products">
+    <h2 class="mb-3">Featured Products</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <!-- Product Card 1 -->
+      <div class="col">
+        <div class="card product-card h-100">
+          <img src="https://via.placeholder.com/400x200?text=Product+1" class="card-img-top" alt="Product 1" />
+          <div class="card-body">
+            <h5 class="card-title">Product 1</h5>
+            <p class="card-text">$25.00</p>
+            <button class="btn btn-primary" onclick="addToCart('Product 1',25)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product Card 2 -->
+      <div class="col">
+        <div class="card product-card h-100">
+          <img src="https://via.placeholder.com/400x200?text=Product+2" class="card-img-top" alt="Product 2" />
+          <div class="card-body">
+            <h5 class="card-title">Product 2</h5>
+            <p class="card-text">$40.00</p>
+            <button class="btn btn-primary" onclick="addToCart('Product 2',40)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product Card 3 -->
+      <div class="col">
+        <div class="card product-card h-100">
+          <img src="https://via.placeholder.com/400x200?text=Product+3" class="card-img-top" alt="Product 3" />
+          <div class="card-body">
+            <h5 class="card-title">Product 3</h5>
+            <p class="card-text">$15.00</p>
+            <button class="btn btn-primary" onclick="addToCart('Product 3',15)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- More products can be added similarly -->
+    </div>
+  </div>
+
+  <!-- Shopping Cart Offcanvas -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 id="cartOffcanvasLabel">Your Cart</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="cartBody">
+      <!-- Cart items will be dynamically inserted here -->
+      <p>Your cart is empty.</p>
+    </div>
+    <div class="offcanvas-footer p-3">
+      <strong>Total: $<span id="cartTotal">0.00</span></strong>
+      <button class="btn btn-success w-100 mt-2">Checkout</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center">
+    <p class="mb-0">&copy; 2025 MyShop. All rights reserved.</p>
   </footer>
 
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS for Cart Functionality -->
   <script>
-    /* Chat Window Toggle */
-    document.getElementById('open-chat').addEventListener('click', function () {
-      document.getElementById('chat-window').classList.toggle('hidden');
-    });
-    document.getElementById('close-chat').addEventListener('click', function () {
-      document.getElementById('chat-window').classList.add('hidden');
-    });
-    document.getElementById('send-chat').addEventListener('click', function () {
-      const inputField = document.getElementById('chat-input-field');
-      const message = inputField.value.trim();
-      if (message !== '') {
-        const chatBody = document.getElementById('chat-body');
-        const userMsg = document.createElement('div');
-        userMsg.classList.add('chat-message', 'user');
-        userMsg.textContent = message;
-        chatBody.appendChild(userMsg);
-        inputField.value = '';
-        chatBody.scrollTop = chatBody.scrollHeight;
-      }
-    });
+    // Retrieve existing cart from localStorage or initialize empty
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    /* Dummy Quick Action Functions */
-    function createInvoice() {
-      alert('Create Invoice clicked!');
+    // Add item to cart
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+      updateCartBadge();
+      alert(name + " added to cart.");
     }
-    function manageInventory() {
-      alert('Inventory Management clicked!');
+
+    // Update the cart items displayed in the offcanvas
+    function updateCartDisplay() {
+      const cartBody = document.getElementById('cartBody');
+      if (cart.length === 0) {
+        cartBody.innerHTML = "<p>Your cart is empty.</p>";
+        document.getElementById('cartTotal').innerText = "0.00";
+        return;
+      }
+      let html = "";
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price;
+        html += `
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>${item.name} - $${item.price}</div>
+            <button class="btn btn-sm btn-danger" onclick="removeCartItem(${index})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+      });
+      cartBody.innerHTML = html;
+      document.getElementById('cartTotal').innerText = total.toFixed(2);
     }
-    function processPayment() {
-      alert('Payment/Billing clicked!');
+
+    // Remove an item from the cart
+    function removeCartItem(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+      updateCartBadge();
     }
-    function openCalendar() {
-      alert('Calendar/Appointments clicked!');
+
+    // Update the cart badge (number of items)
+    function updateCartBadge() {
+      document.getElementById('cartCount').innerText = cart.length;
     }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCartDisplay();
+      updateCartBadge();
+    });
   </script>
 </body>
 </html>
