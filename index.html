@@ -3,95 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Modern Multi‑Page Mobile App</title>
+  <title>Modern One-Page Shopping App</title>
   <meta name="theme-color" content="#1E88E5" />
-
-  <!-- Google Fonts and Icons -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Icons (optional) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-  <!-- Custom CSS (Bootstrap‑inspired styling) -->
+  <!-- Modern CSS Styling -->
   <style>
-    /* Global Reset and Base Styles */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary-color: #1E88E5;
+      --secondary-color: #1565C0;
+      --light-bg: #f0f2f5;
+      --text-color: #333;
+      --card-bg: #fff;
+      --border-radius: 8px;
+      --transition-speed: 0.3s;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Roboto', sans-serif;
-      background: #f0f2f5;
-      color: #333;
-      overflow-x: hidden;
+      background: var(--light-bg);
+      color: var(--text-color);
+      scroll-behavior: smooth;
+      line-height: 1.6;
     }
     a { text-decoration: none; color: inherit; }
-
-    /* Navigation Bar */
-    nav {
-      position: sticky;
+    /* Fixed Navigation Bar */
+    header {
+      position: fixed;
       top: 0;
+      left: 0;
+      width: 100%;
+      background: var(--primary-color);
       z-index: 1000;
-      background: #1E88E5;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    nav {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       padding: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     nav a {
       color: #fff;
-      padding: 10px 15px;
-      margin: 5px;
+      margin: 0 10px;
+      padding: 8px 12px;
       border-radius: 4px;
-      font-weight: 500;
-      transition: background 0.3s ease;
+      transition: background var(--transition-speed);
     }
     nav a:hover, nav a.active {
-      background: #1565C0;
+      background: var(--secondary-color);
     }
-
-    /* Page Container */
-    .container {
-      max-width: 1000px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    /* Section container */
+    section {
+      padding: 80px 20px 40px; /* Top padding accounts for fixed header */
+      max-width: 1200px;
+      margin: 0 auto;
     }
-
-    /* Section (Page) Styles */
-    .page {
-      display: none;
-      animation: fadeIn 0.4s ease-in-out;
+    /* Section Titles */
+    section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--primary-color);
     }
-    .page.active {
-      display: block;
+    /* Container for cards */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Card Styles for Products and Inventory Items */
+    /* Card Style */
     .card {
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      background: var(--card-bg);
       padding: 15px;
-      margin-bottom: 15px;
-      background: #fafafa;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform var(--transition-speed);
     }
+    .card:hover { transform: translateY(-4px); }
     .card img {
-      max-width: 100%;
-      border-radius: 4px;
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: var(--border-radius);
+      /* Using lazy loading for bandwidth efficiency */
     }
-    .card h3 { color: #1E88E5; }
+    .card h3 { margin-bottom: 5px; color: var(--primary-color); }
     .card p { font-size: 0.95rem; }
-
-    /* Form Styling */
+    .card button {
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background: var(--primary-color);
+      color: #fff;
+      cursor: pointer;
+      transition: background var(--transition-speed);
+    }
+    .card button:hover { background: var(--secondary-color); }
+    /* Forms styling */
     form {
+      max-width: 500px;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-top: 10px;
     }
     form input, form textarea, form select {
       padding: 10px;
@@ -102,19 +123,16 @@
     }
     form button {
       padding: 12px;
-      background: #1E88E5;
+      background: var(--primary-color);
       border: none;
       border-radius: 4px;
       color: #fff;
       font-size: 1rem;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background var(--transition-speed);
     }
-    form button:hover {
-      background: #1565C0;
-    }
-
-    /* Chat Box Styling */
+    form button:hover { background: var(--secondary-color); }
+    /* Chat Box */
     #chatBox {
       border: 1px solid #ccc;
       padding: 10px;
@@ -122,249 +140,223 @@
       overflow-y: auto;
       background: #fff;
       border-radius: 4px;
-      margin-bottom: 10px;
     }
     #chatBox p {
+      margin-bottom: 10px;
       padding: 8px;
       border-radius: 4px;
-      margin-bottom: 8px;
     }
     #chatBox p.user { background: #e3f2fd; text-align: right; }
     #chatBox p.support { background: #f1f8e9; text-align: left; }
-
-    /* Responsive Adjustments */
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: var(--primary-color);
+      color: #fff;
+      margin-top: 40px;
+    }
+    /* Responsive adjustments */
     @media (max-width: 600px) {
-      nav a { font-size: 0.85rem; padding: 8px 10px; }
-      .container { padding: 15px; }
+      nav { flex-direction: column; }
+      nav a { margin: 5px 0; }
     }
   </style>
 </head>
 <body>
+  <!-- Fixed Navigation -->
+  <header>
+    <nav>
+      <a href="#home" class="nav-link active">Home</a>
+      <a href="#catalog" class="nav-link">Products</a>
+      <a href="#cart" class="nav-link">Cart</a>
+      <a href="#order" class="nav-link">Order</a>
+      <a href="#loyalty" class="nav-link">Loyalty</a>
+      <a href="#feedback" class="nav-link">Feedback</a>
+      <a href="#offers" class="nav-link">Offers</a>
+      <a href="#voice" class="nav-link">Voice</a>
+      <a href="#support" class="nav-link">Support</a>
+      <a href="#gamification" class="nav-link">Gamification</a>
+      <a href="#profile" class="nav-link">Profile</a>
+      <a href="#inventory" class="nav-link">Inventory</a>
+      <a href="#userinfo" class="nav-link">User Info</a>
+      <a href="#website" class="nav-link">New Website</a>
+    </nav>
+  </header>
 
-  <!-- Navigation Bar -->
-  <nav>
-    <a href="#home" class="nav-link active">Home</a>
-    <a href="#catalog" class="nav-link">Catalog</a>
-    <a href="#cart" class="nav-link">Cart</a>
-    <a href="#order" class="nav-link">Order</a>
-    <a href="#loyalty" class="nav-link">Loyalty</a>
-    <a href="#feedback" class="nav-link">Feedback</a>
-    <a href="#offers" class="nav-link">Offers</a>
-    <a href="#voice" class="nav-link">Voice Search</a>
-    <a href="#support" class="nav-link">Support</a>
-    <a href="#gamification" class="nav-link">Gamification</a>
-    <a href="#profile" class="nav-link">Profile</a>
-    <a href="#inventory" class="nav-link">Inventory</a>
-    <a href="#userinfo" class="nav-link">User Info</a>
-    <a href="#website" class="nav-link">New Website</a>
-  </nav>
+  <!-- Home Section -->
+  <section id="home">
+    <h2>Welcome</h2>
+    <p style="text-align: center;">
+      Our platform connects clients with high-quality products, competitive prices, and eye-catching images—all optimized for fast loading and a modern experience.
+    </p>
+  </section>
 
-  <!-- Page Sections -->
-
-  <!-- 1. Home Page -->
-  <div id="home" class="page active">
-    <div class="container">
-      <h1>Welcome to Our App</h1>
-      <p>Our platform connects clients with links, products, prices, images, and more – all tailored for every client. Enjoy a seamless experience with our professional, modern interface.</p>
-      <p><em>Vendor: Trusted and innovative.</em></p>
-    </div>
-  </div>
-
-  <!-- 2. Product Catalog -->
-  <div id="catalog" class="page">
-    <div class="container">
-      <h1>Product Catalog</h1>
-      <p>Explore our products – click on any for more details.</p>
-      <!-- Example Product Card -->
+  <!-- Product Catalog Section -->
+  <section id="catalog">
+    <h2>Our Products</h2>
+    <div class="card-container">
+      <!-- Sample product card (repeat for multiple products) -->
       <div class="card">
-        <img src="https://via.placeholder.com/400x250" alt="Product Image" />
-        <h3>Product Name</h3>
+        <img src="https://via.placeholder.com/400x300" alt="Product 1" loading="lazy">
+        <h3>Product 1</h3>
         <p>Price: $20</p>
-        <p>Description: Brief product details here.</p>
-        <p><a href="https://example.com/product1" target="_blank">Learn More</a></p>
+        <p>High-quality, bandwidth‑optimized image. (Recommended size: 400x300px)</p>
+        <button onclick="addToCart('Product 1',20)">Add to Cart</button>
       </div>
-      <!-- Additional products can be loaded dynamically from Firebase -->
-    </div>
-  </div>
-
-  <!-- 3. Shopping Cart -->
-  <div id="cart" class="page">
-    <div class="container">
-      <h1>Your Shopping Cart</h1>
-      <div id="cartItems">
-        <p>Your cart is currently empty.</p>
-      </div>
-      <p>Total Price: $<span id="totalPrice">0</span></p>
-    </div>
-  </div>
-
-  <!-- 4. Order Placement -->
-  <div id="order" class="page">
-    <div class="container">
-      <h1>Place Your Order</h1>
-      <form id="orderForm">
-        <label for="address">Delivery Address:</label>
-        <textarea id="address" rows="3" required placeholder="Enter your delivery address"></textarea>
-        <label for="payment">Payment Option:</label>
-        <select id="payment" required>
-          <option value="cod">Cash on Delivery</option>
-          <option value="online">Online Payment</option>
-        </select>
-        <button type="submit">Confirm Order</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- 5. Customer Loyalty Program -->
-  <div id="loyalty" class="page">
-    <div class="container">
-      <h1>Loyalty Program</h1>
-      <p>Scan the QR code to collect loyalty points (simulation).</p>
-      <p>Your current points: <span id="loyaltyPoints">0</span></p>
-    </div>
-  </div>
-
-  <!-- 6. Customer Feedback & Reviews -->
-  <div id="feedback" class="page">
-    <div class="container">
-      <h1>Customer Feedback & Reviews</h1>
-      <form id="feedbackForm">
-        <label for="feedbackText">Your Feedback:</label>
-        <textarea id="feedbackText" rows="3" required placeholder="Share your thoughts..."></textarea>
-        <button type="submit">Submit Feedback</button>
-      </form>
-      <div id="allFeedback">
-        <h3>Previous Feedback:</h3>
-        <!-- Loaded dynamically from Firebase -->
-      </div>
-    </div>
-  </div>
-
-  <!-- 7. Special Offers & Notifications -->
-  <div id="offers" class="page">
-    <div class="container">
-      <h1>Special Offers & Notifications</h1>
-      <p>Check out our latest deals and discounts!</p>
       <div class="card">
-        <h3>Exclusive Offer</h3>
-        <p>Get 20% off on select products – limited time only!</p>
+        <img src="https://via.placeholder.com/400x300" alt="Product 2" loading="lazy">
+        <h3>Product 2</h3>
+        <p>Price: $35</p>
+        <p>Optimized image using lazy loading for faster page load.</p>
+        <button onclick="addToCart('Product 2',35)">Add to Cart</button>
       </div>
-      <!-- Additional offers can be added here -->
+      <!-- More products can be dynamically added via Firebase -->
     </div>
-  </div>
+  </section>
 
-  <!-- 8. Voice Search -->
-  <div id="voice" class="page">
-    <div class="container">
-      <h1>Voice Search</h1>
-      <p>Speak to search for products.</p>
+  <!-- Shopping Cart Section -->
+  <section id="cart">
+    <h2>Your Cart</h2>
+    <div id="cartItems">
+      <!-- Cart items will be dynamically inserted here -->
+      <p style="text-align:center;">Your cart is empty.</p>
+    </div>
+    <p style="text-align:center;">Total: $<span id="totalPrice">0</span></p>
+  </section>
+
+  <!-- Order Placement Section -->
+  <section id="order">
+    <h2>Place Your Order</h2>
+    <form id="orderForm">
+      <input type="text" id="address" placeholder="Delivery Address" required>
+      <select id="payment" required>
+        <option value="">Select Payment Option</option>
+        <option value="cod">Cash on Delivery</option>
+        <option value="online">Online Payment</option>
+      </select>
+      <button type="submit">Confirm Order</button>
+    </form>
+  </section>
+
+  <!-- Loyalty Program Section -->
+  <section id="loyalty">
+    <h2>Loyalty Program</h2>
+    <p style="text-align:center;">Scan the QR code (simulation) to collect loyalty points.</p>
+    <p style="text-align:center;">Your Points: <span id="loyaltyPoints">0</span></p>
+  </section>
+
+  <!-- Feedback & Reviews Section -->
+  <section id="feedback">
+    <h2>Feedback & Reviews</h2>
+    <form id="feedbackForm">
+      <textarea id="feedbackText" placeholder="Share your thoughts..." required></textarea>
+      <button type="submit">Submit Feedback</button>
+    </form>
+    <div id="allFeedback">
+      <!-- Previous feedback loaded dynamically -->
+    </div>
+  </section>
+
+  <!-- Special Offers Section -->
+  <section id="offers">
+    <h2>Special Offers</h2>
+    <div class="card">
+      <h3>Limited Time Offer</h3>
+      <p>Enjoy 20% off on select products!</p>
+    </div>
+  </section>
+
+  <!-- Voice Search Section -->
+  <section id="voice">
+    <h2>Voice Search</h2>
+    <p style="text-align:center;">Use your voice to search for products.</p>
+    <div style="text-align:center;">
       <button onclick="startVoiceSearch()">Start Voice Search</button>
       <p id="voiceResult"></p>
     </div>
-  </div>
+  </section>
 
-  <!-- 9. Instant Customer Support (Chat) -->
-  <div id="support" class="page">
-    <div class="container">
-      <h1>Instant Customer Support</h1>
-      <div id="chatBox">
-        <!-- Chat messages will be appended here -->
-      </div>
-      <input type="text" id="chatInput" placeholder="Type your message" />
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </div>
+  <!-- Customer Support Chat Section -->
+  <section id="support">
+    <h2>Customer Support</h2>
+    <div id="chatBox"></div>
+    <input type="text" id="chatInput" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+  </section>
 
-  <!-- 10. Gamification -->
-  <div id="gamification" class="page">
-    <div class="container">
-      <h1>Gamification</h1>
-      <p>Join challenges and earn extra points!</p>
+  <!-- Gamification Section -->
+  <section id="gamification">
+    <h2>Gamification</h2>
+    <p style="text-align:center;">Join our challenges and earn rewards!</p>
+    <div style="text-align:center;">
       <button onclick="startChallenge()">Start Challenge</button>
     </div>
-  </div>
+  </section>
 
-  <!-- 11. Customer Profile -->
-  <div id="profile" class="page">
-    <div class="container">
-      <h1>Your Profile</h1>
-      <div id="profileInfo">
-        <p>Please register using the User Info page to view your profile.</p>
-      </div>
+  <!-- User Profile Section -->
+  <section id="profile">
+    <h2>Your Profile</h2>
+    <div id="profileInfo" style="text-align:center;">
+      <p>Please register via the User Info section to view your profile details.</p>
     </div>
-  </div>
+  </section>
 
-  <!-- 12. Inventory Management (Vendor) -->
-  <div id="inventory" class="page">
-    <div class="container">
-      <h1>Inventory Management</h1>
-      <p>Add or update your product inventory below.</p>
-      <form id="inventoryForm">
-        <label for="productName">Product Name:</label>
-        <input type="text" id="productName" required placeholder="Enter product name" />
-        <label for="productPrice">Product Price:</label>
-        <input type="number" id="productPrice" required placeholder="Enter price" />
-        <label for="productDetails">Product Details:</label>
-        <textarea id="productDetails" rows="3" required placeholder="Enter product details"></textarea>
-        <button type="submit">Save Product</button>
-      </form>
-      <div id="inventoryList">
-        <h3>Your Products:</h3>
-        <!-- Dynamically loaded inventory -->
-      </div>
+  <!-- Inventory Management Section (Vendor) -->
+  <section id="inventory">
+    <h2>Inventory Management</h2>
+    <form id="inventoryForm">
+      <input type="text" id="productName" placeholder="Product Name" required>
+      <input type="number" id="productPrice" placeholder="Product Price" required>
+      <textarea id="productDetails" placeholder="Product Details" required></textarea>
+      <button type="submit">Save Product</button>
+    </form>
+    <div id="inventoryList">
+      <h3>Your Products</h3>
+      <!-- Products loaded dynamically from Firebase -->
     </div>
-  </div>
+  </section>
 
-  <!-- 13. User Information (Registration/Profile Update) -->
-  <div id="userinfo" class="page">
-    <div class="container">
-      <h1>User Registration & Information</h1>
-      <form id="userInfoForm">
-        <label for="userName">Full Name:</label>
-        <input type="text" id="userName" required placeholder="Enter your full name" />
-        <label for="userEmail">Email:</label>
-        <input type="email" id="userEmail" required placeholder="Enter your email" />
-        <label for="userPhone">Phone Number:</label>
-        <input type="tel" id="userPhone" required placeholder="Enter your phone number" />
-        <label for="userAddress">Address:</label>
-        <textarea id="userAddress" rows="3" required placeholder="Enter your address"></textarea>
-        <button type="submit">Submit Information</button>
-      </form>
-    </div>
-  </div>
+  <!-- User Information Section -->
+  <section id="userinfo">
+    <h2>User Registration & Info</h2>
+    <form id="userInfoForm">
+      <input type="text" id="userName" placeholder="Full Name" required>
+      <input type="email" id="userEmail" placeholder="Email" required>
+      <input type="tel" id="userPhone" placeholder="Phone Number" required>
+      <textarea id="userAddress" placeholder="Address" required></textarea>
+      <button type="submit">Submit Information</button>
+    </form>
+  </section>
 
-  <!-- 14. New Website Submission (Extra) -->
-  <div id="website" class="page">
-    <div class="container">
-      <h1>New Website Submission</h1>
-      <p>Enter all details for the new client website/honour below:</p>
-      <form id="websiteForm">
-        <label for="siteName">Website Name:</label>
-        <input type="text" id="siteName" required placeholder="Enter website name" />
-        <label for="siteURL">Website URL:</label>
-        <input type="url" id="siteURL" required placeholder="Enter website URL" />
-        <label for="siteDescription">Description:</label>
-        <textarea id="siteDescription" rows="3" required placeholder="Describe the website"></textarea>
-        <label for="clientName">Client/Owner Name:</label>
-        <input type="text" id="clientName" required placeholder="Enter client name" />
-        <label for="clientEmail">Client Email:</label>
-        <input type="email" id="clientEmail" required placeholder="Enter client email" />
-        <button type="submit">Submit Website Info</button>
-      </form>
-    </div>
-  </div>
+  <!-- New Website Submission Section -->
+  <section id="website">
+    <h2>New Website Submission</h2>
+    <form id="websiteForm">
+      <input type="text" id="siteName" placeholder="Website Name" required>
+      <input type="url" id="siteURL" placeholder="Website URL" required>
+      <textarea id="siteDescription" placeholder="Describe the Website" required></textarea>
+      <input type="text" id="clientName" placeholder="Client/Owner Name" required>
+      <input type="email" id="clientEmail" placeholder="Client Email" required>
+      <button type="submit">Submit Website Info</button>
+    </form>
+  </section>
 
-  <!-- Firebase & App Scripts -->
-  <!-- Firebase App and required services -->
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Modern Shopping App</p>
+  </footer>
+
+  <!-- Firebase & Application Scripts -->
+  <!-- Firebase SDK (use compat versions for simplicity) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
+  <!-- Application JavaScript -->
   <script>
-    /**************************************
-     * Firebase Configuration & Initialization
-     **************************************/
-    // TODO: Replace the configuration below with your Firebase project settings.
+    /*********************************************
+     * Firebase Initialization – Update with your config
+     *********************************************/
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -373,40 +365,147 @@
       messagingSenderId: "YOUR_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
-
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.firestore();
 
-    /**************************************
-     * Navigation (Hash‑Based Routing)
-     **************************************/
-    const navLinks = document.querySelectorAll('nav a');
-    const pages = document.querySelectorAll('.page');
+    /*********************************************
+     * Shopping Cart Functions
+     *********************************************/
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(name + " added to cart.");
+      updateCartDisplay();
+    }
+    function updateCartDisplay() {
+      const cartDiv = document.getElementById('cartItems');
+      if (cartDiv) {
+        cartDiv.innerHTML = "";
+        let total = 0;
+        cart.forEach((item, i) => {
+          total += item.price;
+          cartDiv.innerHTML += `<p>${item.name} - $${item.price} <button onclick="removeFromCart(${i})">Remove</button></p>`;
+        });
+        document.getElementById('totalPrice').innerText = total;
+      }
+    }
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+    }
+    document.addEventListener('DOMContentLoaded', updateCartDisplay);
 
-    function showPage(hash) {
-      pages.forEach(page => page.classList.remove('active'));
-      const target = document.querySelector(hash) || document.querySelector('#home');
-      target.classList.add('active');
-
-      // Set active link styling
-      navLinks.forEach(link => {
-        if (link.getAttribute('href') === hash) {
-          link.classList.add('active');
-        } else {
-          link.classList.remove('active');
-        }
+    /*********************************************
+     * Order Form Submission
+     *********************************************/
+    const orderForm = document.getElementById('orderForm');
+    if (orderForm) {
+      orderForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const address = document.getElementById('address').value;
+        const payment = document.getElementById('payment').value;
+        db.collection("orders").add({
+          address,
+          payment,
+          cart,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          alert("Order placed successfully!");
+          localStorage.removeItem('cart');
+          cart = [];
+          updateCartDisplay();
+          orderForm.reset();
+        }).catch(err => console.error("Order Error:", err));
       });
     }
 
-    // Listen for hash changes
-    window.addEventListener('hashchange', () => showPage(location.hash));
-    // Show correct page on load
-    showPage(location.hash || "#home");
+    /*********************************************
+     * Feedback Form Submission
+     *********************************************/
+    const feedbackForm = document.getElementById('feedbackForm');
+    if (feedbackForm) {
+      feedbackForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const feedbackText = document.getElementById('feedbackText').value;
+        db.collection("feedback").add({
+          text: feedbackText,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          alert("Feedback submitted. Thank you!");
+          feedbackForm.reset();
+        }).catch(err => console.error("Feedback Error:", err));
+      });
+    }
 
-    /**************************************
+    /*********************************************
+     * Inventory Form Submission (Vendor)
+     *********************************************/
+    const inventoryForm = document.getElementById('inventoryForm');
+    if (inventoryForm) {
+      inventoryForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('productName').value;
+        const price = parseFloat(document.getElementById('productPrice').value);
+        const details = document.getElementById('productDetails').value;
+        db.collection("products").add({
+          name, price, details,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          alert("Product saved successfully!");
+          inventoryForm.reset();
+          // Optionally reload inventory list
+        }).catch(err => console.error("Inventory Error:", err));
+      });
+    }
+
+    /*********************************************
+     * User Information Submission
+     *********************************************/
+    const userInfoForm = document.getElementById('userInfoForm');
+    if (userInfoForm) {
+      userInfoForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('userName').value;
+        const email = document.getElementById('userEmail').value;
+        const phone = document.getElementById('userPhone').value;
+        const address = document.getElementById('userAddress').value;
+        db.collection("users").doc(email).set({
+          name, email, phone, address,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          alert("User information saved!");
+          userInfoForm.reset();
+        }).catch(err => console.error("User Info Error:", err));
+      });
+    }
+
+    /*********************************************
+     * New Website Submission Form
+     *********************************************/
+    const websiteForm = document.getElementById('websiteForm');
+    if (websiteForm) {
+      websiteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const siteName = document.getElementById('siteName').value;
+        const siteURL = document.getElementById('siteURL').value;
+        const siteDescription = document.getElementById('siteDescription').value;
+        const clientName = document.getElementById('clientName').value;
+        const clientEmail = document.getElementById('clientEmail').value;
+        db.collection("websites").add({
+          siteName, siteURL, siteDescription, clientName, clientEmail,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          alert("Website info submitted successfully!");
+          websiteForm.reset();
+        }).catch(err => console.error("Website Error:", err));
+      });
+    }
+
+    /*********************************************
      * Voice Search Functionality
-     **************************************/
+     *********************************************/
     function startVoiceSearch() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
@@ -416,188 +515,44 @@
       const recognition = new SpeechRecognition();
       recognition.lang = "en-US";
       recognition.start();
-
-      recognition.onresult = (event) => {
+      recognition.onresult = function(event) {
         const transcript = event.results[0][0].transcript;
         document.getElementById('voiceResult').innerText = "You said: " + transcript;
-        // Optionally, implement product search based on transcript.
       };
-
-      recognition.onerror = (event) => {
-        console.error("Voice recognition error:", event.error);
+      recognition.onerror = function(event) {
+        console.error("Voice Search Error:", event.error);
       };
     }
 
-    /**************************************
-     * Instant Customer Support (Chat Simulation)
-     **************************************/
+    /*********************************************
+     * Customer Support Chat Simulation
+     *********************************************/
     function sendMessage() {
       const input = document.getElementById('chatInput');
       const message = input.value.trim();
       if (!message) return;
       const chatBox = document.getElementById('chatBox');
-
-      // Append user message
       const userMsg = document.createElement('p');
-      userMsg.classList.add('user');
+      userMsg.className = "user";
       userMsg.textContent = "You: " + message;
       chatBox.appendChild(userMsg);
       input.value = "";
-
-      // Simulate support reply
+      // Simulate a support reply
       setTimeout(() => {
         const supportMsg = document.createElement('p');
-        supportMsg.classList.add('support');
-        supportMsg.textContent = "Support: Thank you for contacting us!";
+        supportMsg.className = "support";
+        supportMsg.textContent = "Support: Thank you for reaching out!";
         chatBox.appendChild(supportMsg);
         chatBox.scrollTop = chatBox.scrollHeight;
       }, 1000);
     }
 
-    /**************************************
+    /*********************************************
      * Gamification Challenge (Demo)
-     **************************************/
+     *********************************************/
     function startChallenge() {
-      alert("Challenge started! Extend this feature to include dynamic tasks and rewards.");
+      alert("Challenge started! Extend this feature with dynamic tasks and rewards.");
     }
-
-    /**************************************
-     * Form Submissions & Firebase Integration
-     **************************************/
-    // Order Form Submission
-    document.getElementById('orderForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const address = document.getElementById('address').value;
-      const payment = document.getElementById('payment').value;
-      db.collection("orders").add({
-        address,
-        payment,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-        alert("Order placed successfully!");
-        this.reset();
-      })
-      .catch(error => console.error("Error placing order: ", error));
-    });
-
-    // Feedback Form Submission
-    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const feedbackText = document.getElementById('feedbackText').value;
-      db.collection("feedback").add({
-        text: feedbackText,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-        alert("Feedback submitted. Thank you!");
-        this.reset();
-      })
-      .catch(error => console.error("Error submitting feedback: ", error));
-    });
-
-    // Inventory Form Submission (Vendor)
-    document.getElementById('inventoryForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const productName = document.getElementById('productName').value;
-      const productPrice = parseFloat(document.getElementById('productPrice').value);
-      const productDetails = document.getElementById('productDetails').value;
-      db.collection("products").add({
-        name: productName,
-        price: productPrice,
-        details: productDetails,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-        alert("Product saved successfully!");
-        this.reset();
-        loadInventory();
-      })
-      .catch(error => console.error("Error saving product: ", error));
-    });
-
-    // Load Inventory List
-    function loadInventory() {
-      const inventoryList = document.getElementById('inventoryList');
-      inventoryList.innerHTML = "<h3>Your Products:</h3>";
-      db.collection("products").orderBy("createdAt", "desc").get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          const product = doc.data();
-          const prodElem = document.createElement('div');
-          prodElem.classList.add('card');
-          prodElem.innerHTML = `<h3>${product.name}</h3>
-            <p>Price: $${product.price}</p>
-            <p>${product.details}</p>`;
-          inventoryList.appendChild(prodElem);
-        });
-      })
-      .catch(error => console.error("Error loading inventory: ", error));
-    }
-    loadInventory();
-
-    // User Information Form Submission
-    document.getElementById('userInfoForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const name = document.getElementById('userName').value;
-      const email = document.getElementById('userEmail').value;
-      const phone = document.getElementById('userPhone').value;
-      const address = document.getElementById('userAddress').value;
-      db.collection("users").doc(email).set({
-        name,
-        email,
-        phone,
-        address,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-        alert("User information saved successfully!");
-        this.reset();
-        loadUserProfile(email);
-      })
-      .catch(error => console.error("Error saving user info: ", error));
-    });
-
-    // Load User Profile Data
-    function loadUserProfile(email) {
-      const profileInfo = document.getElementById('profileInfo');
-      db.collection("users").doc(email).get()
-      .then(doc => {
-        if (doc.exists) {
-          const user = doc.data();
-          profileInfo.innerHTML = `<p><strong>Name:</strong> ${user.name}</p>
-            <p><strong>Email:</strong> ${user.email}</p>
-            <p><strong>Phone:</strong> ${user.phone}</p>
-            <p><strong>Address:</strong> ${user.address}</p>`;
-        } else {
-          profileInfo.innerHTML = "<p>No profile data available. Please register using the User Info form.</p>";
-        }
-      })
-      .catch(error => console.error("Error loading user profile: ", error));
-    }
-
-    // New Website Submission Form (Extra)
-    document.getElementById('websiteForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const siteName = document.getElementById('siteName').value;
-      const siteURL = document.getElementById('siteURL').value;
-      const siteDescription = document.getElementById('siteDescription').value;
-      const clientName = document.getElementById('clientName').value;
-      const clientEmail = document.getElementById('clientEmail').value;
-      db.collection("websites").add({
-        siteName,
-        siteURL,
-        siteDescription,
-        clientName,
-        clientEmail,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-        alert("Website information submitted successfully!");
-        this.reset();
-      })
-      .catch(error => console.error("Error submitting website info: ", error));
-    });
   </script>
 </body>
 </html>
