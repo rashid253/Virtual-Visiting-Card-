@@ -1,328 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Modern E-Commerce Demo</title>
-  
-  <!-- Bootstrap 5 CSS -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-  />
-  <!-- Optional: Font Awesome for category icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
-  
+  <meta charset="UTF-8">
+  <title>Business Info Customizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* Custom CSS overrides here */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .container { display: flex; width: 100%; }
+    .form-container {
+      width: 40%;
+      padding: 20px;
+      background: #f5f5f5;
+      overflow-y: auto;
+      height: 100vh;
+      border-right: 1px solid #ccc;
     }
-    .navbar-brand {
-      font-weight: 600;
-      color: #0d6efd !important;
+    .preview-container {
+      width: 60%;
+      padding: 20px;
+      overflow-y: auto;
+      height: 100vh;
     }
-    .carousel-item img {
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .form-group input,
+    .form-group textarea { width: 100%; padding: 8px; }
+    button { padding: 10px 15px; background: #2c3e50; color: #fff; border: none; cursor: pointer; }
+    .section-title {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+    }
+    /* Preview styles similar to the website design */
+    .app-bar {
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .profile-section {
+      background: #ecf0f1;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+    }
+    .profile-section img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-right: 20px;
+    }
+    .business-info, .exclusive-offers {
+      background: #fff;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .offers-container { display: flex; gap: 15px; flex-wrap: wrap; }
+    .offer-card {
+      background: #f8f9fa;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      flex: 1 1 30%;
+      margin-bottom: 10px;
+    }
+    .offer-card img {
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      margin-bottom: 10px;
       object-fit: cover;
-      height: 300px;
     }
-    .category-card {
-      transition: transform 0.2s ease;
-    }
-    .category-card:hover {
-      transform: scale(1.02);
-    }
-    .product-card img {
-      object-fit: cover;
-      height: 200px;
-    }
-    .offcanvas-cart {
-      width: 320px !important; /* Adjust cart width if desired */
+    .contact-icons a {
+      margin-right: 10px;
+      color: #2c3e50;
+      font-size: 18px;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-
-<!-- ==================== NAVBAR ==================== -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-  <div class="container">
-    <a class="navbar-brand" href="#">MyShop</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <!-- Add more nav links if needed -->
-        <li class="nav-item">
-          <a class="nav-link" href="#categories">Categories</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#products">Products</a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="#"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#cartOffcanvas"
-          >
-            <i class="fas fa-shopping-cart"></i> Cart
-            <span class="badge bg-primary" id="cartCount">0</span>
-          </a>
-        </li>
-      </ul>
-    </div>
+<div class="container">
+  <!-- Left: Input Form -->
+  <div class="form-container">
+    <h2>Input Business Information</h2>
+    <form id="infoForm">
+      <div class="section-title">Profile Information</div>
+      <div class="form-group">
+        <label for="ownerName">Owner / Business Name:</label>
+        <input type="text" id="ownerName" name="ownerName" placeholder="John Doe / MyBusiness" required>
+      </div>
+      <div class="form-group">
+        <label for="designation">Designation / Role:</label>
+        <input type="text" id="designation" name="designation" placeholder="Business Owner, Manager, etc.">
+      </div>
+      <div class="form-group">
+        <label for="profilePic">Profile Picture URL:</label>
+        <input type="url" id="profilePic" name="profilePic" placeholder="https://example.com/image.jpg">
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" placeholder="+1234567890">
+      </div>
+      <div class="form-group">
+        <label for="whatsApp">WhatsApp Number:</label>
+        <input type="tel" id="whatsApp" name="whatsApp" placeholder="+1234567890">
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label for="address">Address / Map URL:</label>
+        <input type="url" id="address" name="address" placeholder="https://maps.google.com/?q=Business+Address">
+      </div>
+      
+      <div class="section-title">Business Information</div>
+      <div class="form-group">
+        <label for="aboutUs">About Us:</label>
+        <textarea id="aboutUs" name="aboutUs" rows="4" placeholder="Enter a brief description about the business."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="services">Services (comma separated):</label>
+        <input type="text" id="services" name="services" placeholder="Service1, Service2, Service3">
+      </div>
+      <div class="form-group">
+        <label for="businessHours">Business Hours:</label>
+        <input type="text" id="businessHours" name="businessHours" placeholder="Mon-Fri: 9 AM - 6 PM">
+      </div>
+      
+      <div class="section-title">Exclusive Offers</div>
+      <!-- Offer 1 -->
+      <div class="form-group">
+        <label for="offer1Image">Offer 1 Image URL:</label>
+        <input type="url" id="offer1Image" name="offer1Image" placeholder="https://example.com/offer1.jpg">
+      </div>
+      <div class="form-group">
+        <label for="offer1Title">Offer 1 Title:</label>
+        <input type="text" id="offer1Title" name="offer1Title" placeholder="Offer Title 1">
+      </div>
+      <div class="form-group">
+        <label for="offer1Desc">Offer 1 Description:</label>
+        <textarea id="offer1Desc" name="offer1Desc" rows="2" placeholder="Short description of offer 1."></textarea>
+      </div>
+      
+      <!-- Offer 2 -->
+      <div class="form-group">
+        <label for="offer2Image">Offer 2 Image URL:</label>
+        <input type="url" id="offer2Image" name="offer2Image" placeholder="https://example.com/offer2.jpg">
+      </div>
+      <div class="form-group">
+        <label for="offer2Title">Offer 2 Title:</label>
+        <input type="text" id="offer2Title" name="offer2Title" placeholder="Offer Title 2">
+      </div>
+      <div class="form-group">
+        <label for="offer2Desc">Offer 2 Description:</label>
+        <textarea id="offer2Desc" name="offer2Desc" rows="2" placeholder="Short description of offer 2."></textarea>
+      </div>
+      
+      <!-- Offer 3 -->
+      <div class="form-group">
+        <label for="offer3Image">Offer 3 Image URL:</label>
+        <input type="url" id="offer3Image" name="offer3Image" placeholder="https://example.com/offer3.jpg">
+      </div>
+      <div class="form-group">
+        <label for="offer3Title">Offer 3 Title:</label>
+        <input type="text" id="offer3Title" name="offer3Title" placeholder="Offer Title 3">
+      </div>
+      <div class="form-group">
+        <label for="offer3Desc">Offer 3 Description:</label>
+        <textarea id="offer3Desc" name="offer3Desc" rows="2" placeholder="Short description of offer 3."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <button type="submit">Update Preview</button>
+      </div>
+    </form>
   </div>
-</nav>
-
-<!-- ==================== HERO CAROUSEL ==================== -->
-<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <!-- Slide 1 -->
-    <div class="carousel-item active">
-      <img
-        src="https://via.placeholder.com/1200x300/3f51b5/FFFFFF?text=Big+Sale+Banner"
-        class="d-block w-100"
-        alt="Sale Banner"
-      />
+  
+  <!-- Right: Preview Area -->
+  <div class="preview-container">
+    <h2>Website Preview</h2>
+    <!-- App Bar -->
+    <div class="app-bar">
+      <div class="menu-icon"><i class="fas fa-bars"></i></div>
+      <div class="app-logo"><h1 id="previewOwnerName">MyBusiness</h1></div>
+      <div class="cart-icon"><i class="fas fa-shopping-cart"></i></div>
     </div>
-    <!-- Slide 2 -->
-    <div class="carousel-item">
-      <img
-        src="https://via.placeholder.com/1200x300/e91e63/FFFFFF?text=New+Arrivals"
-        class="d-block w-100"
-        alt="New Arrivals"
-      />
-    </div>
-    <!-- Slide 3 -->
-    <div class="carousel-item">
-      <img
-        src="https://via.placeholder.com/1200x300/009688/FFFFFF?text=Festive+Deals"
-        class="d-block w-100"
-        alt="Festive Deals"
-      />
-    </div>
-  </div>
-  <button
-    class="carousel-control-prev"
-    type="button"
-    data-bs-target="#heroCarousel"
-    data-bs-slide="prev"
-  >
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button
-    class="carousel-control-next"
-    type="button"
-    data-bs-target="#heroCarousel"
-    data-bs-slide="next"
-  >
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-
-<!-- ==================== CATEGORIES SECTION ==================== -->
-<section class="py-5" id="categories">
-  <div class="container">
-    <h2 class="mb-4 text-center">Shop by Category</h2>
-    <div class="row g-3">
-      <div class="col-6 col-md-3">
-        <div class="card category-card p-3 text-center">
-          <i class="fas fa-tshirt fa-2x mb-2"></i>
-          <h5>Fashion</h5>
+    
+    <!-- Profile Section -->
+    <section class="profile-section">
+      <img src="https://via.placeholder.com/80" alt="Profile Picture" id="previewProfilePic">
+      <div class="profile-info">
+        <h2 id="previewOwnerName2">John Doe</h2>
+        <p id="previewDesignation">Business Owner</p>
+        <div class="contact-icons">
+          <a href="#" id="previewPhone"><i class="fas fa-phone"></i></a>
+          <a href="#" id="previewWhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" id="previewEmail"><i class="fas fa-envelope"></i></a>
+          <a href="#" id="previewAddress"><i class="fas fa-map-marker-alt"></i></a>
         </div>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="card category-card p-3 text-center">
-          <i class="fas fa-laptop fa-2x mb-2"></i>
-          <h5>Electronics</h5>
+    </section>
+    
+    <!-- Business Info -->
+    <section class="business-info">
+      <h3>About Us</h3>
+      <p id="previewAboutUs">Enter business description here.</p>
+      <h3>Services</h3>
+      <p id="previewServices">Service1, Service2, Service3</p>
+      <h3>Business Hours</h3>
+      <p id="previewBusinessHours">Mon-Fri: 9 AM - 6 PM</p>
+    </section>
+    
+    <!-- Exclusive Offers -->
+    <section class="exclusive-offers">
+      <h3>Exclusive Offers</h3>
+      <div class="offers-container">
+        <div class="offer-card">
+          <img src="https://via.placeholder.com/200x120" alt="Offer 1" id="previewOffer1Image">
+          <h4 id="previewOffer1Title">Offer Title 1</h4>
+          <p id="previewOffer1Desc">Offer description 1.</p>
+          <button>Buy Now</button>
+        </div>
+        <div class="offer-card">
+          <img src="https://via.placeholder.com/200x120" alt="Offer 2" id="previewOffer2Image">
+          <h4 id="previewOffer2Title">Offer Title 2</h4>
+          <p id="previewOffer2Desc">Offer description 2.</p>
+          <button>Buy Now</button>
+        </div>
+        <div class="offer-card">
+          <img src="https://via.placeholder.com/200x120" alt="Offer 3" id="previewOffer3Image">
+          <h4 id="previewOffer3Title">Offer Title 3</h4>
+          <p id="previewOffer3Desc">Offer description 3.</p>
+          <button>Buy Now</button>
         </div>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="card category-card p-3 text-center">
-          <i class="fas fa-home fa-2x mb-2"></i>
-          <h5>Home & Kitchen</h5>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="card category-card p-3 text-center">
-          <i class="fas fa-baby fa-2x mb-2"></i>
-          <h5>Baby Products</h5>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== PRODUCTS SECTION ==================== -->
-<section class="py-5 bg-light" id="products">
-  <div class="container">
-    <h2 class="mb-4 text-center">Featured Products</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      <!-- Product 1 -->
-      <div class="col">
-        <div class="card product-card h-100">
-          <img
-            src="https://via.placeholder.com/400x200?text=Product+1"
-            class="card-img-top"
-            alt="Product 1"
-            loading="lazy"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Product 1</h5>
-            <p class="card-text">$25.00</p>
-            <button class="btn btn-primary" onclick="addToCart('Product 1',25)">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Product 2 -->
-      <div class="col">
-        <div class="card product-card h-100">
-          <img
-            src="https://via.placeholder.com/400x200?text=Product+2"
-            class="card-img-top"
-            alt="Product 2"
-            loading="lazy"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Product 2</h5>
-            <p class="card-text">$40.00</p>
-            <button class="btn btn-primary" onclick="addToCart('Product 2',40)">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Product 3 -->
-      <div class="col">
-        <div class="card product-card h-100">
-          <img
-            src="https://via.placeholder.com/400x200?text=Product+3"
-            class="card-img-top"
-            alt="Product 3"
-            loading="lazy"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Product 3</h5>
-            <p class="card-text">$15.00</p>
-            <button class="btn btn-primary" onclick="addToCart('Product 3',15)">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- More products... -->
-    </div>
-  </div>
-</section>
-
-<!-- ==================== OFFCANVAS CART ==================== -->
-<div
-  class="offcanvas offcanvas-end offcanvas-cart"
-  tabindex="-1"
-  id="cartOffcanvas"
-  aria-labelledby="cartOffcanvasLabel"
->
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="cartOffcanvasLabel">Your Cart</h5>
-    <button
-      type="button"
-      class="btn-close text-reset"
-      data-bs-dismiss="offcanvas"
-      aria-label="Close"
-    ></button>
-  </div>
-  <div class="offcanvas-body" id="cartBody">
-    <!-- Cart items will be inserted here by JavaScript -->
-  </div>
-  <div class="offcanvas-footer p-3">
-    <strong>Total: $<span id="cartTotal">0</span></strong>
-    <button class="btn btn-success w-100 mt-2">Checkout</button>
+    </section>
   </div>
 </div>
 
-<!-- ==================== FOOTER ==================== -->
-<footer class="mt-5">
-  <div class="container text-center">
-    <p class="mb-0">&copy; 2025 MyShop. All rights reserved.</p>
-    <p class="small text-muted">
-      This is a demo site. Replace with your own text, brand, or disclaimers.
-    </p>
-  </div>
-</footer>
-
-<!-- ==================== Bootstrap 5 JS ==================== -->
-<script
-  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-></script>
-
-<!-- ==================== Custom JS (Cart Logic) ==================== -->
 <script>
-  // Simple cart array stored in localStorage
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-  // Add item to cart
-  function addToCart(name, price) {
-    cart.push({ name, price });
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartDisplay();
-  }
-
-  // Update cart count badge & offcanvas content
-  function updateCartDisplay() {
-    const cartCountEl = document.getElementById('cartCount');
-    const cartBodyEl = document.getElementById('cartBody');
-    const cartTotalEl = document.getElementById('cartTotal');
-
-    // Update badge count
-    cartCountEl.textContent = cart.length;
-
-    // Build cart items list
-    let total = 0;
-    let html = '';
-    cart.forEach((item, index) => {
-      total += item.price;
-      html += `
-        <div class="d-flex justify-content-between mb-2">
-          <div>
-            ${item.name} - $${item.price}
-          </div>
-          <button class="btn btn-sm btn-danger" onclick="removeCartItem(${index})">
-            Remove
-          </button>
-        </div>
-      `;
-    });
-    cartBodyEl.innerHTML = html || '<p>Your cart is empty.</p>';
-    cartTotalEl.textContent = total.toFixed(2);
-  }
-
-  // Remove item from cart
-  function removeCartItem(index) {
-    cart.splice(index, 1);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartDisplay();
-  }
-
-  // Initialize cart on page load
-  document.addEventListener('DOMContentLoaded', () => {
-    updateCartDisplay();
+  document.getElementById('infoForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Profile Section
+    const ownerName = document.getElementById('ownerName').value;
+    const designation = document.getElementById('designation').value;
+    const profilePic = document.getElementById('profilePic').value;
+    const phone = document.getElementById('phone').value;
+    const whatsApp = document.getElementById('whatsApp').value;
+    const email = document.getElementById('email').value;
+    const address = document.getElementById('address').value;
+    
+    // Business Info
+    const aboutUs = document.getElementById('aboutUs').value;
+    const services = document.getElementById('services').value;
+    const businessHours = document.getElementById('businessHours').value;
+    
+    // Offers
+    const offer1Image = document.getElementById('offer1Image').value;
+    const offer1Title = document.getElementById('offer1Title').value;
+    const offer1Desc = document.getElementById('offer1Desc').value;
+    
+    const offer2Image = document.getElementById('offer2Image').value;
+    const offer2Title = document.getElementById('offer2Title').value;
+    const offer2Desc = document.getElementById('offer2Desc').value;
+    
+    const offer3Image = document.getElementById('offer3Image').value;
+    const offer3Title = document.getElementById('offer3Title').value;
+    const offer3Desc = document.getElementById('offer3Desc').value;
+    
+    // Update Preview
+    document.getElementById('previewOwnerName').textContent = ownerName || "MyBusiness";
+    document.getElementById('previewOwnerName2').textContent = ownerName || "John Doe";
+    document.getElementById('previewDesignation').textContent = designation || "Business Owner";
+    document.getElementById('previewProfilePic').src = profilePic || "https://via.placeholder.com/80";
+    
+    // Update Contact Links
+    document.getElementById('previewPhone').href = phone ? "tel:" + phone : "#";
+    document.getElementById('previewWhatsApp').href = phone ? "https://wa.me/" + phone : "#";
+    document.getElementById('previewEmail').href = email ? "mailto:" + email : "#";
+    document.getElementById('previewAddress').href = address || "#";
+    
+    // Business Info
+    document.getElementById('previewAboutUs').textContent = aboutUs || "Enter business description here.";
+    document.getElementById('previewServices').textContent = services || "Service1, Service2, Service3";
+    document.getElementById('previewBusinessHours').textContent = businessHours || "Mon-Fri: 9 AM - 6 PM";
+    
+    // Offers
+    document.getElementById('previewOffer1Image').src = offer1Image || "https://via.placeholder.com/200x120";
+    document.getElementById('previewOffer1Title').textContent = offer1Title || "Offer Title 1";
+    document.getElementById('previewOffer1Desc').textContent = offer1Desc || "Offer description 1.";
+    
+    document.getElementById('previewOffer2Image').src = offer2Image || "https://via.placeholder.com/200x120";
+    document.getElementById('previewOffer2Title').textContent = offer2Title || "Offer Title 2";
+    document.getElementById('previewOffer2Desc').textContent = offer2Desc || "Offer description 2.";
+    
+    document.getElementById('previewOffer3Image').src = offer3Image || "https://via.placeholder.com/200x120";
+    document.getElementById('previewOffer3Title').textContent = offer3Title || "Offer Title 3";
+    document.getElementById('previewOffer3Desc').textContent = offer3Desc || "Offer description 3.";
   });
 </script>
 </body>
