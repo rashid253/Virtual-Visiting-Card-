@@ -7,13 +7,13 @@
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <!-- Shared CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Header -->
+  <!-- HEADER -->
   <header id="header">
     <div class="header-left">
       <div class="logo" title="BrandName Home">
@@ -21,85 +21,102 @@
       </div>
       <nav>
         <ul class="nav-menu">
-          <li><a href="#home" title="Home"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
-          <li><a href="#about" title="About Us"><i class="fa-solid fa-user"></i><span>About</span></a></li>
-          <li><a href="#products" title="Our Products"><i class="fa-solid fa-box-open"></i><span>Products</span></a></li>
-          <li><a href="#services" title="Services"><i class="fa-solid fa-briefcase"></i><span>Services</span></a></li>
-          <li><a href="#contact" title="Contact Us"><i class="fa-solid fa-envelope"></i><span>Contact</span></a></li>
+          <li><a href="#home" title="Home"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
+          <li><a href="#services" title="Our Services"><i class="fa-solid fa-briefcase"></i> <span>Services</span></a></li>
+          <li><a href="#products" title="Products"><i class="fa-solid fa-box-open"></i> <span>Products</span></a></li>
+          <li><a href="#honors" title="Honors & Awards"><i class="fa-solid fa-trophy"></i> <span>Honors</span></a></li>
+          <li><a href="#contact" title="Contact"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a></li>
         </ul>
       </nav>
     </div>
     <div class="header-right">
-      <!-- Interactive icons with tooltips -->
+      <!-- Quick Action Icons -->
       <a href="#" class="header-icon" title="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
       </a>
-      <a href="#" class="header-icon" title="Settings">
-        <i class="fa-solid fa-gear"></i>
+      <a href="#" class="header-icon" title="Shopping Cart">
+        <i class="fa-solid fa-cart-shopping"></i>
       </a>
-      <a href="#" class="header-icon" title="Notifications">
-        <i class="fa-solid fa-bell"></i>
-      </a>
-      <a href="#" class="header-icon" title="Profile">
+      <a href="#" class="header-icon" title="Login / Profile">
         <i class="fa-solid fa-user-circle"></i>
       </a>
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- HERO SECTION -->
   <section class="hero" id="home">
     <div class="hero-content">
       <h1>Welcome to BrandName</h1>
-      <p>Innovative Solutions That Redefine Your Digital Experience</p>
-      <button class="cta-btn" onclick="window.location.href='#about'">Discover More</button>
+      <p>Your One-Stop Solution for Business Services and Products</p>
+      <button class="cta-btn" onclick="window.location.href='#services'">Explore Our Services</button>
     </div>
   </section>
 
-  <!-- Features Section -->
-  <section class="features" id="features">
-    <h2>Our Core Features</h2>
+  <!-- FEATURES / MAIN CONTENT -->
+  <section class="features" id="services">
+    <h2>Our Services</h2>
     <div class="features-grid">
-      <div class="feature-card" title="High Performance">
-        <i class="fa-solid fa-rocket"></i>
-        <h3>High Performance</h3>
-        <p>Experience blazing-fast speeds with our cutting-edge technology.</p>
+      <div class="feature-card" title="Innovative Solutions">
+        <i class="fa-solid fa-lightbulb"></i>
+        <h3>Innovative Solutions</h3>
+        <p>Cutting-edge solutions for your business challenges.</p>
       </div>
-      <div class="feature-card" title="Secure Data">
-        <i class="fa-solid fa-lock"></i>
-        <h3>Secure</h3>
-        <p>Your data is safeguarded with top-tier security measures.</p>
+      <div class="feature-card" title="Quality Products">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <h3>Quality Products</h3>
+        <p>Premium products tailored for excellence.</p>
       </div>
-      <div class="feature-card" title="Responsive Design">
-        <i class="fa-solid fa-mobile-screen"></i>
-        <h3>Responsive</h3>
-        <p>Enjoy a seamless experience on any device, anywhere.</p>
+      <div class="feature-card" title="Client Honors">
+        <i class="fa-solid fa-award"></i>
+        <h3>Client Honors</h3>
+        <p>Recognizing our valued clients with prestigious awards.</p>
       </div>
-      <div class="feature-card" title="Customizable Options">
-        <i class="fa-solid fa-sliders"></i>
-        <h3>Customizable</h3>
-        <p>Tailor your experience with flexible, user-friendly options.</p>
+      <div class="feature-card" title="Mobile Integration">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+        <h3>Mobile Ready</h3>
+        <p>Optimized experiences on all devices including mobile apps.</p>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- ADDITIONAL CONTENT SECTION (for products, etc.) -->
+  <section class="products" id="products">
+    <h2>Our Products</h2>
+    <p>Discover our range of high-quality products designed to boost your business.</p>
+    <!-- Additional product display can be added here -->
+  </section>
+
+  <!-- HONORS SECTION -->
+  <section class="honors" id="honors">
+    <h2>Business Honors</h2>
+    <p>We take pride in our commitment to excellence. See our awards and honors.</p>
+    <!-- You might include a slider or grid of award icons or client testimonials here -->
+  </section>
+
+  <!-- FOOTER -->
   <footer id="footer">
     <div class="footer-top">
-      <div class="footer-section">
+      <div class="footer-section about">
         <h3>About BrandName</h3>
-        <p>BrandName is dedicated to delivering innovative digital solutions that empower your business.</p>
+        <p>BrandName delivers top-notch services and products to businesses worldwide. We honor our clients with excellence and innovation.</p>
       </div>
-      <div class="footer-section">
-        <h3>Quick Links</h3>
+      <div class="footer-section app-download">
+        <h3>Get Our App</h3>
+        <div class="app-icons">
+          <a href="#" title="Download for Android"><i class="fa-brands fa-android"></i></a>
+          <a href="#" title="Download for iOS"><i class="fa-brands fa-apple"></i></a>
+        </div>
+        <p>Install our app to manage your business on the go.</p>
+      </div>
+      <div class="footer-section contact">
+        <h3>Contact Us</h3>
         <ul class="footer-nav">
-          <li><a href="#home" title="Home"><i class="fa-solid fa-house"></i> Home</a></li>
-          <li><a href="#about" title="About"><i class="fa-solid fa-user"></i> About</a></li>
-          <li><a href="#products" title="Products"><i class="fa-solid fa-box-open"></i> Products</a></li>
-          <li><a href="#services" title="Services"><i class="fa-solid fa-briefcase"></i> Services</a></li>
-          <li><a href="#contact" title="Contact"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+          <li><i class="fa-solid fa-phone"></i> +92 123 456789</li>
+          <li><i class="fa-solid fa-envelope"></i> info@brandname.com</li>
+          <li><i class="fa-solid fa-location-dot"></i> Faisalabad, Pakistan</li>
         </ul>
       </div>
-      <div class="footer-section">
+      <div class="footer-section social">
         <h3>Follow Us</h3>
         <ul class="social-icons">
           <li><a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
