@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>BrandName - Home</title>
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -19,27 +19,51 @@
       <div class="logo" title="BrandName Home">
         <i class="fa-solid fa-gem"></i> BrandName
       </div>
-      <nav>
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
         <ul class="nav-menu">
           <li><a href="#home" title="Home"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
-          <li><a href="#services" title="Our Services"><i class="fa-solid fa-briefcase"></i> <span>Services</span></a></li>
+          <li><a href="#services" title="Services"><i class="fa-solid fa-briefcase"></i> <span>Services</span></a></li>
           <li><a href="#products" title="Products"><i class="fa-solid fa-box-open"></i> <span>Products</span></a></li>
-          <li><a href="#honors" title="Honors & Awards"><i class="fa-solid fa-trophy"></i> <span>Honors</span></a></li>
+          <li><a href="#honors" title="Honors"><i class="fa-solid fa-trophy"></i> <span>Honors</span></a></li>
           <li><a href="#contact" title="Contact"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a></li>
         </ul>
       </nav>
     </div>
-    <div class="header-right">
-      <!-- Quick Action Icons -->
+    <div class="header-right desktop-nav">
       <a href="#" class="header-icon" title="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
       </a>
-      <a href="#" class="header-icon" title="Shopping Cart">
+      <a href="#" class="header-icon" title="Cart">
         <i class="fa-solid fa-cart-shopping"></i>
       </a>
-      <a href="#" class="header-icon" title="Login / Profile">
+      <a href="#" class="header-icon" title="Login">
         <i class="fa-solid fa-user-circle"></i>
       </a>
+    </div>
+    <!-- Mobile Header: Only visible on mobile -->
+    <div class="mobile-nav">
+      <div class="mobile-header">
+        <div class="logo">
+          <i class="fa-solid fa-gem"></i> BrandName
+        </div>
+        <div class="hamburger" id="hamburger">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+      </div>
+      <!-- Hidden mobile menu overlay -->
+      <nav class="mobile-menu" id="mobileMenu">
+        <ul>
+          <li><a href="#home" onclick="closeMobileMenu()"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="#services" onclick="closeMobileMenu()"><i class="fa-solid fa-briefcase"></i> Services</a></li>
+          <li><a href="#products" onclick="closeMobileMenu()"><i class="fa-solid fa-box-open"></i> Products</a></li>
+          <li><a href="#honors" onclick="closeMobileMenu()"><i class="fa-solid fa-trophy"></i> Honors</a></li>
+          <li><a href="#contact" onclick="closeMobileMenu()"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+          <li><a href="#" onclick="closeMobileMenu()"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+          <li><a href="#" onclick="closeMobileMenu()"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+          <li><a href="#" onclick="closeMobileMenu()"><i class="fa-solid fa-user-circle"></i> Login</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
@@ -47,7 +71,7 @@
   <section class="hero" id="home">
     <div class="hero-content">
       <h1>Welcome to BrandName</h1>
-      <p>Your One-Stop Solution for Business Services and Products</p>
+      <p>Your one-stop solution for business services and products.</p>
       <button class="cta-btn" onclick="window.location.href='#services'">Explore Our Services</button>
     </div>
   </section>
@@ -74,31 +98,30 @@
       <div class="feature-card" title="Mobile Integration">
         <i class="fa-solid fa-mobile-screen-button"></i>
         <h3>Mobile Ready</h3>
-        <p>Optimized experiences on all devices including mobile apps.</p>
+        <p>Optimized experiences across all devices without hidden features.</p>
       </div>
     </div>
   </section>
 
-  <!-- ADDITIONAL CONTENT SECTION (for products, etc.) -->
   <section class="products" id="products">
     <h2>Our Products</h2>
     <p>Discover our range of high-quality products designed to boost your business.</p>
-    <!-- Additional product display can be added here -->
+    <!-- Product items can be inserted here -->
   </section>
 
-  <!-- HONORS SECTION -->
   <section class="honors" id="honors">
     <h2>Business Honors</h2>
-    <p>We take pride in our commitment to excellence. See our awards and honors.</p>
-    <!-- You might include a slider or grid of award icons or client testimonials here -->
+    <p>We celebrate excellence. See our awards and recognitions.</p>
+    <!-- Honors content (e.g., a slider or grid of award icons) can be inserted here -->
   </section>
 
   <!-- FOOTER -->
+  <!-- For desktop, we use the full footer; for mobile, a fixed bottom nav is provided -->
   <footer id="footer">
-    <div class="footer-top">
+    <div class="footer-top desktop-footer">
       <div class="footer-section about">
         <h3>About BrandName</h3>
-        <p>BrandName delivers top-notch services and products to businesses worldwide. We honor our clients with excellence and innovation.</p>
+        <p>BrandName delivers top-notch services and products to businesses worldwide.</p>
       </div>
       <div class="footer-section app-download">
         <h3>Get Our App</h3>
@@ -106,7 +129,7 @@
           <a href="#" title="Download for Android"><i class="fa-brands fa-android"></i></a>
           <a href="#" title="Download for iOS"><i class="fa-brands fa-apple"></i></a>
         </div>
-        <p>Install our app to manage your business on the go.</p>
+        <p>Manage your business on the go.</p>
       </div>
       <div class="footer-section contact">
         <h3>Contact Us</h3>
@@ -126,7 +149,17 @@
         </ul>
       </div>
     </div>
-    <div class="footer-bottom">
+    <!-- Mobile Footer: Fixed bottom navigation bar -->
+    <nav class="mobile-footer">
+      <ul>
+        <li><a href="#home" title="Home"><i class="fa-solid fa-house"></i></a></li>
+        <li><a href="#services" title="Services"><i class="fa-solid fa-briefcase"></i></a></li>
+        <li><a href="#products" title="Products"><i class="fa-solid fa-box-open"></i></a></li>
+        <li><a href="#honors" title="Honors"><i class="fa-solid fa-trophy"></i></a></li>
+        <li><a href="#contact" title="Contact"><i class="fa-solid fa-envelope"></i></a></li>
+      </ul>
+    </nav>
+    <div class="footer-bottom desktop-footer">
       <p>&copy; 2025 BrandName. All Rights Reserved.</p>
       <a href="#" class="back-to-top" title="Back to Top"><i class="fa-solid fa-arrow-up"></i></a>
     </div>
