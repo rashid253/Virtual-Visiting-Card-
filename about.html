@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyBusiness - About Us</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- App Bar -->
+  <header class="app-bar">
+    <div class="menu-icon"><i class="fas fa-bars"></i></div>
+    <div class="app-logo"><h1>MyBusiness</h1></div>
+    <div class="cart-icon"><i class="fas fa-shopping-cart"></i></div>
+  </header>
+
+  <!-- Profile Section -->
+  <section class="profile-section">
+    <img src="https://via.placeholder.com/80" alt="Profile Picture" class="profile-pic" />
+    <div class="profile-info">
+      <h2>John Doe</h2>
+      <p>Business Owner</p>
+      <div class="contact-icons">
+        <a href="tel:+1234567890" title="Call"><i class="fas fa-phone"></i></a>
+        <a href="https://wa.me/1234567890" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="mailto:email@example.com" title="Email"><i class="fas fa-envelope"></i></a>
+        <a href="https://maps.google.com/?q=Business+Address" target="_blank" title="Map"><i class="fas fa-map-marker-alt"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Business Info (About Us) -->
+  <section class="business-info">
+    <h3>About Us</h3>
+    <p>
+      Welcome to MyBusiness! We provide top-notch services and products designed for modern business needs.
+      Our passion is to drive success and innovation for our clients.
+    </p>
+    <h3>Services</h3>
+    <ul>
+      <li>Premium Products</li>
+      <li>Dedicated Support</li>
+      <li>Fast Delivery</li>
+      <li>Consulting Services</li>
+    </ul>
+    <h3>Business Hours</h3>
+    <p>Mon-Fri: 9 AM - 6 PM</p>
+  </section>
+
+  <!-- Special Buttons -->
+  <section class="special-buttons">
+    <h3>Quick Actions</h3>
+    <div class="buttons-grid">
+      <button onclick="createInvoice()">Create Invoice</button>
+      <button onclick="manageInventory()">Inventory Management</button>
+      <button onclick="processPayment()">Payment/Billing</button>
+      <button onclick="openCalendar()">Calendar/Appointments</button>
+    </div>
+  </section>
+
+  <!-- Live Chat -->
+  <div id="live-chat">
+    <div id="chat-window" class="chat-window hidden">
+      <div class="chat-header">
+        <span>Live Chat</span>
+        <span id="close-chat" style="cursor: pointer;">&times;</span>
+      </div>
+      <div class="chat-body" id="chat-body">
+        <div class="chat-message bot">Hello! How can we help you today?</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chat-input-field" placeholder="Type a message..." />
+        <button id="send-chat"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+    <button id="open-chat" class="chat-toggle"><i class="fas fa-comments"></i></button>
+  </div>
+
+  <!-- Updated Footer Navigation -->
+  <footer class="footer-nav">
+    <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="about.html"><i class="fas fa-info-circle"></i><span>About Us</span></a>
+    <a href="analytics.html"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+    <a href="more.html"><i class="fas fa-ellipsis-h"></i><span>More</span></a>
+  </footer>
+
+  <!-- Shared JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
