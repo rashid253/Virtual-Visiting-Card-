@@ -2,29 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Simple Admin Panel – Index Page</title>
-  <!-- Firebase libraries (using compat versions for ease) -->
+  <!-- Important for mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – Manage Site Content</title>
+  <!-- Firebase libraries (compat versions for ease) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f2f2f2;
-      padding: 20px;
     }
-    h1 {
+    header {
+      background: #007bff;
+      color: #fff;
+      padding: 15px;
       text-align: center;
-      color: #007bff;
     }
-    .form-container {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    .container {
+      display: flex;
+      flex-direction: row;
+      min-height: calc(100vh - 60px);
+    }
+    .sidebar {
+      width: 220px;
+      background: #333;
+      color: #fff;
+      padding: 10px;
+      flex-shrink: 0;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar ul li {
+      padding: 10px;
+      cursor: pointer;
       border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .sidebar ul li.active {
+      background: #007bff;
+    }
+    .content {
+      flex: 1;
+      padding: 20px;
+      background: #fff;
+      overflow-y: auto;
+    }
+    .content h2 {
+      margin-top: 0;
     }
     .form-field {
       margin-bottom: 15px;
@@ -34,7 +64,8 @@
       margin-bottom: 5px;
       font-weight: bold;
     }
-    .form-field input, .form-field textarea {
+    .form-field input,
+    .form-field textarea {
       width: 100%;
       padding: 8px;
       box-sizing: border-box;
@@ -51,12 +82,13 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-top: 10px;
     }
     #message {
       margin-top: 10px;
       padding: 10px;
-      display: none;
       border-radius: 4px;
+      display: none;
       text-align: center;
     }
     #message.success {
@@ -69,47 +101,67 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
+    .instructions {
+      font-size: 13px;
+      color: #555;
+      margin-top: 20px;
+    }
+    /* Responsive: stack sidebar on top on narrow screens */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Index Page Admin Panel</h1>
-  <div class="form-container">
-    <form id="indexForm">
-      <div class="form-field">
-        <label for="heroTitle">Hero Title</label>
-        <input type="text" id="heroTitle" placeholder="Enter hero title" required>
+  <header>
+    <h1>Admin Panel – Manage Site Content</h1>
+  </header>
+  <div class="container">
+    <div class="sidebar">
+      <ul id="pageList">
+        <li data-page="index" class="active">Index</li>
+        <li data-page="details">Details</li>
+        <li data-page="offers">Offers</li>
+        <li data-page="payments">Payments</li>
+        <li data-page="support">Support</li>
+        <li data-page="contact">Contact</li>
+        <li data-page="delivery">Delivery</li>
+        <li data-page="ecommerce">Ecommerce</li>
+      </ul>
+    </div>
+    <div class="content">
+      <h2 id="currentPageTitle">Index Page Content</h2>
+      <form id="contentForm">
+        <div id="formFields">
+          <!-- Dynamic form fields will be injected here -->
+        </div>
+        <button type="submit" id="saveButton">Save Changes</button>
+      </form>
+      <div id="message"></div>
+      <div class="instructions">
+        <p><strong>Instructions:</strong></p>
+        <ul>
+          <li><strong>Index:</strong> Editable fields: Hero Title, Hero Description, Background Video URL.</li>
+          <li><strong>Details:</strong> Editable fields: Product Name, Product Price, Product Description, and Product Image (upload file).</li>
+          <li><strong>Offers:</strong> Editable fields: Hero Title, Hero Description, and Offers Data (enter valid JSON array).</li>
+          <li><strong>Payments:</strong> Editable fields: Hero Title and Hero Description.</li>
+          <li><strong>Support:</strong> Editable fields: Page Title, Subtitle, and FAQ Data (enter valid JSON array).</li>
+          <li><strong>Contact:</strong> Editable fields: Page Title, About Text, Phone Number, Email, Address, Map Embed URL.</li>
+          <li><strong>Delivery:</strong> Editable fields: Hero Title and Hero Description.</li>
+          <li><strong>Ecommerce:</strong> Editable fields: Hero Title, Hero Description, and Banner Image (upload file).</li>
+        </ul>
+        <p>Click a page on the left, edit its fields below, then click "Save Changes" to update Firestore.</p>
       </div>
-      <div class="form-field">
-        <label for="heroDescription">Hero Description</label>
-        <textarea id="heroDescription" rows="3" placeholder="Enter hero description" required></textarea>
-      </div>
-      <div class="form-field">
-        <label for="backgroundVideo">Background Video URL</label>
-        <input type="url" id="backgroundVideo" placeholder="Enter background video URL">
-      </div>
-      <div class="form-field">
-        <label for="primaryCTAText">Primary CTA Text</label>
-        <input type="text" id="primaryCTAText" placeholder="Enter primary CTA text">
-      </div>
-      <div class="form-field">
-        <label for="primaryCTALink">Primary CTA Link</label>
-        <input type="text" id="primaryCTALink" placeholder="Enter primary CTA link">
-      </div>
-      <div class="form-field">
-        <label for="secondaryCTAText">Secondary CTA Text</label>
-        <input type="text" id="secondaryCTAText" placeholder="Enter secondary CTA text">
-      </div>
-      <div class="form-field">
-        <label for="secondaryCTALink">Secondary CTA Link</label>
-        <input type="text" id="secondaryCTALink" placeholder="Enter secondary CTA link">
-      </div>
-      <button type="submit" id="saveButton">Save Changes</button>
-    </form>
-    <div id="message"></div>
+    </div>
   </div>
 
   <script>
-    // Replace these placeholder values with your actual Firebase project configuration:
+    // Replace with your actual Firebase configuration values:
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -118,50 +170,191 @@
       messagingSenderId: "YOUR_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
-    // Initialize Firebase
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
-    const indexForm = document.getElementById('indexForm');
+    // Configuration for each page – note that for image fields we use type "file"
+    const pageConfigs = {
+      index: {
+        title: "Index Page",
+        fields: [
+          { key: "heroTitle", label: "Hero Title", type: "text" },
+          { key: "heroDescription", label: "Hero Description", type: "textarea" },
+          { key: "backgroundVideo", label: "Background Video URL", type: "url" }
+        ]
+      },
+      details: {
+        title: "Details Page",
+        fields: [
+          { key: "productName", label: "Product Name", type: "text" },
+          { key: "productPrice", label: "Product Price", type: "number" },
+          { key: "productDescription", label: "Product Description", type: "textarea" },
+          { key: "productImage", label: "Product Image", type: "file" }
+        ]
+      },
+      offers: {
+        title: "Offers Page",
+        fields: [
+          { key: "heroTitle", label: "Hero Title", type: "text" },
+          { key: "heroDescription", label: "Hero Description", type: "textarea" },
+          { key: "offersData", label: "Offers Data (JSON Array)", type: "textarea" }
+        ]
+      },
+      payments: {
+        title: "Payments Page",
+        fields: [
+          { key: "heroTitle", label: "Hero Title", type: "text" },
+          { key: "heroDescription", label: "Hero Description", type: "textarea" }
+        ]
+      },
+      support: {
+        title: "Support Page",
+        fields: [
+          { key: "pageTitle", label: "Page Title", type: "text" },
+          { key: "subtitle", label: "Subtitle", type: "textarea" },
+          { key: "faqData", label: "FAQ Data (JSON Array)", type: "textarea" }
+        ]
+      },
+      contact: {
+        title: "Contact Page",
+        fields: [
+          { key: "pageTitle", label: "Page Title", type: "text" },
+          { key: "aboutText", label: "About Text", type: "textarea" },
+          { key: "phone", label: "Phone Number", type: "text" },
+          { key: "email", label: "Email", type: "text" },
+          { key: "address", label: "Address", type: "textarea" },
+          { key: "mapEmbed", label: "Map Embed URL", type: "text" }
+        ]
+      },
+      delivery: {
+        title: "Delivery Page",
+        fields: [
+          { key: "heroTitle", label: "Hero Title", type: "text" },
+          { key: "heroDescription", label: "Hero Description", type: "textarea" }
+        ]
+      },
+      ecommerce: {
+        title: "Ecommerce Page",
+        fields: [
+          { key: "heroTitle", label: "Hero Title", type: "text" },
+          { key: "heroDescription", label: "Hero Description", type: "textarea" },
+          { key: "bannerImage", label: "Banner Image", type: "file" }
+        ]
+      }
+    };
+
+    let currentPage = "index";
+
+    const pageList = document.getElementById('pageList');
+    const formFieldsDiv = document.getElementById('formFields');
+    const currentPageTitle = document.getElementById('currentPageTitle');
     const messageDiv = document.getElementById('message');
+    const contentForm = document.getElementById('contentForm');
 
-    // Function to display messages
+    // Function to display a temporary message
     function showMessage(msg, isError) {
       messageDiv.innerText = msg;
-      messageDiv.className = isError ? "success error" : "success";
+      messageDiv.className = "message " + (isError ? "error" : "success");
       messageDiv.style.display = "block";
       setTimeout(() => { messageDiv.style.display = "none"; }, 3000);
     }
 
-    // Load existing index page data from Firestore on page load
-    db.collection('pages').doc('index').get().then(doc => {
-      if (doc.exists) {
-        const data = doc.data();
-        document.getElementById('heroTitle').value = data.heroTitle || "";
-        document.getElementById('heroDescription').value = data.heroDescription || "";
-        document.getElementById('backgroundVideo').value = data.backgroundVideo || "";
-        document.getElementById('primaryCTAText').value = data.primaryCTAText || "";
-        document.getElementById('primaryCTALink').value = data.primaryCTALink || "";
-        document.getElementById('secondaryCTAText').value = data.secondaryCTAText || "";
-        document.getElementById('secondaryCTALink').value = data.secondaryCTALink || "";
-      }
-    }).catch(error => {
-      showMessage("Error loading data: " + error.message, true);
+    // Function to upload a file to Firebase Storage and update the input value with the download URL
+    function uploadFile(file, page, key, inputElement) {
+      const storageRef = storage.ref();
+      // Create a unique file name using page, key, and current timestamp
+      const fileRef = storageRef.child(`uploads/${page}/${key}_${Date.now()}_${file.name}`);
+      fileRef.put(file).then(snapshot => {
+        return snapshot.ref.getDownloadURL();
+      }).then(downloadURL => {
+        inputElement.value = downloadURL;
+        inputElement.disabled = false;
+        showMessage("File uploaded successfully!");
+      }).catch(error => {
+        showMessage("Error uploading file: " + error.message, true);
+        inputElement.disabled = false;
+      });
+    }
+
+    // Build the form for the selected page based on its configuration
+    function buildForm(page) {
+      currentPage = page;
+      currentPageTitle.innerText = pageConfigs[page].title;
+      formFieldsDiv.innerHTML = ""; // Clear previous fields
+
+      // Load current data from Firestore
+      db.collection('pages').doc(page).get().then(doc => {
+        let currentData = {};
+        if (doc.exists) {
+          currentData = doc.data();
+        }
+        // Create fields for each configured property
+        pageConfigs[page].fields.forEach(field => {
+          const fieldDiv = document.createElement('div');
+          fieldDiv.className = "form-field";
+          const label = document.createElement('label');
+          label.innerText = field.label;
+          label.htmlFor = field.key;
+          fieldDiv.appendChild(label);
+
+          let input;
+          // If the field is for file upload, create an <input type="file">
+          if (field.type === "file") {
+            input = document.createElement('input');
+            input.type = "file";
+            input.id = field.key;
+            input.name = field.key;
+            // When a file is selected, disable the input, upload the file, and then set the value to the URL
+            input.addEventListener('change', function(e) {
+              const file = e.target.files[0];
+              if (file) {
+                input.disabled = true;
+                uploadFile(file, page, field.key, input);
+              }
+            });
+            // Also add a text input to show the URL (optional, or you can simply reuse the file input's value if desired)
+            // Here we will use the same input's value property after upload.
+          } else if (field.type === "textarea") {
+            input = document.createElement('textarea');
+            input.id = field.key;
+            input.name = field.key;
+            input.value = currentData[field.key] || "";
+          } else {
+            input = document.createElement('input');
+            input.type = field.type;
+            input.id = field.key;
+            input.name = field.key;
+            input.value = currentData[field.key] || "";
+          }
+          fieldDiv.appendChild(input);
+          formFieldsDiv.appendChild(fieldDiv);
+        });
+      }).catch(error => {
+        showMessage("Error loading data: " + error.message, true);
+      });
+    }
+
+    // Setup sidebar navigation
+    Array.from(pageList.getElementsByTagName('li')).forEach(li => {
+      li.addEventListener('click', function() {
+        Array.from(pageList.getElementsByTagName('li')).forEach(item => item.classList.remove('active'));
+        this.classList.add('active');
+        const page = this.getAttribute('data-page');
+        buildForm(page);
+      });
     });
 
-    // Handle form submission to save data
-    indexForm.addEventListener('submit', function(e) {
+    // Save form data to Firestore
+    contentForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      const newData = {
-        heroTitle: document.getElementById('heroTitle').value,
-        heroDescription: document.getElementById('heroDescription').value,
-        backgroundVideo: document.getElementById('backgroundVideo').value,
-        primaryCTAText: document.getElementById('primaryCTAText').value,
-        primaryCTALink: document.getElementById('primaryCTALink').value,
-        secondaryCTAText: document.getElementById('secondaryCTAText').value,
-        secondaryCTALink: document.getElementById('secondaryCTALink').value
-      };
-      db.collection('pages').doc('index').set(newData, { merge: true })
+      const newData = {};
+      pageConfigs[currentPage].fields.forEach(field => {
+        // For file fields, the value is already set to the download URL
+        newData[field.key] = document.getElementById(field.key).value;
+      });
+      db.collection('pages').doc(currentPage).set(newData, { merge: true })
         .then(() => {
           showMessage("Content updated successfully!");
         })
@@ -169,6 +362,9 @@
           showMessage("Error saving content: " + error.message, true);
         });
     });
+
+    // Load the default page ("index") on startup
+    buildForm("index");
   </script>
 </body>
 </html>
