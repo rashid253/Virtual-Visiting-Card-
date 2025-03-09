@@ -8,36 +8,26 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
-    /* Basic reset and styling */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f2f2f2;
     }
     header {
-      display: flex;
-      align-items: center;
       background: #007bff;
       color: #fff;
       padding: 15px;
-    }
-    header h1 {
-      flex: 1;
-      margin: 0;
-      font-size: 1.2rem;
       text-align: center;
     }
     .container {
       display: flex;
       height: calc(100vh - 60px);
     }
-    /* Sidebar */
     .sidebar {
       width: 220px;
       background: #333;
       color: #fff;
       padding: 10px;
-      transition: none; /* default for large screens */
     }
     .sidebar ul {
       list-style: none;
@@ -53,7 +43,6 @@
     .sidebar ul li.active {
       background: #007bff;
     }
-    /* Content area */
     .content {
       flex: 1;
       padding: 20px;
@@ -63,7 +52,6 @@
     .content h2 {
       margin-top: 0;
     }
-    /* Form fields */
     .form-field {
       margin-bottom: 15px;
     }
@@ -113,49 +101,15 @@
       color: #555;
       margin-top: 20px;
     }
-    /* Hamburger menu button (for mobile) */
-    .menu-toggle {
-      background: #007bff;
-      color: #fff;
-      border: none;
-      font-size: 1.2rem;
-      padding: 5px 10px;
-      margin-right: 10px;
-      cursor: pointer;
-      display: none; /* hidden on larger screens by default */
-    }
-    /* Responsive styles for mobile */
-    @media (max-width: 768px) {
-      .menu-toggle {
-        display: block; /* show hamburger on small screens */
-      }
-      .sidebar {
-        position: absolute;
-        left: -220px; /* hide sidebar by default */
-        top: 60px;    /* just below the header */
-        transition: left 0.3s;
-        height: calc(100vh - 60px);
-        z-index: 999;
-      }
-      .sidebar.open {
-        left: 0; /* slide in when open */
-      }
-      .content {
-        margin-left: 0;
-      }
-    }
   </style>
 </head>
 <body>
-  <!-- Header with hamburger menu -->
   <header>
-    <button id="menuToggle" class="menu-toggle">☰</button>
     <h1>Admin Panel – Manage Site Content</h1>
   </header>
 
-  <!-- Main container: sidebar + content -->
   <div class="container">
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar">
       <ul id="pageList">
         <li data-page="index" class="active">Index</li>
         <li data-page="details">Details</li>
@@ -170,9 +124,7 @@
     <div class="content">
       <h2 id="currentPageTitle">Index Page Content</h2>
       <form id="contentForm">
-        <div id="formFields">
-          <!-- Dynamic form fields will be inserted here -->
-        </div>
+        <div id="formFields"><!-- Fields inserted here --></div>
         <button type="submit" id="saveButton">Save Changes</button>
       </form>
       <div id="message"></div>
@@ -195,7 +147,7 @@
   </div>
 
   <script>
-    // Replace these placeholder values with your actual Firebase project configuration:
+    // 1. Replace with your actual Firebase config
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -204,12 +156,10 @@
       messagingSenderId: "YOUR_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Configuration: which fields each page has
+    // 2. Page Configs
     const pageConfigs = {
       index: {
         title: "Index Page",
@@ -287,38 +237,39 @@
       }
     };
 
-    let currentPage = "index"; // default page
+    let currentPage = "index";
 
-    const sidebar = document.getElementById('sidebar');
-    const menuToggle = document.getElementById('menuToggle');
     const pageList = document.getElementById('pageList');
     const formFieldsDiv = document.getElementById('formFields');
     const currentPageTitle = document.getElementById('currentPageTitle');
     const messageDiv = document.getElementById('message');
     const contentForm = document.getElementById('contentForm');
 
-    // Toggle sidebar on mobile
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-    });
+    function showMessage(msg, isError) {
+      messageDiv.innerText = msg;
+      messageDiv.className = "message " + (isError ? "error" : "success");
+      messageDiv.style.display = "block";
+      setTimeout(() => {
+        messageDiv.style.display = "none";
+      }, 3000);
+    }
 
     // Build form for the selected page
     function buildForm(page) {
       currentPage = page;
       currentPageTitle.innerText = pageConfigs[page].title;
-      formFieldsDiv.innerHTML = ""; // clear existing fields
+      formFieldsDiv.innerHTML = ""; // Clear existing fields
 
-      // Fetch existing data from Firestore
+      // Fetch data from Firestore
       db.collection('pages').doc(page).get().then(doc => {
         let currentData = {};
         if (doc.exists) {
           currentData = doc.data();
         }
-        // For each field in the config, create an input/textarea
+        // Create fields
         pageConfigs[page].fields.forEach(field => {
           const fieldDiv = document.createElement('div');
           fieldDiv.className = "form-field";
-
           const label = document.createElement('label');
           label.innerText = field.label;
           label.htmlFor = field.key;
@@ -338,35 +289,21 @@
           formFieldsDiv.appendChild(fieldDiv);
         });
       }).catch(error => {
-        showMessage("Error loading page data: " + error.message, true);
+        showMessage("Error loading data: " + error.message, true);
       });
     }
 
-    // Show a temporary message
-    function showMessage(msg, isError) {
-      messageDiv.innerText = msg;
-      messageDiv.className = "message " + (isError ? "error" : "success");
-      messageDiv.style.display = "block";
-      setTimeout(() => {
-        messageDiv.style.display = "none";
-      }, 3000);
-    }
-
-    // Set up sidebar clicks
+    // Sidebar navigation
     Array.from(pageList.getElementsByTagName('li')).forEach(li => {
       li.addEventListener('click', function() {
-        // highlight active
         Array.from(pageList.getElementsByTagName('li')).forEach(item => item.classList.remove('active'));
         this.classList.add('active');
         const page = this.getAttribute('data-page');
         buildForm(page);
-
-        // hide sidebar on mobile after selection
-        sidebar.classList.remove('open');
       });
     });
 
-    // Save changes to Firestore
+    // Save form
     contentForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const newData = {};
@@ -382,7 +319,7 @@
         });
     });
 
-    // Initial load: build form for the default page
+    // Load default page (index)
     buildForm("index");
   </script>
 </body>
